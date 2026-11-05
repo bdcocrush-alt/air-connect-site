@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Air Connect Ltd – Flights, Tours, Hajj &amp; Umrah</title>
+<meta name="description" content="Air Connect Ltd is a travel agency in Bangladesh for air tickets, hotels, inbound and outbound tours, and Hajj and Umrah packages. Call 01322-937800.">
+<link rel="canonical" href="https://airconnectltd.com/">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="theme-color" content="#2b2528">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Air Connect Ltd">
+<meta property="og:title" content="Air Connect Ltd – Travel, Explore, Experience">
+<meta property="og:description" content="Air tickets, hotels, inbound and outbound tours, and Hajj and Umrah packages.">
+<meta property="og:url" content="https://airconnectltd.com/">
+<meta property="og:image" content="https://airconnectltd.com/assets/logo.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#2b2528;--red:#c00000;--red2:#8f0000;--sky:#fdeeee;--bg:#fff;--text:#1d1a1b;--muted:#665b5e;--card:#faf6f6;--line:#eadcdc;--soft:#ff9d94;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171214;--text:#f1e9ea;--muted:#b9a8ab;--card:#231a1d;--line:#3a2d31;--sky:#3a1a1c;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#171214;--text:#f1e9ea;--muted:#b9a8ab;--card:#231a1d;--line:#3a2d31;--sky:#3a1a1c;color-scheme:dark}
+html{scroll-behavior:smooth;scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--text);font:400 16px/1.6 "DM Sans",system-ui,sans-serif}
+h1,h2,h3{font-family:"Bricolage Grotesque","DM Sans",sans-serif;line-height:1.15;margin:0}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:3px solid var(--soft);outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--ink);color:#fff}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:66px}
+.logo{display:flex;align-items:center;gap:10px;font:800 19px "Bricolage Grotesque",sans-serif}
+.logo img{width:44px;height:44px;border-radius:10px;display:block}
+.logo small{font:500 11px "DM Sans",sans-serif;color:#cdbfc2;display:block;line-height:1.2}
+nav{display:flex;gap:22px;align-items:center;font-size:15px}
+nav a:hover{color:var(--soft)}
+.btn{display:inline-block;border:0;cursor:pointer;font:700 15px "DM Sans",sans-serif;padding:12px 24px;border-radius:10px;background:var(--red);color:#fff}
+.btn.light{background:#fff;color:var(--red2)}
+nav .btn{background:var(--soft);color:#2b0000;border-radius:999px;padding:10px 20px}
+.hero{background:linear-gradient(135deg,#2b2528 0%,#5a1216 60%,#8f0000 100%);color:#fff;text-align:center;padding:56px 0 110px;position:relative;overflow:hidden}
+.hero::before,.hero::after{content:"";position:absolute;border-radius:50%;border:56px solid rgba(255,255,255,.07)}
+.hero::before{width:480px;height:480px;left:-160px;bottom:-260px}
+.hero::after{width:360px;height:360px;right:-100px;top:-170px}
+.hero .wrap{position:relative;z-index:1}
+.hero h1{font-size:clamp(28px,5vw,46px);font-weight:800;letter-spacing:-1px}
+.hero p{margin:10px 0 0;color:#e8d6d8}
+.tabs{display:flex;gap:4px;justify-content:center;margin-top:28px;overflow-x:auto;padding:0 4px 0;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{flex:none;display:flex;align-items:center;gap:8px;border:0;background:none;color:#f0e0e2;font:500 15px "DM Sans",sans-serif;padding:12px 16px;cursor:pointer;border-bottom:3px solid transparent}
+.tabs button svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tabs button[aria-selected="true"]{color:#fff;font-weight:700;border-color:var(--soft)}
+.search{position:relative;z-index:2;max-width:1000px;margin:-70px auto 0;background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 18px 50px rgba(43,37,40,.25)}
+.radios{display:flex;gap:18px;margin-bottom:14px;font-size:14px}
+.radios label{display:flex;gap:6px;align-items:center;margin:0;color:var(--text);font-size:14px;cursor:pointer}
+.radios input{width:auto;accent-color:var(--red)}
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;align-items:end}
+label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
+input,select{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);font:400 16px "DM Sans",sans-serif}
+.result{margin-top:14px;padding:12px 14px;border-radius:10px;background:var(--sky);display:none}
+section{padding:56px 0}
+.sh{font-size:clamp(24px,3.4vw,34px);font-weight:800;letter-spacing:-.6px}
+.sub{color:var(--muted);margin:8px 0 0}
+.banners{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:-6px}
+.bn{min-height:180px;border-radius:16px;padding:26px;color:#fff;display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden}
+.bn::after{content:"";position:absolute;right:-50px;top:-50px;width:200px;height:200px;border-radius:50%;border:34px solid rgba(255,255,255,.14)}
+.bn h3{font-size:28px;font-weight:800;position:relative;z-index:1}
+.bn p{margin:6px 0 0;color:#f6e6e8;position:relative;z-index:1}
+.b1{background:linear-gradient(120deg,#1f1a1c,#6b1519)}
+.b2{background:linear-gradient(120deg,#8f0000,#d4382c)}
+.promo{background:linear-gradient(100deg,#c00000 0%,#8f0000 60%,#2b2528 100%);color:#fff;border-radius:16px;padding:40px 36px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.promo h2{font-size:clamp(24px,3.4vw,34px);font-weight:800}
+.promo p{margin:8px 0 18px;max-width:46ch;color:#f6e6e8}
+.svc{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-top:26px}
+.svc div{text-align:center;padding:18px 10px;border-radius:14px;background:var(--card);border:1px solid var(--line)}
+.ic{width:46px;height:46px;border-radius:50%;background:var(--red);display:grid;place-items:center;margin:0 auto 10px}
+.ic svg{width:22px;height:22px;stroke:#fff;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.svc b{display:block}
+.svc span{font-size:13px;color:var(--muted)}
+.air{background:var(--sky);border-radius:16px;padding:28px;text-align:center}
+.air h2{font-size:24px;margin-bottom:18px}
+.chips{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px}
+.chips span{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px 8px;font-weight:700;font-size:14px}
+.contact{background:var(--ink);color:#fff;border-radius:16px;padding:40px 36px;display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+.contact h2{font-size:clamp(24px,3.4vw,32px);font-weight:800;max-width:16ch}
+.contact p{margin:8px 0 0;color:#d9c9cc}
+.cbtns{display:flex;gap:12px;flex-wrap:wrap}
+footer{padding:30px 0;color:var(--muted);font-size:14px;border-top:1px solid var(--line)}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+@media(max-width:700px){nav a:not(.btn){display:none}.banners{grid-template-columns:1fr}.hero{padding-top:40px}.tabs{justify-content:flex-start}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="logo" href="#"><img src="assets/logo.jpg" alt="Air Connect logo"><span>Air Connect Ltd<small>Travel ◆ Explore ◆ Experience</small></span></a>
+  <nav><a href="#services">Services</a><a href="#airlines">Airlines</a><a href="#contact">Contact</a><a class="btn" href="#contact">Become an agent</a></nav>
+</div></header>
+
+<main>
+<div class="hero"><div class="wrap">
+  <h1 id="ht"></h1>
+  <p id="hp"></p>
+  <div class="tabs" id="tabs" role="tablist"></div>
+</div></div>
+
+<div class="wrap"><div class="search" role="search">
+  <div class="radios" id="rad" hidden><label><input type="radio" name="w" checked>One way</label><label><input type="radio" name="w">Round trip</label></div>
+  <form id="f" class="fields"></form>
+  <div class="result" id="r" role="status"></div>
+</div></div>
+
+<section style="padding-bottom:0"><div class="wrap banners">
+  <div class="bn b1"><h3>Hajj & Umrah packages</h3><p>Guided groups, visa support and hotels near the Haram.</p></div>
+  <div class="bn b2"><h3>Explore Bangladesh</h3><p>Cox’s Bazar, Sundarbans, Sylhet and more for visitors.</p></div>
+</div></section>
+
+<section><div class="wrap"><div class="promo">
+  <div><h2>From plans to paradise, quickly.</h2><p>Tell us where your customers want to go. We find the fare, the hotel and the package.</p><a class="btn light" href="#contact">Start your journey</a></div>
+</div></div></section>
+
+<section id="services" style="padding-top:0"><div class="wrap">
+  <h2 class="sh">Everything under one roof</h2>
+  <div class="svc">
+    <div><div class="ic"><svg viewBox="0 0 24 24"><path d="M2 16l20-8-6 14-4-6-6-2z"/></svg></div><b>Air tickets</b><span>Domestic and international</span></div>
+    <div><div class="ic"><svg viewBox="0 0 24 24"><path d="M3 20V8l9-5 9 5v12M9 20v-6h6v6"/></svg></div><b>Hotels</b><span>Home and abroad</span></div>
+    <div><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6-7-11a7 7 0 0114 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div><b>Inbound tours</b><span>Visitors to Bangladesh</span></div>
+    <div><div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg></div><b>Outbound tours</b><span>Trips abroad</span></div>
+    <div><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l7 4v5c0 4-3 7-7 9-4-2-7-5-7-9V7z"/></svg></div><b>Hajj & Umrah</b><span>Complete packages</span></div>
+    <div><div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg></div><b>Visa support</b><span>Documents and filing</span></div>
+  </div>
+</div></section>
+
+<section id="airlines" style="padding-top:0"><div class="wrap"><div class="air">
+  <h2>Airlines we book</h2>
+  <div class="chips"><span>Biman Bangladesh</span><span>US-Bangla</span><span>Emirates</span><span>Saudia</span><span>Qatar Airways</span><span>Singapore Airlines</span></div>
+</div></div></section>
+
+<section id="contact" style="padding-top:0"><div class="wrap"><div class="contact">
+  <div><h2>Open your agent account</h2><p>Registration is free. Call or email us and we will set you up.</p></div>
+  <div class="cbtns"><a class="btn light" href="tel:+8801322937800">Call 01322-937800</a><a class="btn" href="mailto:info@airconnectbd.com?subject=Agent%20registration">info@airconnectbd.com</a></div>
+</div></div></section>
+</main>
+
+<footer><div class="wrap">
+  <span>© 2026 Air Connect Ltd. All rights reserved.</span>
+  <span><a href="mailto:info@airconnectbd.com">info@airconnectbd.com</a> · <a href="tel:+8801322937800">01322-937800</a></span>
+</div></footer>
+
+<script>
+const I={flight:'<path d="M2 16l20-8-6 14-4-6-6-2z"/>',hotel:'<path d="M3 20V8l9-5 9 5v12M9 20v-6h6v6"/>',in:'<path d="M12 21s-7-6-7-11a7 7 0 0114 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',out:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>',hajj:'<path d="M12 3l7 4v5c0 4-3 7-7 9-4-2-7-5-7-9V7z"/>'};
+const T={
+flight:{n:"Flights",h:"Your journey starts here",p:"Search fares and book air tickets for your customers.",b:"Search",rad:1,f:[["From","t","Dhaka (DAC)"],["To","t","Dubai (DXB)"],["Journey date","date"],["Travellers","s",["1 Traveller","2 Travellers","3 Travellers","4+ Travellers"]]]},
+hotel:{n:"Hotels",h:"Find the right stay",p:"Hotels in Bangladesh and abroad at agent rates.",b:"Search",f:[["Destination","t","Cox’s Bazar"],["Check-in","date"],["Check-out","date"],["Guests","s",["1 Guest","2 Guests","3 Guests","4+ Guests"]]]},
+in:{n:"Inbound Tour",h:"Show visitors the best of Bangladesh",p:"Tour packages for travellers coming to Bangladesh.",b:"Get a quote",f:[["Visitors from","t","Malaysia"],["Destination","s",["Cox’s Bazar","Sundarbans","Sylhet","Saint Martin","Dhaka city tour"]],["Arrival date","date"],["Travellers","s",["1 Traveller","2 Travellers","3–5 Travellers","6+ Travellers"]]]},
+out:{n:"Outbound Tour",h:"Tours from Bangladesh to the world",p:"Complete trips abroad with flights, hotels and visas.",b:"Get a quote",f:[["From","t","Dhaka"],["Destination","s",["Malaysia","Thailand","Singapore","Dubai","Turkey","Maldives"]],["Travel date","date"],["Travellers","s",["1 Traveller","2 Travellers","3–5 Travellers","6+ Travellers"]]]},
+hajj:{n:"Hajj & Umrah",h:"Your Hajj & Umrah journey starts here",p:"Packages with visa, flights, hotels and a guide.",b:"Get a quote",f:[["Package","s",["Umrah","Hajj"]],["Package level","s",["Economy","Standard","Premium"]],["Departure month","month"],["Travellers","s",["1 Traveller","2 Travellers","3–5 Travellers","6+ Travellers"]]]}
+};
+const tabs=document.getElementById("tabs"),f=document.getElementById("f"),r=document.getElementById("r"),rad=document.getElementById("rad");let cur="flight";
+tabs.innerHTML=Object.keys(T).map(k=>`<button role="tab" data-k="${k}"><svg viewBox="0 0 24 24">${I[k]}</svg>${T[k].n}</button>`).join("");
+function draw(k){cur=k;const t=T[k];r.style.display="none";rad.hidden=!t.rad;
+ document.getElementById("ht").textContent=t.h;document.getElementById("hp").textContent=t.p;
+ f.innerHTML=t.f.map((x,i)=>`<div><label for="i${i}">${x[0]}</label>`+(x[1]=="s"?`<select id="i${i}">${x[2].map(o=>`<option>${o}</option>`).join("")}</select>`:`<input id="i${i}" type="${x[1]=="t"?"text":x[1]}" ${x[2]?`value="${x[2]}"`:""}>`)+"</div>").join("")+`<button class="btn" type="submit">${t.b}</button>`;
+ tabs.querySelectorAll("button").forEach(b=>b.setAttribute("aria-selected",b.dataset.k==k))}
+tabs.onclick=e=>{const b=e.target.closest("button");if(b)draw(b.dataset.k)};
+f.onsubmit=e=>{e.preventDefault();const t=T[cur];
+ if(cur=="flight"||cur=="hotel"){r.textContent="This is a demo search. Connect a supplier API to show live "+(cur=="flight"?"fares":"rooms")+" here.";r.style.display="block";return}
+ const lines=t.f.map((x,i)=>x[0]+": "+document.getElementById("i"+i).value).join("%0D%0A");
+ location.href="mailto:info@airconnectbd.com?subject="+encodeURIComponent(t.n+" enquiry")+"&body="+lines};
+draw("flight");
+</script>
+</body>
+</html>
