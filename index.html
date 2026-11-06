@@ -355,6 +355,7 @@
     document.addEventListener("DOMContentLoaded", async () => {
       window.ACPortal.renderHeaderAuthArea();
       window.ACSearch.renderSearchBox();
+      window.ACSearch.renderHomepageCatalog("ALL");
 
       // Bind Homepage Filter Pills
       document.querySelectorAll("#home-catalog-tabs .filter-pill").forEach(btn => {

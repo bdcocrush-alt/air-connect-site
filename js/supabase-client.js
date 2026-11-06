@@ -1,7 +1,9 @@
 // Air Connect Ltd — Supabase Client, Auth, Currency & Global State
 (function () {
   const cfg = window.AIRCONNECT_CONFIG;
-  const supabase = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
+  const supabase = window.supabase
+    ? window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY)
+    : null;
 
   const state = {
     user: null,
@@ -20,12 +22,12 @@
       bank_details: "City Bank PLC | A/C Name: Air Connect Ltd | A/C No: 1402938475001 | Branch: Banani, Dhaka",
       currency_rates: { BDT: 1, USD: 0.0083, MYR: 0.037, SAR: 0.031 }
     },
-    airports: [],
-    flightDeals: [],
+    airports: cfg.DEFAULT_AIRPORTS || [],
+    flightDeals: cfg.DEFAULT_FLIGHTS || [],
     hotels: [],
     packages: [],
     visaServices: [],
-    promoBanners: []
+    promoBanners: cfg.DEFAULT_BANNERS || []
   };
 
   function formatMoney(amountBdt, overrideCurrency) {
@@ -84,7 +86,7 @@
       state.user?.app_metadata?.role === "admin" ||
       ["info@airconnectbd.com", "bdcocrush@gmail.com", "admin@airconnectltd.com"].includes((state.user?.email || "").toLowerCase())
     );
-    if (state.user) {
+    if (state.user && supabase) {
       const { data } = await supabase
         .from("profiles")
         .select("*")
@@ -103,6 +105,7 @@
   }
 
   async function loadInitialCatalog() {
+    if (!supabase) return;
     try {
       const [
         settingsRes,
@@ -136,13 +139,14 @@
     }
   }
 
-  // Initialize Auth Listener
-  supabase.auth.getSession().then(({ data: { session } }) => {
-    syncAuthUser(session);
-  });
-  supabase.auth.onAuthStateChange((_event, session) => {
-    syncAuthUser(session);
-  });
+  if (supabase) {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      syncAuthUser(session);
+    });
+    supabase.auth.onAuthStateChange((_event, session) => {
+      syncAuthUser(session);
+    });
+  }
 
   window.AC = {
     supabase,
