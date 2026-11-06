@@ -150,49 +150,53 @@
           </div>
         </div>
 
-        <form id="ota-flight-form" class="search-grid-flight">
-          <div class="field-box">
-            <label>From (Origin)</label>
-            <select id="fl-from">${airportOptions("from")}</select>
-            <small id="fl-from-sub">${escapeHtml(getAirportDisplay(f.from))}</small>
-          </div>
-
-          <button type="button" class="swap-btn" id="fl-swap-btn" title="Swap Airports">⇄</button>
-
-          <div class="field-box">
-            <label>To (Destination)</label>
-            <select id="fl-to">${airportOptions("to")}</select>
-            <small id="fl-to-sub">${escapeHtml(getAirportDisplay(f.to))}</small>
-          </div>
-
-          <div class="field-box">
-            <label>Journey Date</label>
-            <input type="date" id="fl-depart" value="${f.departDate}" required>
-            <small>${f.fareType} Fare</small>
-          </div>
-
-          <div class="field-box" style="${f.tripType === "One Way" ? "opacity:0.55" : ""}">
-            <label>Return Date</label>
-            <input type="date" id="fl-return" value="${f.returnDate}" ${f.tripType === "One Way" ? "disabled" : ""}>
-            <small>${f.tripType === "One Way" ? "Select Round Trip to add" : "Return Journey"}</small>
-          </div>
-
-          <div class="field-box">
-            <label>Travellers & Class</label>
-            <div style="display:flex;gap:6px;align-items:center">
-              <select id="fl-adults" title="Adults" style="width:48%">
-                ${[1, 2, 3, 4, 5, 6].map(n => `<option value="${n}" ${f.adults === n ? "selected" : ""}>${n} Adult${n > 1 ? "s" : ""}</option>`).join("")}
-              </select>
-              <select id="fl-cabin" title="Cabin Class" style="width:52%">
-                ${["Economy", "Premium Economy", "Business", "First"].map(c => `<option value="${c}" ${f.cabin === c ? "selected" : ""}>${c}</option>`).join("")}
-              </select>
+        <form id="ota-flight-form">
+          <div class="search-grid-flight">
+            <div class="field-box">
+              <label>From (Origin)</label>
+              <select id="fl-from">${airportOptions("from")}</select>
+              <small id="fl-from-sub">${escapeHtml(getAirportDisplay(f.from))}</small>
             </div>
-            <small>Children: <input type="number" id="fl-children" min="0" max="5" value="${f.children}" style="width:36px;display:inline;font-size:11px;padding:0"> | Infants: <input type="number" id="fl-infants" min="0" max="3" value="${f.infants}" style="width:36px;display:inline;font-size:11px;padding:0"></small>
+
+            <button type="button" class="swap-btn" id="fl-swap-btn" title="Swap Airports">⇄</button>
+
+            <div class="field-box">
+              <label>To (Destination)</label>
+              <select id="fl-to">${airportOptions("to")}</select>
+              <small id="fl-to-sub">${escapeHtml(getAirportDisplay(f.to))}</small>
+            </div>
+
+            <div class="field-box">
+              <label>Journey Date</label>
+              <input type="date" id="fl-depart" value="${f.departDate}" required>
+              <small>${f.fareType} Fare</small>
+            </div>
+
+            <div class="field-box" style="${f.tripType === "One Way" ? "opacity:0.55" : ""}">
+              <label>Return Date</label>
+              <input type="date" id="fl-return" value="${f.returnDate}" ${f.tripType === "One Way" ? "disabled" : ""}>
+              <small>${f.tripType === "One Way" ? "Select Round Trip to add" : "Return Journey"}</small>
+            </div>
+
+            <div class="field-box">
+              <label>Travellers & Class</label>
+              <div style="display:flex;gap:6px;align-items:center">
+                <select id="fl-adults" title="Adults" style="width:48%">
+                  ${[1, 2, 3, 4, 5, 6].map(n => `<option value="${n}" ${f.adults === n ? "selected" : ""}>${n} Adult${n > 1 ? "s" : ""}</option>`).join("")}
+                </select>
+                <select id="fl-cabin" title="Cabin Class" style="width:52%">
+                  ${["Economy", "Premium Economy", "Business", "First"].map(c => `<option value="${c}" ${f.cabin === c ? "selected" : ""}>${c}</option>`).join("")}
+                </select>
+              </div>
+              <small>Children: <input type="number" id="fl-children" min="0" max="5" value="${f.children}" style="width:36px;display:inline;font-size:11px;padding:0"> | Infants: <input type="number" id="fl-infants" min="0" max="3" value="${f.infants}" style="width:36px;display:inline;font-size:11px;padding:0"></small>
+            </div>
           </div>
 
-          <button type="submit" class="btn btn-primary search-submit-btn">
-            🔍 Search
-          </button>
+          <div class="search-submit-wrap">
+            <button type="submit" class="btn btn-primary search-submit-btn">
+              🔍 Search Flights
+            </button>
+          </div>
         </form>
       `;
 
@@ -245,37 +249,41 @@
       const h = searchState.hotel;
       const cities = ["All", ...new Set(window.AC.state.hotels.map(x => x.city))];
       container.innerHTML = `
-        <form id="ota-hotel-form" class="search-grid-generic">
-          <div class="field-box">
-            <label>Destination City / Hotel</label>
-            <select id="ht-city">
-              ${cities.map(c => `<option value="${escapeHtml(c)}" ${h.city === c ? "selected" : ""}>${c === "All" ? "All Destinations (Makkah, Cox's Bazar, KL, Dubai...)" : escapeHtml(c)}</option>`).join("")}
-            </select>
-            <small>Verified 3★ to 5★ Partner Properties</small>
-          </div>
-          <div class="field-box">
-            <label>Check-In Date</label>
-            <input type="date" id="ht-in" value="${h.checkIn}" required>
-            <small>2:00 PM Check-In</small>
-          </div>
-          <div class="field-box">
-            <label>Check-Out Date</label>
-            <input type="date" id="ht-out" value="${h.checkOut}" required>
-            <small>12:00 PM Check-Out</small>
-          </div>
-          <div class="field-box">
-            <label>Rooms & Guests</label>
-            <div style="display:flex;gap:8px">
-              <select id="ht-rooms">
-                ${[1, 2, 3, 4].map(n => `<option value="${n}" ${h.rooms === n ? "selected" : ""}>${n} Room${n > 1 ? "s" : ""}</option>`).join("")}
+        <form id="ota-hotel-form">
+          <div class="search-grid-generic">
+            <div class="field-box">
+              <label>Destination City / Hotel</label>
+              <select id="ht-city">
+                ${cities.map(c => `<option value="${escapeHtml(c)}" ${h.city === c ? "selected" : ""}>${c === "All" ? "All Destinations (Makkah, Cox's Bazar, KL, Dubai...)" : escapeHtml(c)}</option>`).join("")}
               </select>
-              <select id="ht-guests">
-                ${[1, 2, 3, 4, 5, 6].map(n => `<option value="${n}" ${h.guests === n ? "selected" : ""}>${n} Guest${n > 1 ? "s" : ""}</option>`).join("")}
-              </select>
+              <small>Verified 3★ to 5★ Partner Properties</small>
             </div>
-            <small>Instant Room Confirmation</small>
+            <div class="field-box">
+              <label>Check-In Date</label>
+              <input type="date" id="ht-in" value="${h.checkIn}" required>
+              <small>2:00 PM Check-In</small>
+            </div>
+            <div class="field-box">
+              <label>Check-Out Date</label>
+              <input type="date" id="ht-out" value="${h.checkOut}" required>
+              <small>12:00 PM Check-Out</small>
+            </div>
+            <div class="field-box">
+              <label>Rooms & Guests</label>
+              <div style="display:flex;gap:8px">
+                <select id="ht-rooms">
+                  ${[1, 2, 3, 4].map(n => `<option value="${n}" ${h.rooms === n ? "selected" : ""}>${n} Room${n > 1 ? "s" : ""}</option>`).join("")}
+                </select>
+                <select id="ht-guests">
+                  ${[1, 2, 3, 4, 5, 6].map(n => `<option value="${n}" ${h.guests === n ? "selected" : ""}>${n} Guest${n > 1 ? "s" : ""}</option>`).join("")}
+                </select>
+              </div>
+              <small>Instant Room Confirmation</small>
+            </div>
           </div>
-          <button type="submit" class="btn btn-primary search-submit-btn">🔍 Search Hotels</button>
+          <div class="search-submit-wrap">
+            <button type="submit" class="btn btn-primary search-submit-btn">🔍 Search Hotels</button>
+          </div>
         </form>
       `;
       document.getElementById("ota-hotel-form")?.addEventListener("submit", e => {
@@ -293,34 +301,38 @@
     if (tab === "tour") {
       const t = searchState.tour;
       container.innerHTML = `
-        <form id="ota-tour-form" class="search-grid-generic">
-          <div class="field-box">
-            <label>Holiday Type</label>
-            <select id="tr-cat">
-              <option value="ALL" ${t.category === "ALL" ? "selected" : ""}>All Holidays (Inbound & Outbound)</option>
-              <option value="INBOUND_TOUR" ${t.category === "INBOUND_TOUR" ? "selected" : ""}>Explore Bangladesh (Inbound Tours)</option>
-              <option value="OUTBOUND_TOUR" ${t.category === "OUTBOUND_TOUR" ? "selected" : ""}>World Holidays (Outbound Tours)</option>
-            </select>
-            <small>Guided Group & Custom Family Packages</small>
+        <form id="ota-tour-form">
+          <div class="search-grid-generic">
+            <div class="field-box">
+              <label>Holiday Type</label>
+              <select id="tr-cat">
+                <option value="ALL" ${t.category === "ALL" ? "selected" : ""}>All Holidays (Inbound & Outbound)</option>
+                <option value="INBOUND_TOUR" ${t.category === "INBOUND_TOUR" ? "selected" : ""}>Explore Bangladesh (Inbound Tours)</option>
+                <option value="OUTBOUND_TOUR" ${t.category === "OUTBOUND_TOUR" ? "selected" : ""}>World Holidays (Outbound Tours)</option>
+              </select>
+              <small>Guided Group & Custom Family Packages</small>
+            </div>
+            <div class="field-box">
+              <label>Destination Search</label>
+              <input type="text" id="tr-dest" placeholder="e.g. Cox's Bazar, Malaysia, Dubai, Sundarbans" value="${escapeHtml(t.destination)}">
+              <small>Search by city or country</small>
+            </div>
+            <div class="field-box">
+              <label>Preferred Travel Date</label>
+              <input type="date" id="tr-date" value="${t.travelDate}">
+              <small>Flexible departures available</small>
+            </div>
+            <div class="field-box">
+              <label>Travellers</label>
+              <select id="tr-adults">
+                ${[1, 2, 3, 4, 5, 6, 8, 10].map(n => `<option value="${n}" ${t.adults === n ? "selected" : ""}>${n} Traveller${n > 1 ? "s" : ""}</option>`).join("")}
+              </select>
+              <small>Group discounts for 4+ travellers</small>
+            </div>
           </div>
-          <div class="field-box">
-            <label>Destination Search</label>
-            <input type="text" id="tr-dest" placeholder="e.g. Cox's Bazar, Malaysia, Dubai, Sundarbans" value="${escapeHtml(t.destination)}">
-            <small>Search by city or country</small>
+          <div class="search-submit-wrap">
+            <button type="submit" class="btn btn-primary search-submit-btn">🔍 Find Holidays</button>
           </div>
-          <div class="field-box">
-            <label>Preferred Travel Date</label>
-            <input type="date" id="tr-date" value="${t.travelDate}">
-            <small>Flexible departures available</small>
-          </div>
-          <div class="field-box">
-            <label>Travellers</label>
-            <select id="tr-adults">
-              ${[1, 2, 3, 4, 5, 6, 8, 10].map(n => `<option value="${n}" ${t.adults === n ? "selected" : ""}>${n} Traveller${n > 1 ? "s" : ""}</option>`).join("")}
-            </select>
-            <small>Group discounts for 4+ travellers</small>
-          </div>
-          <button type="submit" class="btn btn-primary search-submit-btn">🔍 Find Holidays</button>
         </form>
       `;
       document.getElementById("ota-tour-form")?.addEventListener("submit", e => {
@@ -337,40 +349,44 @@
     if (tab === "umrah") {
       const u = searchState.umrah;
       container.innerHTML = `
-        <form id="ota-umrah-form" class="search-grid-generic">
-          <div class="field-box">
-            <label>Pilgrimage Type</label>
-            <select id="um-cat">
-              <option value="ALL_SPIRITUAL">All Hajj & Umrah Packages</option>
-              <option value="UMRAH" ${u.category === "UMRAH" ? "selected" : ""}>Umrah Packages (10 - 14 Days)</option>
-              <option value="HAJJ" ${u.category === "HAJJ" ? "selected" : ""}>Hajj Packages (Shifting & Non-Shifting)</option>
-            </select>
-            <small>Includes Visa, Flights, Haram Hotels & Muallim</small>
+        <form id="ota-umrah-form">
+          <div class="search-grid-generic">
+            <div class="field-box">
+              <label>Pilgrimage Type</label>
+              <select id="um-cat">
+                <option value="ALL_SPIRITUAL">All Hajj & Umrah Packages</option>
+                <option value="UMRAH" ${u.category === "UMRAH" ? "selected" : ""}>Umrah Packages (10 - 14 Days)</option>
+                <option value="HAJJ" ${u.category === "HAJJ" ? "selected" : ""}>Hajj Packages (Shifting & Non-Shifting)</option>
+              </select>
+              <small>Includes Visa, Flights, Haram Hotels & Muallim</small>
+            </div>
+            <div class="field-box">
+              <label>Package Tier</label>
+              <select id="um-level">
+                <option value="All">All Tiers (Economy to 5★ VIP)</option>
+                <option value="Economy">Economy Shuttle / Walking</option>
+                <option value="Standard">Standard 3★ / 4★</option>
+                <option value="Premium">Premium 5★</option>
+                <option value="VIP">VIP 5★ Clock Tower Haram View</option>
+              </select>
+              <small>Makkah & Madinah Verified Hotels</small>
+            </div>
+            <div class="field-box">
+              <label>Departure Month</label>
+              <input type="month" id="um-month" value="${u.month}">
+              <small>Weekly direct Biman & Saudia groups</small>
+            </div>
+            <div class="field-box">
+              <label>Number of Pilgrims</label>
+              <select id="um-adults">
+                ${[1, 2, 3, 4, 5, 6, 8].map(n => `<option value="${n}" ${u.adults === n ? "selected" : ""}>${n} Pilgrim${n > 1 ? "s" : ""}</option>`).join("")}
+              </select>
+              <small>Twin / Quad sharing options</small>
+            </div>
           </div>
-          <div class="field-box">
-            <label>Package Tier</label>
-            <select id="um-level">
-              <option value="All">All Tiers (Economy to 5★ VIP)</option>
-              <option value="Economy">Economy Shuttle / Walking</option>
-              <option value="Standard">Standard 3★ / 4★</option>
-              <option value="Premium">Premium 5★</option>
-              <option value="VIP">VIP 5★ Clock Tower Haram View</option>
-            </select>
-            <small>Makkah & Madinah Verified Hotels</small>
+          <div class="search-submit-wrap">
+            <button type="submit" class="btn btn-primary search-submit-btn">🕋 Search Packages</button>
           </div>
-          <div class="field-box">
-            <label>Departure Month</label>
-            <input type="month" id="um-month" value="${u.month}">
-            <small>Weekly direct Biman & Saudia groups</small>
-          </div>
-          <div class="field-box">
-            <label>Number of Pilgrims</label>
-            <select id="um-adults">
-              ${[1, 2, 3, 4, 5, 6, 8].map(n => `<option value="${n}" ${u.adults === n ? "selected" : ""}>${n} Pilgrim${n > 1 ? "s" : ""}</option>`).join("")}
-            </select>
-            <small>Twin / Quad sharing options</small>
-          </div>
-          <button type="submit" class="btn btn-primary search-submit-btn">🕋 Search Packages</button>
         </form>
       `;
       document.getElementById("ota-umrah-form")?.addEventListener("submit", e => {
@@ -388,27 +404,31 @@
       const v = searchState.visa;
       const countries = ["All", ...new Set(window.AC.state.visaServices.map(x => x.country))];
       container.innerHTML = `
-        <form id="ota-visa-form" class="search-grid-generic">
-          <div class="field-box">
-            <label>Destination Country</label>
-            <select id="vs-country">
-              ${countries.map(c => `<option value="${escapeHtml(c)}" ${v.country === c ? "selected" : ""}>${c === "All" ? "All Countries (Malaysia, UAE, Saudi, Thailand, Schengen...)" : escapeHtml(c)}</option>`).join("")}
-            </select>
-            <small>e-Visa & Sticker Visa Processing</small>
+        <form id="ota-visa-form">
+          <div class="search-grid-generic">
+            <div class="field-box">
+              <label>Destination Country</label>
+              <select id="vs-country">
+                ${countries.map(c => `<option value="${escapeHtml(c)}" ${v.country === c ? "selected" : ""}>${c === "All" ? "All Countries (Malaysia, UAE, Saudi, Thailand, Schengen...)" : escapeHtml(c)}</option>`).join("")}
+              </select>
+              <small>e-Visa & Sticker Visa Processing</small>
+            </div>
+            <div class="field-box">
+              <label>Passport Nationality</label>
+              <input type="text" value="Bangladeshi (Regular Passport)" readonly>
+              <small>High approval rate document check</small>
+            </div>
+            <div class="field-box">
+              <label>Applicants</label>
+              <select id="vs-applicants">
+                ${[1, 2, 3, 4, 5].map(n => `<option value="${n}" ${v.applicants === n ? "selected" : ""}>${n} Applicant${n > 1 ? "s" : ""}</option>`).join("")}
+              </select>
+              <small>Includes Checklist & Cover Letter Support</small>
+            </div>
           </div>
-          <div class="field-box">
-            <label>Passport Nationality</label>
-            <input type="text" value="Bangladeshi (Regular Passport)" readonly>
-            <small>High approval rate document check</small>
+          <div class="search-submit-wrap">
+            <button type="submit" class="btn btn-primary search-submit-btn">🛂 Check Visa & Apply</button>
           </div>
-          <div class="field-box">
-            <label>Applicants</label>
-            <select id="vs-applicants">
-              ${[1, 2, 3, 4, 5].map(n => `<option value="${n}" ${v.applicants === n ? "selected" : ""}>${n} Applicant${n > 1 ? "s" : ""}</option>`).join("")}
-            </select>
-            <small>Includes Checklist & Cover Letter Support</small>
-          </div>
-          <button type="submit" class="btn btn-primary search-submit-btn">🛂 Check Visa & Apply</button>
         </form>
       `;
       document.getElementById("ota-visa-form")?.addEventListener("submit", e => {
