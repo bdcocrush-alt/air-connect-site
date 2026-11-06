@@ -24,9 +24,9 @@
     },
     airports: cfg.DEFAULT_AIRPORTS || [],
     flightDeals: cfg.DEFAULT_FLIGHTS || [],
-    hotels: [],
-    packages: [],
-    visaServices: [],
+    hotels: cfg.DEFAULT_HOTELS || [],
+    packages: cfg.DEFAULT_PACKAGES || [],
+    visaServices: cfg.DEFAULT_VISAS || [],
     promoBanners: cfg.DEFAULT_BANNERS || []
   };
 
