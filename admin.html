@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Dashboard — Air Connect Ltd Semi-OTA Management</title>
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .admin-shell {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: calc(100vh - 72px);
+    }
+    .admin-sidebar {
+      background: #111827;
+      color: #cbd5e1;
+      padding: 22px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .admin-nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 0;
+      background: transparent;
+      color: #cbd5e1;
+      font-weight: 600;
+      font-size: 14px;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .admin-nav-btn:hover,
+    .admin-nav-btn.active {
+      background: var(--brand-primary);
+      color: #fff;
+    }
+    .admin-main {
+      padding: 28px;
+      background: #f1f5f9;
+      overflow-x: auto;
+    }
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .kpi-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-sm);
+    }
+    .kpi-card small {
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+    .kpi-card strong {
+      display: block;
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--ink);
+      margin-top: 6px;
+    }
+    .admin-table-wrap {
+      background: #fff;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      overflow-x: auto;
+    }
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .admin-table th,
+    .admin-table td {
+      padding: 11px 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: middle;
+    }
+    .admin-table th {
+      background: #f8fafc;
+      font-weight: 800;
+      color: var(--ink);
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+    @media (max-width: 900px) {
+      .admin-shell {
+        grid-template-columns: 1fr;
+      }
+      .admin-sidebar {
+        flex-direction: row;
+        overflow-x: auto;
+      }
+      .admin-nav-btn {
+        white-space: nowrap;
+        width: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="ota-header">
+    <div class="container ota-header-inner">
+      <a href="index.html" class="brand-logo">
+        <img src="assets/logo.jpg" alt="Air Connect Ltd">
+        <div class="brand-logo-text">
+          <strong>Air Connect — Admin Control Panel</strong>
+          <small>Manage Bookings, E-Tickets, Flights, Hotels, Umrah &amp; Settings</small>
+        </div>
+      </a>
+      <div style="display:flex;align-items:center;gap:10px">
+        <a href="index.html" class="btn btn-outline btn-sm">🌐 View Live Website</a>
+        <button type="button" id="admin-logout-btn" class="btn btn-outline btn-sm" hidden onclick="window.ACAdmin.logoutAdmin()">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Admin Login Gate -->
+  <div id="admin-login-gate" class="container" style="max-width:460px;padding:64px 20px">
+    <div class="checkout-box" style="text-align:center">
+      <img src="assets/logo.jpg" alt="Logo" style="width:56px;height:56px;border-radius:12px;margin-bottom:10px">
+      <h2>Admin Portal Sign In</h2>
+      <p style="font-size:13px;color:var(--muted);margin:6px 0 20px">Sign in with your authorized Air Connect Ltd administrator account.</p>
+      <form id="admin-login-form" style="text-align:left">
+        <div class="form-field">
+          <label>Admin Email *</label>
+          <input type="email" id="adm-email" value="info@airconnectbd.com" required>
+        </div>
+        <div class="form-field">
+          <label>Password *</label>
+          <input type="password" id="adm-pass" placeholder="Enter Admin Password" required>
+        </div>
+        <button type="submit" id="adm-login-btn" class="btn btn-primary" style="width:100%;margin-top:8px">Sign In to Dashboard</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Authenticated Admin Shell -->
+  <div id="admin-app-shell" class="admin-shell" hidden>
+    <aside class="admin-sidebar">
+      <button type="button" class="admin-nav-btn active" data-adm-tab="bookings" onclick="window.ACAdmin.switchTab('bookings')">
+        📊 Bookings &amp; Ticketing
+      </button>
+      <button type="button" class="admin-nav-btn" data-adm-tab="requests" onclick="window.ACAdmin.switchTab('requests')">
+        🔄 Refund &amp; Reissue
+      </button>
+      <button type="button" class="admin-nav-btn" data-adm-tab="flights" onclick="window.ACAdmin.switchTab('flights')">
+        ✈ Flight Deals &amp; Routes
+      </button>
+      <button type="button" class="admin-nav-btn" data-adm-tab="packages" onclick="window.ACAdmin.switchTab('packages')">
+        🕋 Umrah, Hajj &amp; Tours
+      </button>
+      <button type="button" class="admin-nav-btn" data-adm-tab="hotels" onclick="window.ACAdmin.switchTab('hotels')">
+        🏨 Hotels Catalog
+      </button>
+      <button type="button" class="admin-nav-btn" data-adm-tab="visas" onclick="window.ACAdmin.switchTab('visas')">
+        🛂 Visas &amp; Banners
+      </button>
+      <button type="button" class="admin-nav-btn" data-adm-tab="settings" onclick="window.ACAdmin.switchTab('settings')">
+        ⚙ Site &amp; Payment Settings
+      </button>
+    </aside>
+
+    <main class="admin-main" id="admin-main-content"></main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/search-and-results.js"></script>
+  <script src="js/booking-checkout.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

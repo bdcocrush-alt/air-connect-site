@@ -1,172 +1,394 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Air Connect Ltd – Flights, Tours, Hajj &amp; Umrah</title>
-<meta name="description" content="Air Connect Ltd is a travel agency in Bangladesh for air tickets, hotels, inbound and outbound tours, and Hajj and Umrah packages. Call 01322-937800.">
-<link rel="canonical" href="https://airconnectltd.com/">
-<link rel="icon" type="image/png" href="assets/favicon.png">
-<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-<meta name="theme-color" content="#2b2528">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Air Connect Ltd">
-<meta property="og:title" content="Air Connect Ltd – Travel, Explore, Experience">
-<meta property="og:description" content="Air tickets, hotels, inbound and outbound tours, and Hajj and Umrah packages.">
-<meta property="og:url" content="https://airconnectltd.com/">
-<meta property="og:image" content="https://airconnectltd.com/assets/logo.jpg">
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-:root{--ink:#2b2528;--red:#c00000;--red2:#8f0000;--sky:#fdeeee;--bg:#fff;--text:#1d1a1b;--muted:#665b5e;--card:#faf6f6;--line:#eadcdc;--soft:#ff9d94;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171214;--text:#f1e9ea;--muted:#b9a8ab;--card:#231a1d;--line:#3a2d31;--sky:#3a1a1c;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#171214;--text:#f1e9ea;--muted:#b9a8ab;--card:#231a1d;--line:#3a2d31;--sky:#3a1a1c;color-scheme:dark}
-html{scroll-behavior:smooth;scroll-padding-top:env(safe-area-inset-top,0px)}
-*,*::before,*::after{box-sizing:inherit}
-body{margin:0;background:var(--bg);color:var(--text);font:400 16px/1.6 "DM Sans",system-ui,sans-serif}
-h1,h2,h3{font-family:"Bricolage Grotesque","DM Sans",sans-serif;line-height:1.15;margin:0}
-a{color:inherit;text-decoration:none}
-:focus-visible{outline:3px solid var(--soft);outline-offset:2px}
-.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
-header{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--ink);color:#fff}
-header .wrap{display:flex;align-items:center;justify-content:space-between;height:66px}
-.logo{display:flex;align-items:center;gap:10px;font:800 19px "Bricolage Grotesque",sans-serif}
-.logo img{width:44px;height:44px;border-radius:10px;display:block}
-.logo small{font:500 11px "DM Sans",sans-serif;color:#cdbfc2;display:block;line-height:1.2}
-nav{display:flex;gap:22px;align-items:center;font-size:15px}
-nav a:hover{color:var(--soft)}
-.btn{display:inline-block;border:0;cursor:pointer;font:700 15px "DM Sans",sans-serif;padding:12px 24px;border-radius:10px;background:var(--red);color:#fff}
-.btn.light{background:#fff;color:var(--red2)}
-nav .btn{background:var(--soft);color:#2b0000;border-radius:999px;padding:10px 20px}
-.hero{background:linear-gradient(135deg,#2b2528 0%,#5a1216 60%,#8f0000 100%);color:#fff;text-align:center;padding:56px 0 110px;position:relative;overflow:hidden}
-.hero::before,.hero::after{content:"";position:absolute;border-radius:50%;border:56px solid rgba(255,255,255,.07)}
-.hero::before{width:480px;height:480px;left:-160px;bottom:-260px}
-.hero::after{width:360px;height:360px;right:-100px;top:-170px}
-.hero .wrap{position:relative;z-index:1}
-.hero h1{font-size:clamp(28px,5vw,46px);font-weight:800;letter-spacing:-1px}
-.hero p{margin:10px 0 0;color:#e8d6d8}
-.tabs{display:flex;gap:4px;justify-content:center;margin-top:28px;overflow-x:auto;padding:0 4px 0;scrollbar-width:none}
-.tabs::-webkit-scrollbar{display:none}
-.tabs button{flex:none;display:flex;align-items:center;gap:8px;border:0;background:none;color:#f0e0e2;font:500 15px "DM Sans",sans-serif;padding:12px 16px;cursor:pointer;border-bottom:3px solid transparent}
-.tabs button svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.tabs button[aria-selected="true"]{color:#fff;font-weight:700;border-color:var(--soft)}
-.search{position:relative;z-index:2;max-width:1000px;margin:-70px auto 0;background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 18px 50px rgba(43,37,40,.25)}
-.radios{display:flex;gap:18px;margin-bottom:14px;font-size:14px}
-.radios label{display:flex;gap:6px;align-items:center;margin:0;color:var(--text);font-size:14px;cursor:pointer}
-.radios input{width:auto;accent-color:var(--red)}
-.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;align-items:end}
-label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
-input,select{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);font:400 16px "DM Sans",sans-serif}
-.result{margin-top:14px;padding:12px 14px;border-radius:10px;background:var(--sky);display:none}
-section{padding:56px 0}
-.sh{font-size:clamp(24px,3.4vw,34px);font-weight:800;letter-spacing:-.6px}
-.sub{color:var(--muted);margin:8px 0 0}
-.banners{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:-6px}
-.bn{min-height:180px;border-radius:16px;padding:26px;color:#fff;display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden}
-.bn::after{content:"";position:absolute;right:-50px;top:-50px;width:200px;height:200px;border-radius:50%;border:34px solid rgba(255,255,255,.14)}
-.bn h3{font-size:28px;font-weight:800;position:relative;z-index:1}
-.bn p{margin:6px 0 0;color:#f6e6e8;position:relative;z-index:1}
-.b1{background:linear-gradient(120deg,#1f1a1c,#6b1519)}
-.b2{background:linear-gradient(120deg,#8f0000,#d4382c)}
-.promo{background:linear-gradient(100deg,#c00000 0%,#8f0000 60%,#2b2528 100%);color:#fff;border-radius:16px;padding:40px 36px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
-.promo h2{font-size:clamp(24px,3.4vw,34px);font-weight:800}
-.promo p{margin:8px 0 18px;max-width:46ch;color:#f6e6e8}
-.svc{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-top:26px}
-.svc div{text-align:center;padding:18px 10px;border-radius:14px;background:var(--card);border:1px solid var(--line)}
-.ic{width:46px;height:46px;border-radius:50%;background:var(--red);display:grid;place-items:center;margin:0 auto 10px}
-.ic svg{width:22px;height:22px;stroke:#fff;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.svc b{display:block}
-.svc span{font-size:13px;color:var(--muted)}
-.air{background:var(--sky);border-radius:16px;padding:28px;text-align:center}
-.air h2{font-size:24px;margin-bottom:18px}
-.chips{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px}
-.chips span{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px 8px;font-weight:700;font-size:14px}
-.contact{background:var(--ink);color:#fff;border-radius:16px;padding:40px 36px;display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
-.contact h2{font-size:clamp(24px,3.4vw,32px);font-weight:800;max-width:16ch}
-.contact p{margin:8px 0 0;color:#d9c9cc}
-.cbtns{display:flex;gap:12px;flex-wrap:wrap}
-footer{padding:30px 0;color:var(--muted);font-size:14px;border-top:1px solid var(--line)}
-footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
-@media(max-width:700px){nav a:not(.btn){display:none}.banners{grid-template-columns:1fr}.hero{padding-top:40px}.tabs{justify-content:flex-start}}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Air Connect Ltd — Flights, Hotels, Holidays, Hajj &amp; Umrah | One Platform for All Travel Solutions</title>
+  <meta name="description" content="Air Connect Ltd is Bangladesh's trusted Semi-OTA platform for domestic & international air tickets, hotels, inbound & outbound holidays, Hajj & Umrah packages, and global visa services. Call 01322-937800.">
+  <link rel="canonical" href="https://airconnectltd.com/">
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <meta name="theme-color" content="#c00000">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Air Connect Ltd">
+  <meta property="og:title" content="Air Connect Ltd — Your One Platform for All Travel Solutions">
+  <meta property="og:description" content="Search and book flights, hotels, holidays, Hajj & Umrah packages, and visas with instant hold or easy payment.">
+  <meta property="og:url" content="https://airconnectltd.com/">
+  <meta property="og:image" content="https://airconnectltd.com/assets/logo.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-<header><div class="wrap">
-  <a class="logo" href="#"><img src="assets/logo.jpg" alt="Air Connect logo"><span>Air Connect Ltd<small>Travel ◆ Explore ◆ Experience</small></span></a>
-  <nav><a href="#services">Services</a><a href="#airlines">Airlines</a><a href="#contact">Contact</a><a class="btn" href="#contact">Become an agent</a></nav>
-</div></header>
 
-<main>
-<div class="hero"><div class="wrap">
-  <h1 id="ht"></h1>
-  <p id="hp"></p>
-  <div class="tabs" id="tabs" role="tablist"></div>
-</div></div>
+  <!-- Top Sticky OTA Navigation Header (mynztrip style) -->
+  <header class="ota-header">
+    <div class="container ota-header-inner">
+      <a href="#" class="brand-logo" onclick="window.ACSearch.switchSearchTab('flight')">
+        <img src="assets/logo.jpg" alt="Air Connect Ltd Logo">
+        <div class="brand-logo-text">
+          <strong id="hdr-brand-name">Air Connect Ltd</strong>
+          <small>Travel • Explore • Experience</small>
+        </div>
+      </a>
 
-<div class="wrap"><div class="search" role="search">
-  <div class="radios" id="rad" hidden><label><input type="radio" name="w" checked>One way</label><label><input type="radio" name="w">Round trip</label></div>
-  <form id="f" class="fields"></form>
-  <div class="result" id="r" role="status"></div>
-</div></div>
+      <nav class="header-nav" aria-label="Primary Services">
+        <button type="button" class="header-nav-btn active" data-header-tab="flight" onclick="window.ACSearch.switchSearchTab('flight')">
+          <svg viewBox="0 0 24 24"><path d="M2 16l20-8-6 14-4-6-6-2z"/></svg>
+          Flights
+        </button>
+        <button type="button" class="header-nav-btn" data-header-tab="hotel" onclick="window.ACSearch.switchSearchTab('hotel')">
+          <svg viewBox="0 0 24 24"><path d="M3 20V8l9-5 9 5v12M9 20v-6h6v6"/></svg>
+          Hotels
+        </button>
+        <button type="button" class="header-nav-btn" data-header-tab="tour" onclick="window.ACSearch.switchSearchTab('tour')">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>
+          Holidays
+        </button>
+        <button type="button" class="header-nav-btn" data-header-tab="umrah" onclick="window.ACSearch.switchSearchTab('umrah')">
+          <svg viewBox="0 0 24 24"><path d="M12 3l7 4v5c0 4-3 7-7 9-4-2-7-5-7-9V7z"/></svg>
+          Hajj &amp; Umrah
+        </button>
+        <button type="button" class="header-nav-btn" data-header-tab="visa" onclick="window.ACSearch.switchSearchTab('visa')">
+          <svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg>
+          Visa
+        </button>
+      </nav>
 
-<section style="padding-bottom:0"><div class="wrap banners">
-  <div class="bn b1"><h3>Hajj & Umrah packages</h3><p>Guided groups, visa support and hotels near the Haram.</p></div>
-  <div class="bn b2"><h3>Explore Bangladesh</h3><p>Cox’s Bazar, Sundarbans, Sylhet and more for visitors.</p></div>
-</div></section>
+      <div class="header-actions">
+        <select class="currency-select" data-currency-select aria-label="Select Currency" onchange="window.AC.setCurrency(this.value)">
+          <option value="BDT">🇧🇩 BDT (৳)</option>
+          <option value="USD">🇺🇸 USD ($)</option>
+          <option value="MYR">🇲🇾 MYR (RM)</option>
+          <option value="SAR">🇸🇦 SAR (﷼)</option>
+        </select>
+        <div id="header-auth-area" style="display:flex;align-items:center;gap:8px"></div>
+      </div>
+    </div>
+  </header>
 
-<section><div class="wrap"><div class="promo">
-  <div><h2>From plans to paradise, quickly.</h2><p>Tell us where your customers want to go. We find the fare, the hotel and the package.</p><a class="btn light" href="#contact">Start your journey</a></div>
-</div></div></section>
+  <main>
+    <!-- Hero & Multi-Service Search Engine -->
+    <div class="hero-outer">
+      <div class="hero-banner" id="hero-banner" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=1800&q=80')">
+        <div class="hero-content">
+          <h1 id="hero-title">From Plans to Paradise — Instantly</h1>
+          <p id="hero-subtitle">Search real-time fares, Student &amp; Umrah tickets, and book with instant hold or easy payment.</p>
+        </div>
 
-<section id="services" style="padding-top:0"><div class="wrap">
-  <h2 class="sh">Everything under one roof</h2>
-  <div class="svc">
-    <div><div class="ic"><svg viewBox="0 0 24 24"><path d="M2 16l20-8-6 14-4-6-6-2z"/></svg></div><b>Air tickets</b><span>Domestic and international</span></div>
-    <div><div class="ic"><svg viewBox="0 0 24 24"><path d="M3 20V8l9-5 9 5v12M9 20v-6h6v6"/></svg></div><b>Hotels</b><span>Home and abroad</span></div>
-    <div><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6-7-11a7 7 0 0114 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div><b>Inbound tours</b><span>Visitors to Bangladesh</span></div>
-    <div><div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg></div><b>Outbound tours</b><span>Trips abroad</span></div>
-    <div><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l7 4v5c0 4-3 7-7 9-4-2-7-5-7-9V7z"/></svg></div><b>Hajj & Umrah</b><span>Complete packages</span></div>
-    <div><div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg></div><b>Visa support</b><span>Documents and filing</span></div>
-  </div>
-</div></section>
+        <!-- Service Tabs Pill Bar -->
+        <div class="search-tabs-bar" role="tablist">
+          <button type="button" class="search-tab-btn active" data-search-tab="flight" onclick="window.ACSearch.switchSearchTab('flight')">
+            <svg viewBox="0 0 24 24"><path d="M2 16l20-8-6 14-4-6-6-2z"/></svg>
+            Flights
+          </button>
+          <button type="button" class="search-tab-btn" data-search-tab="hotel" onclick="window.ACSearch.switchSearchTab('hotel')">
+            <svg viewBox="0 0 24 24"><path d="M3 20V8l9-5 9 5v12M9 20v-6h6v6"/></svg>
+            Hotels
+          </button>
+          <button type="button" class="search-tab-btn" data-search-tab="tour" onclick="window.ACSearch.switchSearchTab('tour')">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>
+            Holidays &amp; Tours
+          </button>
+          <button type="button" class="search-tab-btn" data-search-tab="umrah" onclick="window.ACSearch.switchSearchTab('umrah')">
+            <svg viewBox="0 0 24 24"><path d="M12 3l7 4v5c0 4-3 7-7 9-4-2-7-5-7-9V7z"/></svg>
+            Hajj &amp; Umrah
+          </button>
+          <button type="button" class="search-tab-btn" data-search-tab="visa" onclick="window.ACSearch.switchSearchTab('visa')">
+            <svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg>
+            Visa Services
+          </button>
+        </div>
 
-<section id="airlines" style="padding-top:0"><div class="wrap"><div class="air">
-  <h2>Airlines we book</h2>
-  <div class="chips"><span>Biman Bangladesh</span><span>US-Bangla</span><span>Emirates</span><span>Saudia</span><span>Qatar Airways</span><span>Singapore Airlines</span></div>
-</div></div></section>
+        <!-- Floating White Search Card -->
+        <div class="search-card" id="search-box-body"></div>
+      </div>
+    </div>
 
-<section id="contact" style="padding-top:0"><div class="wrap"><div class="contact">
-  <div><h2>Open your agent account</h2><p>Registration is free. Call or email us and we will set you up.</p></div>
-  <div class="cbtns"><a class="btn light" href="tel:+8801322937800">Call 01322-937800</a><a class="btn" href="mailto:info@airconnectbd.com?subject=Agent%20registration">info@airconnectbd.com</a></div>
-</div></div></section>
-</main>
+    <!-- Dynamic Search Results Container (Appears on Search) -->
+    <section id="results-section" hidden></section>
 
-<footer><div class="wrap">
-  <span>© 2026 Air Connect Ltd. All rights reserved.</span>
-  <span><a href="mailto:info@airconnectbd.com">info@airconnectbd.com</a> · <a href="tel:+8801322937800">01322-937800</a></span>
-</div></footer>
+    <!-- Dynamic Book Now Checkout Container (Appears on Book Now) -->
+    <section id="checkout-section" hidden></section>
 
-<script>
-const I={flight:'<path d="M2 16l20-8-6 14-4-6-6-2z"/>',hotel:'<path d="M3 20V8l9-5 9 5v12M9 20v-6h6v6"/>',in:'<path d="M12 21s-7-6-7-11a7 7 0 0114 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',out:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>',hajj:'<path d="M12 3l7 4v5c0 4-3 7-7 9-4-2-7-5-7-9V7z"/>'};
-const T={
-flight:{n:"Flights",h:"Your journey starts here",p:"Search fares and book air tickets for your customers.",b:"Search",rad:1,f:[["From","t","Dhaka (DAC)"],["To","t","Dubai (DXB)"],["Journey date","date"],["Travellers","s",["1 Traveller","2 Travellers","3 Travellers","4+ Travellers"]]]},
-hotel:{n:"Hotels",h:"Find the right stay",p:"Hotels in Bangladesh and abroad at agent rates.",b:"Search",f:[["Destination","t","Cox’s Bazar"],["Check-in","date"],["Check-out","date"],["Guests","s",["1 Guest","2 Guests","3 Guests","4+ Guests"]]]},
-in:{n:"Inbound Tour",h:"Show visitors the best of Bangladesh",p:"Tour packages for travellers coming to Bangladesh.",b:"Get a quote",f:[["Visitors from","t","Malaysia"],["Destination","s",["Cox’s Bazar","Sundarbans","Sylhet","Saint Martin","Dhaka city tour"]],["Arrival date","date"],["Travellers","s",["1 Traveller","2 Travellers","3–5 Travellers","6+ Travellers"]]]},
-out:{n:"Outbound Tour",h:"Tours from Bangladesh to the world",p:"Complete trips abroad with flights, hotels and visas.",b:"Get a quote",f:[["From","t","Dhaka"],["Destination","s",["Malaysia","Thailand","Singapore","Dubai","Turkey","Maldives"]],["Travel date","date"],["Travellers","s",["1 Traveller","2 Travellers","3–5 Travellers","6+ Travellers"]]]},
-hajj:{n:"Hajj & Umrah",h:"Your Hajj & Umrah journey starts here",p:"Packages with visa, flights, hotels and a guide.",b:"Get a quote",f:[["Package","s",["Umrah","Hajj"]],["Package level","s",["Economy","Standard","Premium"]],["Departure month","month"],["Travellers","s",["1 Traveller","2 Travellers","3–5 Travellers","6+ Travellers"]]]}
-};
-const tabs=document.getElementById("tabs"),f=document.getElementById("f"),r=document.getElementById("r"),rad=document.getElementById("rad");let cur="flight";
-tabs.innerHTML=Object.keys(T).map(k=>`<button role="tab" data-k="${k}"><svg viewBox="0 0 24 24">${I[k]}</svg>${T[k].n}</button>`).join("");
-function draw(k){cur=k;const t=T[k];r.style.display="none";rad.hidden=!t.rad;
- document.getElementById("ht").textContent=t.h;document.getElementById("hp").textContent=t.p;
- f.innerHTML=t.f.map((x,i)=>`<div><label for="i${i}">${x[0]}</label>`+(x[1]=="s"?`<select id="i${i}">${x[2].map(o=>`<option>${o}</option>`).join("")}</select>`:`<input id="i${i}" type="${x[1]=="t"?"text":x[1]}" ${x[2]?`value="${x[2]}"`:""}>`)+"</div>").join("")+`<button class="btn" type="submit">${t.b}</button>`;
- tabs.querySelectorAll("button").forEach(b=>b.setAttribute("aria-selected",b.dataset.k==k))}
-tabs.onclick=e=>{const b=e.target.closest("button");if(b)draw(b.dataset.k)};
-f.onsubmit=e=>{e.preventDefault();const t=T[cur];
- if(cur=="flight"||cur=="hotel"){r.textContent="This is a demo search. Connect a supplier API to show live "+(cur=="flight"?"fares":"rooms")+" here.";r.style.display="block";return}
- const lines=t.f.map((x,i)=>x[0]+": "+document.getElementById("i"+i).value).join("%0D%0A");
- location.href="mailto:info@airconnectbd.com?subject="+encodeURIComponent(t.n+" enquiry")+"&body="+lines};
-draw("flight");
-</script>
+    <!-- 1. Popular Flight Routes & Promo Fares (mynztrip style) -->
+    <section class="ota-section" id="flights-promo-section">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>✈ Popular Flight Routes &amp; Special Fares</h2>
+            <p>Click any route to search live schedules, Student &amp; Umrah baggage allowances, and instant booking holds.</p>
+          </div>
+          <button type="button" class="btn btn-outline btn-sm" onclick="window.ACSearch.switchSearchTab('flight');window.ACSearch.executeFlightSearch()">
+            View All Flights →
+          </button>
+        </div>
+        <div class="promo-flights-scroll" id="home-flight-deals"></div>
+      </div>
+    </section>
+
+    <!-- 2. Special Offers & Exclusive Campaigns -->
+    <section class="ota-section">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>🔥 Special Offers &amp; Exclusive Deals</h2>
+            <p>Limited-time airline discounts, Umrah group departures, and luxury beach escapes.</p>
+          </div>
+        </div>
+        <div class="offers-grid" id="home-offers-grid"></div>
+      </div>
+    </section>
+
+    <!-- 3. Curated Packages, Hotels & Visas (Filterable Tabs) -->
+    <section class="ota-section" id="packages-section">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>🌟 Explore Packages, Hotels &amp; Visas</h2>
+            <p>Handpicked Hajj &amp; Umrah groups, Bangladesh Inbound tours, International holidays, and 5-star hotels.</p>
+          </div>
+          <div class="filter-pills" id="home-catalog-tabs">
+            <button type="button" class="filter-pill active" data-cat="ALL">All Featured</button>
+            <button type="button" class="filter-pill" data-cat="UMRAH_HAJJ">🕋 Hajj &amp; Umrah</button>
+            <button type="button" class="filter-pill" data-cat="OUTBOUND_TOUR">🌍 World Holidays</button>
+            <button type="button" class="filter-pill" data-cat="INBOUND_TOUR">🇧🇩 Explore Bangladesh</button>
+            <button type="button" class="filter-pill" data-cat="HOTEL">🏨 Top Hotels</button>
+            <button type="button" class="filter-pill" data-cat="VISA">🛂 Visa Services</button>
+          </div>
+        </div>
+        <div class="catalog-grid" id="home-catalog-grid"></div>
+      </div>
+    </section>
+
+    <!-- 4. Trending Destinations Grid (mynztrip style) -->
+    <section class="ota-section">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>📍 Trending Destinations</h2>
+            <p>Most booked destinations by Air Connect Ltd travellers this season.</p>
+          </div>
+        </div>
+        <div class="destinations-grid">
+          <div class="destination-card" onclick="window.ACSearch.switchSearchTab('umrah');window.ACSearch.executePackageSearch('UMRAH')">
+            <img src="https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=900&q=80" alt="Makkah & Madinah">
+            <div class="destination-overlay">
+              <h3>Makkah &amp; Madinah</h3>
+              <span>★★★★★ • Umrah &amp; Hajj Packages + Direct Flights</span>
+            </div>
+          </div>
+          <div class="destination-card" onclick="window.ACSearch.quickSelectFlightDeal('DAC','KUL','One Way','Regular')">
+            <img src="https://images.unsplash.com/photo-1596422846543-75c6fc197f07?auto=format&fit=crop&w=900&q=80" alt="Kuala Lumpur, Malaysia">
+            <div class="destination-overlay">
+              <h3>Kuala Lumpur, Malaysia</h3>
+              <span>★★★★★ • Flights, e-Visa, Hotels &amp; Genting Tours</span>
+            </div>
+          </div>
+          <div class="destination-card" onclick="window.ACSearch.quickSelectFlightDeal('DAC','CXB','One Way','Regular')">
+            <img src="assets/himchori-coxs-bazar.webp" alt="Cox's Bazar, Bangladesh">
+            <div class="destination-overlay">
+              <h3>Cox's Bazar, Bangladesh</h3>
+              <span>★★★★★ • Domestic Flights &amp; 5★ Beach Resorts</span>
+            </div>
+          </div>
+          <div class="destination-card" onclick="window.ACSearch.quickSelectFlightDeal('DAC','DXB','Round Trip','Regular')">
+            <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=900&q=80" alt="Dubai, UAE">
+            <div class="destination-overlay">
+              <h3>Dubai, UAE</h3>
+              <span>★★★★★ • UAE Tourist Visa, Flights &amp; Desert Safari</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. CTA Banner & 5-Card Statistics Strip (mynztrip style) -->
+    <section class="ota-section">
+      <div class="container">
+        <div class="cta-banner">
+          <div>
+            <h2>From Plans to Paradise — Instantly.</h2>
+            <p>Find flights, hotels, Umrah packages, and visa support in seconds — with instant booking holds, transparent fares, and 24/7 human assistance.</p>
+          </div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <button type="button" class="btn" style="background:#fff;color:var(--brand-primary)" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+              Start Your Journey ↑
+            </button>
+            <a id="cta-phone-btn" href="tel:+8801322937800" class="btn btn-outline" style="background:transparent;color:#fff;border-color:rgba(255,255,255,0.5)">
+              📞 Call 01322-937800
+            </a>
+          </div>
+        </div>
+
+        <div class="stats-strip">
+          <div class="stat-card">
+            <div class="stat-icon" style="background:#26a69a">✈</div>
+            <strong>900+</strong>
+            <span>Global Airlines</span>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:#ff9800">🌍</div>
+            <strong>150+</strong>
+            <span>Countries Covered</span>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:#9c27b0">🏨</div>
+            <strong>4M+</strong>
+            <span>Bookable Hotels</span>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:#0caf61">🕋</div>
+            <strong>100%</strong>
+            <span>Guided Hajj &amp; Umrah</span>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:#1976d2">🎧</div>
+            <strong>24/7</strong>
+            <span>Dedicated Support</span>
+          </div>
+        </div>
+
+        <!-- 6. Our Airline Partners -->
+        <div class="partners-box">
+          <h2>Our Airline Partners</h2>
+          <p style="color:var(--muted);margin-top:6px">Authorized ticketing &amp; special fares across top domestic and international carriers</p>
+          <div class="partners-grid">
+            <div class="partner-chip"><span class="airline-avatar" style="background:#006a4e;width:28px;height:28px;font-size:10px">BG</span> Biman Bangladesh</div>
+            <div class="partner-chip"><span class="airline-avatar" style="background:#004b87;width:28px;height:28px;font-size:10px">BS</span> US-Bangla Airlines</div>
+            <div class="partner-chip"><span class="airline-avatar" style="background:#006341;width:28px;height:28px;font-size:10px">SV</span> Saudia</div>
+            <div class="partner-chip"><span class="airline-avatar" style="background:#d71921;width:28px;height:28px;font-size:10px">EK</span> Emirates</div>
+            <div class="partner-chip"><span class="airline-avatar" style="background:#5c0632;width:28px;height:28px;font-size:10px">QR</span> Qatar Airways</div>
+            <div class="partner-chip"><span class="airline-avatar" style="background:#00205b;width:28px;height:28px;font-size:10px">MH</span> Malaysia Airlines</div>
+            <div class="partner-chip"><span class="airline-avatar" style="background:#1d2d5c;width:28px;height:28px;font-size:10px">SQ</span> Singapore Airlines</div>
+            <div class="partner-chip"><span class="airline-avatar" style="background:#e11d48;width:28px;height:28px;font-size:10px">AK</span> AirAsia</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Floating WhatsApp Live Support Button -->
+  <a id="floating-wa-link" href="https://wa.me/8801322937800?text=Hello%20Air%20Connect%20Ltd%2C%20I%20need%20assistance%20with%20a%20booking." target="_blank" rel="noopener" class="wa-float">
+    💬 WhatsApp Desk
+  </a>
+
+  <!-- Rich OTA Footer (mynztrip style) -->
+  <footer class="ota-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+            <img src="assets/logo.jpg" alt="Air Connect Ltd" style="width:44px;height:44px;border-radius:10px">
+            <div>
+              <strong style="color:#fff;font-size:19px;display:block">Air Connect Ltd</strong>
+              <small style="color:#94a3b8">Travel • Explore • Experience</small>
+            </div>
+          </div>
+          <p style="font-size:13px;line-height:1.65;color:#94a3b8;margin:0 0 14px">
+            Your trusted travel partner in Bangladesh for domestic &amp; international air tickets, global hotels, inbound &amp; outbound holiday tours, Hajj &amp; Umrah packages, and visa processing.
+          </p>
+          <div style="font-size:13px;color:#e2e8f0">
+            <div>📞 <strong id="ftr-phone">+880 1322-937800</strong></div>
+            <div>✉ <span id="ftr-email">info@airconnectbd.com</span></div>
+            <div>📍 <span id="ftr-address">House 14, Road 11, Banani, Dhaka-1213, Bangladesh</span></div>
+          </div>
+        </div>
+
+        <div>
+          <h4>Travel Services</h4>
+          <ul class="footer-links">
+            <li><a href="#" onclick="window.ACSearch.switchSearchTab('flight')">Air Tickets (Domestic &amp; Int'l)</a></li>
+            <li><a href="#" onclick="window.ACSearch.switchSearchTab('hotel')">Hotel Reservations</a></li>
+            <li><a href="#" onclick="window.ACSearch.switchSearchTab('umrah')">Hajj &amp; Umrah Packages</a></li>
+            <li><a href="#" onclick="window.ACSearch.switchSearchTab('tour')">Inbound Bangladesh Tours</a></li>
+            <li><a href="#" onclick="window.ACSearch.switchSearchTab('tour')">Outbound World Holidays</a></li>
+            <li><a href="#" onclick="window.ACSearch.switchSearchTab('visa')">Visa Assistance</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Company &amp; Policies</h4>
+          <ul class="footer-links">
+            <li><a href="javascript:void(0)" onclick="window.ACPortal.openInfoModal('about')">About Air Connect Ltd</a></li>
+            <li><a href="javascript:void(0)" onclick="window.ACPortal.openInfoModal('faq')">FAQ &amp; Help Center</a></li>
+            <li><a href="javascript:void(0)" onclick="window.ACPortal.openInfoModal('refund')">Refund &amp; Reissue Policy</a></li>
+            <li><a href="javascript:void(0)" onclick="window.ACPortal.openInfoModal('privacy')">Privacy &amp; Cookies</a></li>
+            <li><a href="javascript:void(0)" onclick="window.ACPortal.openInfoModal('terms')">Terms &amp; Conditions</a></li>
+            <li><a href="admin.html">Admin Management Portal</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Accepted Payments &amp; Support</h4>
+          <p style="font-size:13px;color:#94a3b8;margin-top:0">
+            Book with instant PNR hold or pay via bKash, Nagad, or Bank Transfer.
+          </p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
+            <span class="status-badge" style="background:#e11d48;color:#fff">bKash</span>
+            <span class="status-badge" style="background:#ea580c;color:#fff">Nagad</span>
+            <span class="status-badge" style="background:#2563eb;color:#fff">Bank Transfer</span>
+            <span class="status-badge" style="background:#0caf61;color:#fff">Book &amp; Hold</span>
+          </div>
+          <button type="button" class="btn btn-primary btn-sm" style="width:100%" onclick="window.ACPortal.openMyBookingsModal()">
+            🔍 Track Booking / Download E-Ticket
+          </button>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© 2026 Air Connect Ltd. All rights reserved.</span>
+        <span>Secured by Supabase &amp; SSL Encryption • Instant E-Ticketing &amp; PNR Hold</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Supabase SDK & Application Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/search-and-results.js"></script>
+  <script src="js/booking-checkout.js"></script>
+  <script src="js/customer-portal.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      window.ACPortal.renderHeaderAuthArea();
+      window.ACSearch.renderSearchBox();
+
+      // Bind Homepage Filter Pills
+      document.querySelectorAll("#home-catalog-tabs .filter-pill").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll("#home-catalog-tabs .filter-pill").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          window.ACSearch.renderHomepageCatalog(btn.getAttribute("data-cat"));
+        });
+      });
+
+      // Re-render on currency change
+      window.addEventListener("ac:currency-changed", () => {
+        const activeCat = document.querySelector("#home-catalog-tabs .filter-pill.active")?.getAttribute("data-cat") || "ALL";
+        window.ACSearch.renderHomepageCatalog(activeCat);
+        if (!document.getElementById("results-section").hidden && window.ACSearch.searchState.activeTab === "flight") {
+          window.ACSearch.executeFlightSearch();
+        }
+      });
+
+      // Load live catalog from Supabase
+      await window.AC.loadInitialCatalog();
+      const s = window.AC.state.settings;
+      if (s) {
+        document.getElementById("hdr-brand-name").textContent = s.brand_name || "Air Connect Ltd";
+        document.getElementById("ftr-phone").textContent = s.phone || "+880 1322-937800";
+        document.getElementById("ftr-email").textContent = s.email || "info@airconnectbd.com";
+        document.getElementById("ftr-address").textContent = s.address || "Dhaka, Bangladesh";
+        if (s.whatsapp) {
+          document.getElementById("floating-wa-link").href = `https://wa.me/${s.whatsapp.replace(/[^0-9]/g, "")}?text=Hello%20Air%20Connect%20Ltd`;
+        }
+      }
+      window.ACSearch.renderSearchBox();
+      window.ACSearch.renderHomepageCatalog("ALL");
+    });
+  </script>
 </body>
 </html>
