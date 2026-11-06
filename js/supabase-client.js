@@ -16,7 +16,7 @@
       phone: "+880 1322-937800",
       whatsapp: "8801322937800",
       email: "info@airconnectbd.com",
-      address: "House 14, Road 11, Banani, Dhaka-1213, Bangladesh",
+      address: "House 10, Road 2, Sector 17/D Uttara Dhaka",
       bkash_number: "01322-937800 (Merchant)",
       nagad_number: "01322-937800 (Merchant)",
       bank_details: "City Bank PLC | A/C Name: Air Connect Ltd | A/C No: 1402938475001 | Branch: Banani, Dhaka",
