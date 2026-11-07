@@ -725,6 +725,102 @@ button, input, select, textarea {
   color: #fff;
 }
 
+/* Grouped Hajj & Tour Packages Containers */
+.grouped-packages-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.package-group-panel {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.package-group-panel.hajj-panel {
+  border-top: 4px solid var(--brand-green);
+  background: linear-gradient(180deg, rgba(12, 175, 97, 0.03) 0%, #ffffff 120px);
+}
+
+.package-group-panel.tour-panel {
+  border-top: 4px solid var(--brand-primary);
+  background: linear-gradient(180deg, rgba(192, 0, 0, 0.025) 0%, #ffffff 120px);
+}
+
+.package-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding-bottom: 18px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.package-group-header h3 {
+  font-size: clamp(19px, 2.5vw, 24px);
+  font-weight: 800;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.package-group-header p {
+  margin: 4px 0 0;
+  font-size: 13.5px;
+  color: var(--muted);
+}
+
+.tour-subgroups-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.tour-subgroup-panel {
+  background: #f8fafc;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.tour-subgroup-panel.inbound-panel {
+  border-left: 4px solid #0f766e;
+}
+
+.tour-subgroup-panel.outbound-panel {
+  border-left: 4px solid var(--brand-accent);
+}
+
+.tour-subgroup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.tour-subgroup-header h4 {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tour-subgroup-header p {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
 /* Package & Hotel Cards Grid */
 .catalog-grid {
   display: grid;

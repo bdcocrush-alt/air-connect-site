@@ -23,6 +23,7 @@
       guests: 2,
       rooms: 1
     },
+    packagesGroup: "TOUR",
     tour: {
       category: "ALL",
       destination: "",
@@ -30,7 +31,7 @@
       adults: 2
     },
     umrah: {
-      category: "UMRAH",
+      category: "ALL_SPIRITUAL",
       level: "All",
       month: "2026-12",
       adults: 2
@@ -66,12 +67,39 @@
     return ap ? ap.city : code;
   }
 
-  function switchSearchTab(tab) {
-    if (!cfg.HERO_BANNERS[tab]) tab = "flight";
-    searchState.activeTab = tab;
+  function switchSearchTab(tab, subOption) {
+    let bannerKey = tab;
+    if (tab === "umrah" || tab === "hajj") {
+      searchState.activeTab = "packages";
+      searchState.packagesGroup = "HAJJ_UMRAH";
+      if (tab === "hajj") searchState.umrah.category = "HAJJ";
+      else if (subOption) searchState.umrah.category = subOption;
+      bannerKey = "umrah";
+    } else if (tab === "tour" || tab === "inbound" || tab === "outbound") {
+      searchState.activeTab = "packages";
+      searchState.packagesGroup = "TOUR";
+      if (tab === "inbound" || subOption === "INBOUND_TOUR") {
+        searchState.tour.category = "INBOUND_TOUR";
+      } else if (tab === "outbound" || subOption === "OUTBOUND_TOUR") {
+        searchState.tour.category = "OUTBOUND_TOUR";
+      } else if (subOption === "ALL") {
+        searchState.tour.category = "ALL";
+      }
+      bannerKey = "tour";
+    } else if (tab === "packages") {
+      searchState.activeTab = "packages";
+      if (subOption === "HAJJ_UMRAH" || subOption === "TOUR") {
+        searchState.packagesGroup = subOption;
+      }
+      bannerKey = searchState.packagesGroup === "HAJJ_UMRAH" ? "umrah" : "packages";
+    } else {
+      if (!cfg.HERO_BANNERS[tab]) tab = "flight";
+      searchState.activeTab = tab;
+      bannerKey = tab;
+    }
 
     // Update Hero Banner
-    const heroInfo = cfg.HERO_BANNERS[tab];
+    const heroInfo = cfg.HERO_BANNERS[bannerKey] || cfg.HERO_BANNERS.flight;
     const heroEl = document.getElementById("hero-banner");
     const titleEl = document.getElementById("hero-title");
     const subEl = document.getElementById("hero-subtitle");
@@ -80,11 +108,12 @@
     if (subEl && heroInfo) subEl.textContent = heroInfo.subtitle;
 
     // Update Active Buttons
+    const activeKey = searchState.activeTab;
     document.querySelectorAll("[data-search-tab]").forEach(btn => {
-      btn.classList.toggle("active", btn.getAttribute("data-search-tab") === tab);
+      btn.classList.toggle("active", btn.getAttribute("data-search-tab") === activeKey);
     });
     document.querySelectorAll("[data-header-tab]").forEach(btn => {
-      btn.classList.toggle("active", btn.getAttribute("data-header-tab") === tab);
+      btn.classList.toggle("active", btn.getAttribute("data-header-tab") === activeKey);
     });
 
     renderSearchBox();
@@ -298,23 +327,79 @@
       return;
     }
 
-    if (tab === "tour") {
+    if (tab === "packages" || tab === "tour" || tab === "umrah") {
+      const grp = searchState.packagesGroup || "TOUR";
       const t = searchState.tour;
+      const u = searchState.umrah;
+
       container.innerHTML = `
+        <div class="search-top-controls" style="flex-direction:column;gap:12px;margin-bottom:18px">
+          <div class="trip-type-group">
+            <span class="fare-tag-label">Select Section:</span>
+            <label class="pill-radio ${grp === "HAJJ_UMRAH" ? "active" : ""}">
+              <input type="radio" name="pkgGroup" value="HAJJ_UMRAH" ${grp === "HAJJ_UMRAH" ? "checked" : ""}>
+              🕋 Hajj &amp; Umrah Section
+            </label>
+            <label class="pill-radio ${grp === "TOUR" ? "active" : ""}">
+              <input type="radio" name="pkgGroup" value="TOUR" ${grp === "TOUR" ? "checked" : ""}>
+              🌍 Tour Packages Section
+            </label>
+          </div>
+
+          ${
+            grp === "TOUR"
+              ? `
+            <div class="fare-type-group">
+              <span class="fare-tag-label">Tour Offering:</span>
+              <label class="pill-radio ${t.category === "ALL" ? "active" : ""}">
+                <input type="radio" name="tourSubCat" value="ALL" ${t.category === "ALL" ? "checked" : ""}>
+                🌏 All Tour Packages
+              </label>
+              <label class="pill-radio ${t.category === "INBOUND_TOUR" ? "active" : ""}">
+                <input type="radio" name="tourSubCat" value="INBOUND_TOUR" ${t.category === "INBOUND_TOUR" ? "checked" : ""}>
+                🇧🇩 Inbound Tours (Bangladesh)
+              </label>
+              <label class="pill-radio ${t.category === "OUTBOUND_TOUR" ? "active" : ""}">
+                <input type="radio" name="tourSubCat" value="OUTBOUND_TOUR" ${t.category === "OUTBOUND_TOUR" ? "checked" : ""}>
+                ✈️ Outbound Tours (International)
+              </label>
+            </div>`
+              : `
+            <div class="fare-type-group">
+              <span class="fare-tag-label">Pilgrimage Type:</span>
+              <label class="pill-radio ${u.category === "ALL_SPIRITUAL" ? "active" : ""}">
+                <input type="radio" name="umrahSubCat" value="ALL_SPIRITUAL" ${u.category === "ALL_SPIRITUAL" ? "checked" : ""}>
+                🕋 All Hajj &amp; Umrah
+              </label>
+              <label class="pill-radio ${u.category === "UMRAH" ? "active" : ""}">
+                <input type="radio" name="umrahSubCat" value="UMRAH" ${u.category === "UMRAH" ? "checked" : ""}>
+                🕋 Umrah Packages
+              </label>
+              <label class="pill-radio ${u.category === "HAJJ" ? "active" : ""}">
+                <input type="radio" name="umrahSubCat" value="HAJJ" ${u.category === "HAJJ" ? "checked" : ""}>
+                🕋 Hajj Packages
+              </label>
+            </div>`
+          }
+        </div>
+
+        ${
+          grp === "TOUR"
+            ? `
         <form id="ota-tour-form">
           <div class="search-grid-generic">
             <div class="field-box">
-              <label>Holiday Type</label>
+              <label>Tour Category (Inbound / Outbound)</label>
               <select id="tr-cat">
-                <option value="ALL" ${t.category === "ALL" ? "selected" : ""}>All Holidays (Inbound & Outbound)</option>
-                <option value="INBOUND_TOUR" ${t.category === "INBOUND_TOUR" ? "selected" : ""}>Explore Bangladesh (Inbound Tours)</option>
-                <option value="OUTBOUND_TOUR" ${t.category === "OUTBOUND_TOUR" ? "selected" : ""}>World Holidays (Outbound Tours)</option>
+                <option value="ALL" ${t.category === "ALL" ? "selected" : ""}>All Tour Packages (Inbound &amp; Outbound)</option>
+                <option value="INBOUND_TOUR" ${t.category === "INBOUND_TOUR" ? "selected" : ""}>🇧🇩 Inbound Tours (Explore Bangladesh)</option>
+                <option value="OUTBOUND_TOUR" ${t.category === "OUTBOUND_TOUR" ? "selected" : ""}>✈️ Outbound Tours (World Holidays)</option>
               </select>
-              <small>Guided Group & Custom Family Packages</small>
+              <small>Domestic Bangladesh &amp; International Holidays</small>
             </div>
             <div class="field-box">
               <label>Destination Search</label>
-              <input type="text" id="tr-dest" placeholder="e.g. Cox's Bazar, Malaysia, Dubai, Sundarbans" value="${escapeHtml(t.destination)}">
+              <input type="text" id="tr-dest" placeholder="e.g. Cox's Bazar, Sundarbans, Malaysia, Maldives" value="${escapeHtml(t.destination)}">
               <small>Search by city or country</small>
             </div>
             <div class="field-box">
@@ -331,50 +416,38 @@
             </div>
           </div>
           <div class="search-submit-wrap">
-            <button type="submit" class="btn btn-primary search-submit-btn">🔍 Find Holidays</button>
+            <button type="submit" class="btn btn-primary search-submit-btn">
+              🔍 ${t.category === "INBOUND_TOUR" ? "Find Inbound Tours" : t.category === "OUTBOUND_TOUR" ? "Find Outbound Tours" : "Find Tour Packages"}
+            </button>
           </div>
-        </form>
-      `;
-      document.getElementById("ota-tour-form")?.addEventListener("submit", e => {
-        e.preventDefault();
-        searchState.tour.category = document.getElementById("tr-cat").value;
-        searchState.tour.destination = document.getElementById("tr-dest").value.trim();
-        searchState.tour.travelDate = document.getElementById("tr-date").value;
-        searchState.tour.adults = Number(document.getElementById("tr-adults").value || 2);
-        executePackageSearch("TOUR");
-      });
-      return;
-    }
-
-    if (tab === "umrah") {
-      const u = searchState.umrah;
-      container.innerHTML = `
+        </form>`
+            : `
         <form id="ota-umrah-form">
           <div class="search-grid-generic">
             <div class="field-box">
               <label>Pilgrimage Type</label>
               <select id="um-cat">
-                <option value="ALL_SPIRITUAL">All Hajj & Umrah Packages</option>
+                <option value="ALL_SPIRITUAL" ${u.category === "ALL_SPIRITUAL" ? "selected" : ""}>All Hajj &amp; Umrah Packages</option>
                 <option value="UMRAH" ${u.category === "UMRAH" ? "selected" : ""}>Umrah Packages (10 - 14 Days)</option>
-                <option value="HAJJ" ${u.category === "HAJJ" ? "selected" : ""}>Hajj Packages (Shifting & Non-Shifting)</option>
+                <option value="HAJJ" ${u.category === "HAJJ" ? "selected" : ""}>Hajj Packages (Shifting &amp; Non-Shifting)</option>
               </select>
-              <small>Includes Visa, Flights, Haram Hotels & Muallim</small>
+              <small>Includes Visa, Flights, Haram Hotels &amp; Muallim</small>
             </div>
             <div class="field-box">
               <label>Package Tier</label>
               <select id="um-level">
-                <option value="All">All Tiers (Economy to 5★ VIP)</option>
-                <option value="Economy">Economy Shuttle / Walking</option>
-                <option value="Standard">Standard 3★ / 4★</option>
-                <option value="Premium">Premium 5★</option>
-                <option value="VIP">VIP 5★ Clock Tower Haram View</option>
+                <option value="All" ${u.level === "All" ? "selected" : ""}>All Tiers (Economy to 5★ VIP)</option>
+                <option value="Economy" ${u.level === "Economy" ? "selected" : ""}>Economy Shuttle / Walking</option>
+                <option value="Standard" ${u.level === "Standard" ? "selected" : ""}>Standard 3★ / 4★</option>
+                <option value="Premium" ${u.level === "Premium" ? "selected" : ""}>Premium 5★</option>
+                <option value="VIP" ${u.level === "VIP" ? "selected" : ""}>VIP 5★ Clock Tower Haram View</option>
               </select>
-              <small>Makkah & Madinah Verified Hotels</small>
+              <small>Makkah &amp; Madinah Verified Hotels</small>
             </div>
             <div class="field-box">
               <label>Departure Month</label>
               <input type="month" id="um-month" value="${u.month}">
-              <small>Weekly direct Biman & Saudia groups</small>
+              <small>Weekly direct Biman &amp; Saudia groups</small>
             </div>
             <div class="field-box">
               <label>Number of Pilgrims</label>
@@ -385,10 +458,51 @@
             </div>
           </div>
           <div class="search-submit-wrap">
-            <button type="submit" class="btn btn-primary search-submit-btn">🕋 Search Packages</button>
+            <button type="submit" class="btn btn-primary search-submit-btn">🕋 Search Hajj &amp; Umrah</button>
           </div>
-        </form>
+        </form>`
+        }
       `;
+
+      container.querySelectorAll('input[name="pkgGroup"]').forEach(r => {
+        r.addEventListener("change", e => {
+          switchSearchTab("packages", e.target.value);
+        });
+      });
+
+      container.querySelectorAll('input[name="tourSubCat"]').forEach(r => {
+        r.addEventListener("change", e => {
+          searchState.tour.category = e.target.value;
+          renderSearchBox();
+        });
+      });
+
+      container.querySelectorAll('input[name="umrahSubCat"]').forEach(r => {
+        r.addEventListener("change", e => {
+          searchState.umrah.category = e.target.value;
+          renderSearchBox();
+        });
+      });
+
+      document.getElementById("tr-cat")?.addEventListener("change", e => {
+        searchState.tour.category = e.target.value;
+        renderSearchBox();
+      });
+
+      document.getElementById("um-cat")?.addEventListener("change", e => {
+        searchState.umrah.category = e.target.value;
+        renderSearchBox();
+      });
+
+      document.getElementById("ota-tour-form")?.addEventListener("submit", e => {
+        e.preventDefault();
+        searchState.tour.category = document.getElementById("tr-cat").value;
+        searchState.tour.destination = document.getElementById("tr-dest").value.trim();
+        searchState.tour.travelDate = document.getElementById("tr-date").value;
+        searchState.tour.adults = Number(document.getElementById("tr-adults").value || 2);
+        executePackageSearch("TOUR");
+      });
+
       document.getElementById("ota-umrah-form")?.addEventListener("submit", e => {
         e.preventDefault();
         searchState.umrah.category = document.getElementById("um-cat").value;
@@ -844,10 +958,10 @@
     const sec = document.getElementById("results-section");
     if (!sec) return;
     sec.hidden = false;
-    const { formatMoney, escapeHtml } = window.AC;
+    const { escapeHtml } = window.AC;
 
     let list = window.AC.state.packages;
-    let heading = "🌍 Holiday & Tour Packages";
+    let heading = "🌍 Tour Packages (Inbound & Outbound)";
 
     if (mode === "UMRAH") {
       const u = searchState.umrah;
@@ -859,37 +973,97 @@
       if (u.level !== "All") {
         list = list.filter(p => p.package_level === u.level);
       }
-    } else {
-      const t = searchState.tour;
-      list = list.filter(p => {
-        if (t.category === "ALL") return p.category === "INBOUND_TOUR" || p.category === "OUTBOUND_TOUR";
-        return p.category === t.category;
-      });
-      if (t.destination) {
-        const q = t.destination.toLowerCase();
-        list = list.filter(
-          p =>
-            p.title.toLowerCase().includes(q) ||
-            p.destination.toLowerCase().includes(q) ||
-            p.country.toLowerCase().includes(q)
-        );
-      }
+
+      sec.innerHTML = `
+        <div class="container">
+          <div class="section-head" style="margin-top:16px">
+            <div>
+              <h2>${heading} (${list.length} Available)</h2>
+              <p>Select any Hajj or Umrah package to inspect the itinerary or complete your booking online.</p>
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="document.getElementById('results-section').hidden=true">✕ Close Results</button>
+          </div>
+          <div class="catalog-grid" style="margin-bottom:36px">
+            ${list.map(pkg => renderPackageCardHtml(pkg)).join("")}
+          </div>
+        </div>
+      `;
+      sec.scrollIntoView({ behavior: "smooth" });
+      return;
     }
 
-    sec.innerHTML = `
-      <div class="container">
-        <div class="section-head" style="margin-top:16px">
-          <div>
-            <h2>${heading} (${list.length} Available)</h2>
-            <p>Select any package to inspect the day-by-day itinerary or complete your booking online.</p>
+    const t = searchState.tour;
+    list = list.filter(p => {
+      if (t.category === "ALL") return p.category === "INBOUND_TOUR" || p.category === "OUTBOUND_TOUR";
+      return p.category === t.category;
+    });
+    if (t.destination) {
+      const q = t.destination.toLowerCase();
+      list = list.filter(
+        p =>
+          p.title.toLowerCase().includes(q) ||
+          p.destination.toLowerCase().includes(q) ||
+          p.country.toLowerCase().includes(q)
+      );
+    }
+
+    if (t.category === "ALL") {
+      const inboundList = list.filter(p => p.category === "INBOUND_TOUR");
+      const outboundList = list.filter(p => p.category === "OUTBOUND_TOUR");
+      sec.innerHTML = `
+        <div class="container">
+          <div class="section-head" style="margin-top:16px">
+            <div>
+              <h2>🌍 Tour Packages — Separated into Inbound &amp; Outbound (${list.length} Available)</h2>
+              <p>Browse domestic Bangladesh Inbound Tours and International Outbound Holidays below.</p>
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="document.getElementById('results-section').hidden=true">✕ Close Results</button>
           </div>
-          <button class="btn btn-outline btn-sm" onclick="document.getElementById('results-section').hidden=true">✕ Close Results</button>
+
+          <div class="tour-subgroups-wrapper" style="margin-bottom:36px">
+            <div class="tour-subgroup-panel inbound-panel">
+              <div class="tour-subgroup-header">
+                <div>
+                  <h4>🇧🇩 Inbound Tours (Explore Bangladesh)</h4>
+                  <p>Domestic holiday packages in Cox's Bazar, Sundarbans, Sylhet &amp; Hill Tracts (${inboundList.length} Packages)</p>
+                </div>
+              </div>
+              <div class="catalog-grid">
+                ${inboundList.length ? inboundList.map(pkg => renderPackageCardHtml(pkg)).join("") : `<p style="color:var(--muted)">No matching Inbound Tours found.</p>`}
+              </div>
+            </div>
+
+            <div class="tour-subgroup-panel outbound-panel">
+              <div class="tour-subgroup-header">
+                <div>
+                  <h4>✈️ Outbound Tours (International Holidays)</h4>
+                  <p>Guided overseas holidays in Malaysia, Maldives, Dubai, Thailand &amp; beyond (${outboundList.length} Packages)</p>
+                </div>
+              </div>
+              <div class="catalog-grid">
+                ${outboundList.length ? outboundList.map(pkg => renderPackageCardHtml(pkg)).join("") : `<p style="color:var(--muted)">No matching Outbound Tours found.</p>`}
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="catalog-grid" style="margin-bottom:36px">
-          ${list.map(pkg => renderPackageCardHtml(pkg)).join("")}
+      `;
+    } else {
+      heading = t.category === "INBOUND_TOUR" ? "🇧🇩 Inbound Tours (Explore Bangladesh)" : "✈️ Outbound Tours (International Holidays)";
+      sec.innerHTML = `
+        <div class="container">
+          <div class="section-head" style="margin-top:16px">
+            <div>
+              <h2>${heading} (${list.length} Available)</h2>
+              <p>Select any package to inspect the day-by-day itinerary or complete your booking online.</p>
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="document.getElementById('results-section').hidden=true">✕ Close Results</button>
+          </div>
+          <div class="catalog-grid" style="margin-bottom:36px">
+            ${list.map(pkg => renderPackageCardHtml(pkg)).join("")}
+          </div>
         </div>
-      </div>
-    `;
+      `;
+    }
     sec.scrollIntoView({ behavior: "smooth" });
   }
 
@@ -1053,74 +1227,189 @@
         .join("");
     }
 
-    // 3. Filterable Popular Packages / Hotels / Visas Grid
+    // 3. Grouped Hajj & Umrah + Tour Packages (Separated into Inbound Tours & Outbound Tours)
     const catalogGrid = document.getElementById("home-catalog-grid");
     if (catalogGrid) {
-      if (activeFilter === "HOTEL") {
-        catalogGrid.innerHTML = state.hotels
-          .map(h => {
-            const price = Number(h.discount_price || h.price_per_night);
-            return `
-            <div class="catalog-card">
-              <div class="catalog-thumb">
-                <img src="${escapeHtml(h.image_url)}" alt="${escapeHtml(h.name)}">
-                <span class="catalog-tag">${"★".repeat(h.star_rating || 5)} Hotel</span>
-                <span class="catalog-rating">★ ${escapeHtml(h.rating_score || 4.8)}</span>
-              </div>
-              <div class="catalog-body">
-                <div class="catalog-meta">📍 ${escapeHtml(h.city)}, ${escapeHtml(h.country)}</div>
-                <h3>${escapeHtml(h.name)}</h3>
-                <p class="catalog-desc">${escapeHtml(h.description)}</p>
-                <div class="catalog-footer">
-                  <div class="price-block">
-                    <small>Per Night</small>
-                    <strong>${formatMoney(price)}</strong>
-                  </div>
-                  <div style="display:flex;gap:6px">
-                    <button class="btn btn-outline btn-sm" onclick="window.ACSearch.openHotelModal('${escapeHtml(h.slug)}')">Details</button>
-                    <button class="btn btn-primary btn-sm" onclick="window.ACSearch.bookHotelNow('${escapeHtml(h.slug)}', 2, 1, 2)">Book Now</button>
-                  </div>
-                </div>
-              </div>
-            </div>`;
-          })
-          .join("");
-      } else if (activeFilter === "VISA") {
-        catalogGrid.innerHTML = state.visaServices
-          .map(
-            v => `
-          <div class="catalog-card">
-            <div class="catalog-thumb">
-              <img src="${escapeHtml(v.image_url)}" alt="${escapeHtml(v.country)}">
-              <span class="catalog-tag">${escapeHtml(v.flag_emoji)} ${escapeHtml(v.visa_type)}</span>
-              <span class="catalog-rating">⏱ ${escapeHtml(v.processing_time)}</span>
+      const hajjUmrahList = state.packages.filter(p => p.category === "UMRAH" || p.category === "HAJJ");
+      const inboundList = state.packages.filter(p => p.category === "INBOUND_TOUR");
+      const outboundList = state.packages.filter(p => p.category === "OUTBOUND_TOUR");
+
+      const hajjPanelHtml = `
+        <div class="package-group-panel hajj-panel">
+          <div class="package-group-header">
+            <div>
+              <h3>🕋 Hajj &amp; Umrah Section</h3>
+              <p>Spiritually guided Hajj &amp; Umrah packages with direct flights, e-Visa, Haram-view hotels &amp; experienced Muallim guides.</p>
             </div>
-            <div class="catalog-body">
-              <div class="catalog-meta">Validity: ${escapeHtml(v.validity)} • Max Stay: ${escapeHtml(v.max_stay)}</div>
-              <h3>${escapeHtml(v.country)} Visa</h3>
-              <p class="catalog-desc">${escapeHtml(v.description)}</p>
-              <div class="catalog-footer">
-                <div class="price-block">
-                  <small>Processing Fee</small>
-                  <strong>${formatMoney(v.fee)}</strong>
-                </div>
-                <div style="display:flex;gap:6px">
-                  <button class="btn btn-outline btn-sm" onclick="window.ACSearch.openVisaModal('${escapeHtml(v.slug)}')">Checklist</button>
-                  <button class="btn btn-primary btn-sm" onclick="window.ACSearch.bookVisaNow('${escapeHtml(v.slug)}', 1)">Apply Now</button>
-                </div>
-              </div>
+            <button type="button" class="btn btn-outline btn-sm" onclick="window.ACSearch.switchSearchTab('umrah');window.scrollTo({top:0,behavior:'smooth'})">
+              Search Hajj &amp; Umrah →
+            </button>
+          </div>
+          <div class="catalog-grid">
+            ${hajjUmrahList.map(p => renderPackageCardHtml(p)).join("")}
+          </div>
+        </div>
+      `;
+
+      const inboundSubPanelHtml = `
+        <div class="tour-subgroup-panel inbound-panel">
+          <div class="tour-subgroup-header">
+            <div>
+              <h4>🇧🇩 Inbound Tours (Explore Bangladesh)</h4>
+              <p>Domestic Bangladesh tour packages — Cox's Bazar, Sundarbans, Sylhet &amp; Hill Tracts</p>
             </div>
-          </div>`
-          )
-          .join("");
-      } else {
-        const pkgs = state.packages.filter(p => {
-          if (activeFilter === "ALL") return true;
-          if (activeFilter === "UMRAH_HAJJ") return p.category === "UMRAH" || p.category === "HAJJ";
-          return p.category === activeFilter;
-        });
-        catalogGrid.innerHTML = pkgs.map(p => renderPackageCardHtml(p)).join("");
+            <button type="button" class="btn btn-outline btn-sm" onclick="window.ACSearch.switchSearchTab('inbound');window.scrollTo({top:0,behavior:'smooth'})">
+              Search Inbound Tours →
+            </button>
+          </div>
+          <div class="catalog-grid">
+            ${inboundList.map(p => renderPackageCardHtml(p)).join("")}
+          </div>
+        </div>
+      `;
+
+      const outboundSubPanelHtml = `
+        <div class="tour-subgroup-panel outbound-panel">
+          <div class="tour-subgroup-header">
+            <div>
+              <h4>✈️ Outbound Tours (International Holidays)</h4>
+              <p>All-inclusive overseas holiday packages — Malaysia, Maldives, Dubai, Thailand &amp; Singapore</p>
+            </div>
+            <button type="button" class="btn btn-outline btn-sm" onclick="window.ACSearch.switchSearchTab('outbound');window.scrollTo({top:0,behavior:'smooth'})">
+              Search Outbound Tours →
+            </button>
+          </div>
+          <div class="catalog-grid">
+            ${outboundList.map(p => renderPackageCardHtml(p)).join("")}
+          </div>
+        </div>
+      `;
+
+      const tourPanelHtml = `
+        <div class="package-group-panel tour-panel">
+          <div class="package-group-header">
+            <div>
+              <h3>🌍 Tour Packages Section</h3>
+              <p>Curated holiday packages separated into <strong>Inbound Tours (Bangladesh)</strong> and <strong>Outbound Tours (International)</strong>.</p>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button type="button" class="btn btn-outline btn-sm" onclick="document.querySelector('[data-cat=\\'INBOUND_TOUR\\']')?.click()">
+                🇧🇩 Inbound Tours (${inboundList.length})
+              </button>
+              <button type="button" class="btn btn-outline btn-sm" onclick="document.querySelector('[data-cat=\\'OUTBOUND_TOUR\\']')?.click()">
+                ✈️ Outbound Tours (${outboundList.length})
+              </button>
+            </div>
+          </div>
+          <div class="tour-subgroups-wrapper">
+            ${inboundSubPanelHtml}
+            ${outboundSubPanelHtml}
+          </div>
+        </div>
+      `;
+
+      if (activeFilter === "ALL") {
+        catalogGrid.className = "grouped-packages-wrapper";
+        catalogGrid.innerHTML = `${hajjPanelHtml}${tourPanelHtml}`;
+      } else if (activeFilter === "UMRAH_HAJJ") {
+        catalogGrid.className = "grouped-packages-wrapper";
+        catalogGrid.innerHTML = hajjPanelHtml;
+      } else if (activeFilter === "TOUR_ALL") {
+        catalogGrid.className = "grouped-packages-wrapper";
+        catalogGrid.innerHTML = tourPanelHtml;
+      } else if (activeFilter === "INBOUND_TOUR") {
+        catalogGrid.className = "grouped-packages-wrapper";
+        catalogGrid.innerHTML = `
+          <div class="package-group-panel tour-panel">
+            ${inboundSubPanelHtml}
+          </div>
+        `;
+      } else if (activeFilter === "OUTBOUND_TOUR") {
+        catalogGrid.className = "grouped-packages-wrapper";
+        catalogGrid.innerHTML = `
+          <div class="package-group-panel tour-panel">
+            ${outboundSubPanelHtml}
+          </div>
+        `;
       }
+    }
+
+    // 4. Hotels & Visa Services Grid (if present on homepage)
+    const hvGrid = document.getElementById("home-hotels-visas-grid");
+    if (hvGrid) {
+      const hvFilter = document.querySelector("#home-hv-tabs .filter-pill.active")?.getAttribute("data-hv") || "ALL_HV";
+      renderHotelsVisasSection(hvFilter);
+    }
+  }
+
+  function renderHotelsVisasSection(hvFilter = "ALL_HV") {
+    const hvGrid = document.getElementById("home-hotels-visas-grid");
+    if (!hvGrid) return;
+    const { formatMoney, escapeHtml, state } = window.AC;
+
+    const hotelsHtml = state.hotels
+      .map(h => {
+        const price = Number(h.discount_price || h.price_per_night);
+        return `
+        <div class="catalog-card">
+          <div class="catalog-thumb">
+            <img src="${escapeHtml(h.image_url)}" alt="${escapeHtml(h.name)}">
+            <span class="catalog-tag">${"★".repeat(h.star_rating || 5)} Hotel</span>
+            <span class="catalog-rating">★ ${escapeHtml(h.rating_score || 4.8)}</span>
+          </div>
+          <div class="catalog-body">
+            <div class="catalog-meta">📍 ${escapeHtml(h.city)}, ${escapeHtml(h.country)}</div>
+            <h3>${escapeHtml(h.name)}</h3>
+            <p class="catalog-desc">${escapeHtml(h.description)}</p>
+            <div class="catalog-footer">
+              <div class="price-block">
+                <small>Per Night</small>
+                <strong>${formatMoney(price)}</strong>
+              </div>
+              <div style="display:flex;gap:6px">
+                <button class="btn btn-outline btn-sm" onclick="window.ACSearch.openHotelModal('${escapeHtml(h.slug)}')">Details</button>
+                <button class="btn btn-primary btn-sm" onclick="window.ACSearch.bookHotelNow('${escapeHtml(h.slug)}', 2, 1, 2)">Book Now</button>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      })
+      .join("");
+
+    const visasHtml = state.visaServices
+      .map(
+        v => `
+      <div class="catalog-card">
+        <div class="catalog-thumb">
+          <img src="${escapeHtml(v.image_url)}" alt="${escapeHtml(v.country)}">
+          <span class="catalog-tag">${escapeHtml(v.flag_emoji)} ${escapeHtml(v.visa_type)}</span>
+          <span class="catalog-rating">⏱ ${escapeHtml(v.processing_time)}</span>
+        </div>
+        <div class="catalog-body">
+          <div class="catalog-meta">Validity: ${escapeHtml(v.validity)} • Max Stay: ${escapeHtml(v.max_stay)}</div>
+          <h3>${escapeHtml(v.country)} Visa</h3>
+          <p class="catalog-desc">${escapeHtml(v.description)}</p>
+          <div class="catalog-footer">
+            <div class="price-block">
+              <small>Processing Fee</small>
+              <strong>${formatMoney(v.fee)}</strong>
+            </div>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-outline btn-sm" onclick="window.ACSearch.openVisaModal('${escapeHtml(v.slug)}')">Checklist</button>
+              <button class="btn btn-primary btn-sm" onclick="window.ACSearch.bookVisaNow('${escapeHtml(v.slug)}', 1)">Apply Now</button>
+            </div>
+          </div>
+        </div>
+      </div>`
+      )
+      .join("");
+
+    if (hvFilter === "HOTEL") {
+      hvGrid.innerHTML = hotelsHtml;
+    } else if (hvFilter === "VISA") {
+      hvGrid.innerHTML = visasHtml;
+    } else {
+      hvGrid.innerHTML = `${hotelsHtml}${visasHtml}`;
     }
   }
 
@@ -1370,6 +1659,7 @@
     switchSearchTab,
     renderSearchBox,
     renderHomepageCatalog,
+    renderHotelsVisasSection,
     executeFlightSearch,
     executeHotelSearch,
     executePackageSearch,

@@ -38,9 +38,14 @@ window.AIRCONNECT_CONFIG = {
       subtitle: "Handpicked 3-star to 5-star hotels in Makkah, Madinah, Cox's Bazar, Kuala Lumpur & Dubai.",
       bg: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1800&q=80"
     },
+    packages: {
+      title: "Hajj, Umrah & Guided Tour Packages",
+      subtitle: "All-inclusive Spiritual Hajj & Umrah journeys, Bangladesh Inbound Tours, and International Outbound Holidays.",
+      bg: "https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=1800&q=80"
+    },
     tour: {
-      title: "Unforgettable Holidays in Bangladesh & Abroad",
-      subtitle: "All-inclusive Inbound & Outbound tour packages with flights, hotels, transfers & guided sightseeing.",
+      title: "Unforgettable Inbound & Outbound Tour Packages",
+      subtitle: "All-inclusive Bangladesh Inbound Tours and International Outbound Holidays with flights, hotels & guided sightseeing.",
       bg: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1800&q=80"
     },
     umrah: {
@@ -124,6 +129,24 @@ window.AIRCONNECT_CONFIG = {
       image_url: "https://images.unsplash.com/photo-1565552645632-d725f8bfc19a?auto=format&fit=crop&w=1000&q=80"
     },
     {
+      title: "Shifting & Non-Shifting Hajj 2026 Complete Package",
+      slug: "hajj-2026-complete-guided-package",
+      category: "HAJJ",
+      package_level: "Premium",
+      destination: "Makkah, Madinah, Mina & Arafat",
+      country: "Saudi Arabia",
+      duration: "35 Days / 34 Nights",
+      price: 685000,
+      discount_price: 650000,
+      rating: 4.9,
+      review_count: 78,
+      overview: "Government-approved Hajj 2026 package including return direct flights, Mina/Arafat upgraded AC tents, hotels within walking distance of Haram, full board meals, and religious scholars.",
+      itinerary: [{ day: "Phase 1", title: "Dhaka to Makkah & Azizia / Haram Stay", desc: "Pre-Hajj preparation and Umrah performance under scholarly supervision." }],
+      inclusions: ["Return Air Ticket", "Hajj Visa & Nusuk Card Processing", "Makkah & Madinah Accommodation", "3 Times Bangladeshi Buffet Meals", "AC Tents in Mina & Arafat"],
+      exclusions: ["Qurbani / Dam cost (optional add-on)"],
+      image_url: "https://images.unsplash.com/photo-1580418827493-f2b22c0a76cb?auto=format&fit=crop&w=1000&q=80"
+    },
+    {
       title: "5 Days Kuala Lumpur, Genting Highlands & Sunway Tour",
       slug: "kuala-lumpur-genting-malaysia-tour",
       category: "OUTBOUND_TOUR",
@@ -142,6 +165,24 @@ window.AIRCONNECT_CONFIG = {
       image_url: "https://images.unsplash.com/photo-1596422846543-75c6fc197f07?auto=format&fit=crop&w=1000&q=80"
     },
     {
+      title: "4 Days Maldives Overwater & Beach Villa Escape",
+      slug: "maldives-beach-overwater-villa-tour",
+      category: "OUTBOUND_TOUR",
+      package_level: "Premium",
+      destination: "Male & Maafushi / Paradise Island",
+      country: "Maldives",
+      duration: "4 Days / 3 Nights",
+      price: 68000,
+      discount_price: 58500,
+      rating: 4.9,
+      review_count: 112,
+      overview: "Crystal-clear turquoise lagoons, speedboat airport transfers, sandbank picnic lunch, dolphin cruise, and snorkeling adventure in the Maldives.",
+      itinerary: [{ day: "Day 1", title: "Arrival at Velana Airport & Speedboat to Resort", desc: "Welcome drinks and beachfront check-in." }],
+      inclusions: ["Return Speedboat Transfers", "3 Nights Resort Stay (Half Board)", "Sandbank Snorkeling & Dolphin Cruise", "Underwater Photography"],
+      exclusions: ["Air Ticket (can be bundled)"],
+      image_url: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=1000&q=80"
+    },
+    {
       title: "3 Days Cox's Bazar, Himchori & Inani Luxury Beach Escape",
       slug: "coxs-bazar-himchori-inani-luxury-tour",
       category: "INBOUND_TOUR",
@@ -158,6 +199,24 @@ window.AIRCONNECT_CONFIG = {
       inclusions: ["Return Air Ticket (DAC-CXB-DAC)", "2 Nights 5-Star Resort", "Daily Buffet Breakfast", "Marine Drive Tour"],
       exclusions: ["Lunch & Dinner"],
       image_url: "assets/himchori-coxs-bazar.webp"
+    },
+    {
+      title: "3 Days Sundarbans Royal Bengal Tiger Luxury Cruise",
+      slug: "sundarbans-luxury-forest-cruise-bangladesh",
+      category: "INBOUND_TOUR",
+      package_level: "Standard",
+      destination: "Sundarbans Mangrove Forest",
+      country: "Bangladesh",
+      duration: "3 Days / 2 Nights",
+      price: 16500,
+      discount_price: 13500,
+      rating: 4.8,
+      review_count: 88,
+      overview: "Sail deep into the UNESCO World Heritage Sundarbans aboard an AC tourist vessel visiting Kotka, Jamtola Beach, Harbaria Eco Park & Karamjal.",
+      itinerary: [{ day: "Day 1", title: "Embarkation at Khulna & Karamjal Wildlife Center", desc: "Board AC cruise ship and sail towards Harbaria." }],
+      inclusions: ["2 Nights AC Cabin on Cruise Vessel", "All Meals + BBQ Dinner", "Forest Permit & Armed Forest Guards", "Country Boat Canal Cruising"],
+      exclusions: ["Dhaka-Khulna Bus/Flight (available on request)"],
+      image_url: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1000&q=80"
     }
   ],
   DEFAULT_HOTELS: [
