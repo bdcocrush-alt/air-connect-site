@@ -364,13 +364,24 @@
                 .map(
                   h => `
                 <tr>
-                  <td><strong>${escapeHtml(h.name)}</strong></td>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:10px">
+                      ${h.image_url ? `<img src="${escapeHtml(h.image_url)}" alt="${escapeHtml(h.name)}" style="width:48px;height:34px;border-radius:6px;object-fit:cover;border:1px solid var(--line);flex-shrink:0">` : ""}
+                      <div>
+                        <strong>${escapeHtml(h.name)}</strong>
+                        ${h.room_types?.[0]?.name ? `<div style="font-size:11px;color:var(--muted)">${escapeHtml(h.room_types[0].name)}</div>` : ""}
+                      </div>
+                    </div>
+                  </td>
                   <td>${escapeHtml(h.city)}, ${escapeHtml(h.country)}</td>
                   <td>${"★".repeat(h.star_rating || 5)}</td>
                   <td><strong>${formatMoney(h.discount_price || h.price_per_night, "BDT")}</strong></td>
-                  <td><span class="status-badge ${h.active ? "status-CONFIRMED" : "status-CANCELLED"}">${h.active ? "Active" : "Hidden"}</span></td>
+                  <td><span class="status-badge ${h.active !== false ? "status-CONFIRMED" : "status-CANCELLED"}">${h.active !== false ? "Active" : "Hidden"}</span></td>
                   <td>
-                    <button type="button" class="btn btn-outline btn-sm" onclick="window.ACAdmin.toggleActive('hotels','${escapeHtml(h.id)}',${!h.active})">${h.active ? "Hide" : "Activate"}</button>
+                    <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+                      <button type="button" class="btn btn-primary btn-sm" onclick="window.ACAdmin.openEditHotelModal('${escapeHtml(h.id)}')">✏ Edit</button>
+                      <button type="button" class="btn btn-outline btn-sm" onclick="window.ACAdmin.toggleActive('hotels','${escapeHtml(h.id)}',${!(h.active !== false)})">${h.active !== false ? "Hide" : "Activate"}</button>
+                    </div>
                   </td>
                 </tr>`
                 )
@@ -922,16 +933,20 @@
     window.ACSearch.showModal(`
       <h3>🏨 Add New Partner Hotel</h3>
       <form id="adm-add-hotel-form">
-        <div class="form-field"><label>Hotel Name *</label><input type="text" id="ah-name" placeholder="e.g. Swissotel Al Maqam Makkah" required></div>
+        <div class="form-grid-2">
+          <div class="form-field"><label>Hotel Name / Title *</label><input type="text" id="ah-name" placeholder="e.g. Swissotel Al Maqam Makkah" required></div>
+          <div class="form-field"><label>Room / Package Headline *</label><input type="text" id="ah-room" value="Deluxe Double/Twin Room" required></div>
+        </div>
         <div class="form-grid-3">
           <div class="form-field"><label>City *</label><input type="text" id="ah-city" value="Makkah" required></div>
           <div class="form-field"><label>Country *</label><input type="text" id="ah-country" value="Saudi Arabia" required></div>
           <div class="form-field"><label>Star Rating</label><select id="ah-stars"><option value="5">5 Star</option><option value="4">4 Star</option><option value="3">3 Star</option></select></div>
         </div>
         <div class="form-field"><label>Full Address *</label><input type="text" id="ah-addr" value="Abraj Al Bait Complex, Makkah" required></div>
-        <div class="form-grid-2">
+        <div class="form-grid-3">
           <div class="form-field"><label>Nightly Rate (BDT) *</label><input type="number" id="ah-price" value="22000" required></div>
-          <div class="form-field"><label>Image URL</label><input type="text" id="ah-img" value="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1000&q=80"></div>
+          <div class="form-field"><label>Property Image URL</label><input type="text" id="ah-img" value="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1000&q=80"></div>
+          <div class="form-field"><label>Or Upload Photo</label><input type="file" id="ah-file" accept="image/*"></div>
         </div>
         <div class="form-field"><label>Hotel Description *</label><textarea id="ah-desc" rows="2" required>Luxury hotel with direct access and world-class hospitality.</textarea></div>
         <button type="submit" class="btn btn-primary" style="width:100%">+ Save Hotel</button>
@@ -940,7 +955,9 @@
 
     document.getElementById("adm-add-hotel-form")?.addEventListener("submit", async e => {
       e.preventDefault();
+      const uploadedUrl = await uploadImageToMediaBucket(document.getElementById("ah-file"));
       const name = document.getElementById("ah-name").value.trim();
+      const roomName = document.getElementById("ah-room").value.trim() || "Deluxe Double/Twin Room";
       const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-") + "-" + Math.floor(100 + Math.random() * 899);
       const rate = Number(document.getElementById("ah-price").value);
       const payload = {
@@ -952,14 +969,218 @@
         address: document.getElementById("ah-addr").value.trim(),
         price_per_night: rate,
         discount_price: rate,
-        image_url: document.getElementById("ah-img").value.trim(),
+        image_url: uploadedUrl || document.getElementById("ah-img").value.trim() || "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1000&q=80",
         description: document.getElementById("ah-desc").value.trim(),
         amenities: ["Free Wi-Fi", "Breakfast Available", "24/7 Reception", "Air Conditioning"],
-        room_types: [{ name: "Deluxe Double/Twin Room", price: rate, capacity: "2 Adults" }]
+        room_types: [{ name: roomName, price: rate, capacity: "2 Adults" }],
+        active: true
       };
       const { error } = await window.AC.supabase.from("hotels").insert([payload]);
       if (error) return window.AC.showToast(error.message, "error");
       window.AC.showToast("New hotel added!", "success");
+      window.ACSearch.closeModal();
+      await refreshAllData();
+      renderActiveTab();
+    });
+  }
+
+  function openEditHotelModal(hotelId) {
+    const hotel = admState.hotels.find(x => String(x.id) === String(hotelId));
+    if (!hotel) {
+      window.AC.showToast("Hotel not found.", "error");
+      return;
+    }
+    const { escapeHtml } = window.AC;
+    const currentSellingRate = Number(hotel.discount_price || hotel.price_per_night || 0);
+    const currentRegRate =
+      hotel.discount_price && Number(hotel.price_per_night) > Number(hotel.discount_price)
+        ? Number(hotel.price_per_night)
+        : "";
+    const primaryRoomName =
+      Array.isArray(hotel.room_types) && hotel.room_types.length
+        ? hotel.room_types[0].name
+        : "Deluxe Double/Twin Room";
+    const amenitiesText = Array.isArray(hotel.amenities)
+      ? hotel.amenities.join(", ")
+      : "Free Wi-Fi, Breakfast Available, 24/7 Reception";
+
+    window.ACSearch.showModal(`
+      <h3>✏ Edit Hotel Details</h3>
+      <p style="font-size:13px;color:var(--muted);margin:4px 0 16px">Update the hotel name/title, room/package headline, nightly rate (BDT), and property photo below.</p>
+      <form id="adm-edit-hotel-form">
+        <div class="form-grid-2">
+          <div class="form-field">
+            <label>Hotel Name / Title (HOTEL NAME) *</label>
+            <input type="text" id="eh-name" value="${escapeHtml(hotel.name || "")}" placeholder="e.g. Pullman ZamZam Makkah" required>
+          </div>
+          <div class="form-field">
+            <label>Room / Package Headline *</label>
+            <input type="text" id="eh-room-name" value="${escapeHtml(primaryRoomName)}" placeholder="e.g. Deluxe Double/Twin Room" required>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-field">
+            <label>Room Price / Rate per Night (BDT) *</label>
+            <input type="number" id="eh-price" value="${currentSellingRate}" min="0" step="1" required>
+          </div>
+          <div class="form-field">
+            <label>Regular / Strikethrough Rate (BDT) <small style="color:var(--muted);font-weight:400">(Optional)</small></label>
+            <input type="number" id="eh-reg-price" value="${currentRegRate}" min="0" step="1" placeholder="Leave blank if no discount">
+          </div>
+        </div>
+
+        <div style="padding:12px;background:#f8fafc;border:1px solid var(--line);border-radius:12px;margin-bottom:14px">
+          <label style="display:block;font-size:12px;font-weight:700;color:var(--ink);margin-bottom:8px;text-transform:uppercase">Hotel Image / Banner / Property Photo</label>
+          <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:10px">
+            <img id="eh-preview-img" src="${escapeHtml(hotel.image_url || "")}" alt="Hotel Property Preview" style="width:120px;height:76px;object-fit:cover;border-radius:8px;border:1px solid var(--line);background:#e2e8f0;flex-shrink:0">
+            <div style="flex:1;min-width:200px;font-size:12px;color:var(--muted)">
+              Provide a direct property photo URL below or upload a new hotel image file from your device.
+            </div>
+          </div>
+          <div class="form-grid-2" style="margin-bottom:0">
+            <div class="form-field" style="margin-bottom:0">
+              <label>Property Photo / Banner URL *</label>
+              <input type="text" id="eh-img" value="${escapeHtml(hotel.image_url || "")}" placeholder="https://..." required>
+            </div>
+            <div class="form-field" style="margin-bottom:0">
+              <label>Or Upload New Property Photo</label>
+              <input type="file" id="eh-file" accept="image/*">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-grid-3">
+          <div class="form-field">
+            <label>City *</label>
+            <input type="text" id="eh-city" value="${escapeHtml(hotel.city || "")}" required>
+          </div>
+          <div class="form-field">
+            <label>Country *</label>
+            <input type="text" id="eh-country" value="${escapeHtml(hotel.country || "")}" required>
+          </div>
+          <div class="form-field">
+            <label>Star Rating *</label>
+            <select id="eh-stars">
+              ${[5, 4, 3, 2, 1]
+                .map(s => `<option value="${s}" ${Number(hotel.star_rating || 5) === s ? "selected" : ""}>${s} Star (${"★".repeat(s)})</option>`)
+                .join("")}
+            </select>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label>Full Property Address *</label>
+          <input type="text" id="eh-addr" value="${escapeHtml(hotel.address || "")}" required>
+        </div>
+
+        <div class="form-field">
+          <label>Key Amenities <small style="color:var(--muted);font-weight:400">(Comma-separated)</small></label>
+          <input type="text" id="eh-amenities" value="${escapeHtml(amenitiesText)}" placeholder="e.g. Free Wi-Fi, Breakfast Included, Pool, Airport Shuttle">
+        </div>
+
+        <div class="form-field">
+          <label>Hotel Description</label>
+          <textarea id="eh-desc" rows="2">${escapeHtml(hotel.description || "")}</textarea>
+        </div>
+
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px">
+          <button type="button" class="btn btn-outline" onclick="window.ACSearch.closeModal()">Cancel</button>
+          <button type="submit" id="eh-save-btn" class="btn btn-primary">💾 Save Changes</button>
+        </div>
+      </form>
+    `);
+
+    const imgInput = document.getElementById("eh-img");
+    const fileInput = document.getElementById("eh-file");
+    const previewImg = document.getElementById("eh-preview-img");
+
+    imgInput?.addEventListener("input", () => {
+      const val = imgInput.value.trim();
+      if (val && previewImg) previewImg.src = val;
+    });
+
+    fileInput?.addEventListener("change", () => {
+      const file = fileInput.files?.[0];
+      if (file && previewImg) {
+        const reader = new FileReader();
+        reader.onload = ev => {
+          if (ev.target?.result) previewImg.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    document.getElementById("adm-edit-hotel-form")?.addEventListener("submit", async e => {
+      e.preventDefault();
+      const saveBtn = document.getElementById("eh-save-btn");
+      if (saveBtn) {
+        saveBtn.disabled = true;
+        saveBtn.textContent = "Saving Changes...";
+      }
+
+      let finalImageUrl = document.getElementById("eh-img").value.trim();
+      if (fileInput?.files?.[0]) {
+        const uploadedUrl = await uploadImageToMediaBucket(fileInput);
+        if (uploadedUrl) {
+          finalImageUrl = uploadedUrl;
+        }
+      }
+
+      const newSellingRate = Number(document.getElementById("eh-price").value);
+      const rawRegRate = document.getElementById("eh-reg-price").value.trim();
+      const parsedRegRate = rawRegRate ? Number(rawRegRate) : null;
+
+      const finalRegRate =
+        parsedRegRate && parsedRegRate > newSellingRate ? parsedRegRate : newSellingRate;
+      const finalDiscountRate = newSellingRate;
+
+      const newRoomName = document.getElementById("eh-room-name").value.trim() || "Deluxe Double/Twin Room";
+      const existingRooms = Array.isArray(hotel.room_types) && hotel.room_types.length
+        ? [...hotel.room_types]
+        : [{ name: newRoomName, price: newSellingRate, capacity: "2 Adults" }];
+      existingRooms[0] = {
+        ...existingRooms[0],
+        name: newRoomName,
+        price: newSellingRate,
+        capacity: existingRooms[0]?.capacity || "2 Adults"
+      };
+
+      const rawAmenities = document.getElementById("eh-amenities").value;
+      const amenitiesArray = rawAmenities
+        .split(",")
+        .map(s => s.trim())
+        .filter(Boolean);
+
+      const updates = {
+        name: document.getElementById("eh-name").value.trim(),
+        price_per_night: finalRegRate,
+        discount_price: finalDiscountRate,
+        image_url: finalImageUrl,
+        city: document.getElementById("eh-city").value.trim(),
+        country: document.getElementById("eh-country").value.trim(),
+        star_rating: Number(document.getElementById("eh-stars").value),
+        address: document.getElementById("eh-addr").value.trim(),
+        description: document.getElementById("eh-desc").value.trim(),
+        amenities: amenitiesArray.length ? amenitiesArray : hotel.amenities,
+        room_types: existingRooms
+      };
+
+      const { error } = await window.AC.supabase
+        .from("hotels")
+        .update(updates)
+        .eq("id", hotel.id);
+
+      if (error) {
+        window.AC.showToast("Failed to update hotel: " + error.message, "error");
+        if (saveBtn) {
+          saveBtn.disabled = false;
+          saveBtn.textContent = "💾 Save Changes";
+        }
+        return;
+      }
+
+      window.AC.showToast("Hotel updated successfully!", "success");
       window.ACSearch.closeModal();
       await refreshAllData();
       renderActiveTab();
@@ -1234,6 +1455,7 @@
     openAddPackageModal,
     openEditPackageModal,
     openAddHotelModal,
+    openEditHotelModal,
     openAddVisaModal,
     openEditVisaModal,
     openAddBannerModal,
