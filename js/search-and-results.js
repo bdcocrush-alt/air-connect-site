@@ -353,7 +353,7 @@
             <div class="field-box">
               <label>Journey Date</label>
               <input type="date" id="fl-depart" value="${f.departDate}" required>
-              <small>${f.fareType} Fare</small>
+              <small>Departure Date</small>
             </div>
 
             <div class="field-box" style="${f.tripType === "One Way" ? "opacity:0.55" : ""}">
@@ -386,18 +386,6 @@
               <label class="pill-radio ${f.tripType === t.val ? "active" : ""}">
                 <input type="radio" name="tripType" value="${t.val}" ${f.tripType === t.val ? "checked" : ""}>
                 ${t.label}
-              </label>`
-              )
-              .join("")}
-          </div>
-          <div class="fare-type-group">
-            <span class="fare-tag-label">Fare Type:</span>
-            ${["Regular", "Student", "Labour", "Umrah"]
-              .map(
-                ft => `
-              <label class="pill-radio ${f.fareType === ft ? "active" : ""}">
-                <input type="radio" name="fareType" value="${ft}" ${f.fareType === ft ? "checked" : ""}>
-                ${ft}
               </label>`
               )
               .join("")}
@@ -589,12 +577,6 @@
       container.querySelectorAll('input[name="tripType"]').forEach(r => {
         r.addEventListener("change", e => {
           searchState.flight.tripType = e.target.value;
-          renderSearchBox();
-        });
-      });
-      container.querySelectorAll('input[name="fareType"]').forEach(r => {
-        r.addEventListener("change", e => {
-          searchState.flight.fareType = e.target.value;
           renderSearchBox();
         });
       });
