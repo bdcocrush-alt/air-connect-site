@@ -144,6 +144,10 @@
 
     if (tab === "flight") {
       const f = searchState.flight;
+      if (f.cabin !== "Economy" && f.cabin !== "Business") {
+        f.cabin = "Economy";
+      }
+      const totalPax = f.adults + f.children + f.infants;
       const airportOptions = dir =>
         airports
           .map(
@@ -207,17 +211,68 @@
               <small>${f.tripType === "One Way" ? "Select Round Trip to add" : "Return Journey"}</small>
             </div>
 
-            <div class="field-box">
-              <label>Travellers & Class</label>
-              <div style="display:flex;gap:6px;align-items:center">
-                <select id="fl-adults" title="Adults" style="width:48%">
-                  ${[1, 2, 3, 4, 5, 6].map(n => `<option value="${n}" ${f.adults === n ? "selected" : ""}>${n} Adult${n > 1 ? "s" : ""}</option>`).join("")}
-                </select>
-                <select id="fl-cabin" title="Cabin Class" style="width:52%">
-                  ${["Economy", "Premium Economy", "Business", "First"].map(c => `<option value="${c}" ${f.cabin === c ? "selected" : ""}>${c}</option>`).join("")}
-                </select>
+            <div class="field-box has-popover" id="travellers-field-box">
+              <div class="travellers-trigger" id="travellers-trigger-btn" role="button" tabindex="0" aria-expanded="false">
+                <label style="cursor:pointer">Travellers &amp; Class</label>
+                <strong id="travellers-summary-text">${totalPax} Traveller${totalPax > 1 ? "s" : ""}</strong>
+                <small id="travellers-sub-text">${escapeHtml(f.cabin)}</small>
               </div>
-              <small>Children: <input type="number" id="fl-children" min="0" max="5" value="${f.children}" style="width:36px;display:inline;font-size:11px;padding:0"> | Infants: <input type="number" id="fl-infants" min="0" max="3" value="${f.infants}" style="width:36px;display:inline;font-size:11px;padding:0"></small>
+
+              <div class="travellers-popover" id="travellers-popover" hidden>
+                <div class="pax-counter-row">
+                  <div class="pax-counter-info">
+                    <strong>Adult</strong>
+                    <span>12 years and above</span>
+                  </div>
+                  <div class="pax-stepper">
+                    <button type="button" class="pax-step-btn" data-pax-type="adults" data-pax-dir="-1" ${f.adults <= 1 ? "disabled" : ""}>−</button>
+                    <span class="pax-step-val" id="pax-val-adults">${f.adults}</span>
+                    <button type="button" class="pax-step-btn" data-pax-type="adults" data-pax-dir="1" ${f.adults >= 9 ? "disabled" : ""}>+</button>
+                  </div>
+                </div>
+
+                <div class="pax-counter-row">
+                  <div class="pax-counter-info">
+                    <strong>Children</strong>
+                    <span>2–11 years</span>
+                  </div>
+                  <div class="pax-stepper">
+                    <button type="button" class="pax-step-btn" data-pax-type="children" data-pax-dir="-1" ${f.children <= 0 ? "disabled" : ""}>−</button>
+                    <span class="pax-step-val" id="pax-val-children">${f.children}</span>
+                    <button type="button" class="pax-step-btn" data-pax-type="children" data-pax-dir="1" ${f.children >= 9 ? "disabled" : ""}>+</button>
+                  </div>
+                </div>
+
+                <div class="pax-counter-row">
+                  <div class="pax-counter-info">
+                    <strong>Infant</strong>
+                    <span>Below 2 years</span>
+                  </div>
+                  <div class="pax-stepper">
+                    <button type="button" class="pax-step-btn" data-pax-type="infants" data-pax-dir="-1" ${f.infants <= 0 ? "disabled" : ""}>−</button>
+                    <span class="pax-step-val" id="pax-val-infants">${f.infants}</span>
+                    <button type="button" class="pax-step-btn" data-pax-type="infants" data-pax-dir="1" ${f.infants >= 9 ? "disabled" : ""}>+</button>
+                  </div>
+                </div>
+
+                <div class="pax-class-section">
+                  <span class="pax-class-title">Class</span>
+                  <div class="pax-class-options">
+                    <label class="pax-class-radio">
+                      <input type="radio" name="flCabinRadio" value="Economy" ${f.cabin === "Economy" ? "checked" : ""}>
+                      Economy
+                    </label>
+                    <label class="pax-class-radio">
+                      <input type="radio" name="flCabinRadio" value="Business" ${f.cabin === "Business" ? "checked" : ""}>
+                      Business
+                    </label>
+                  </div>
+                </div>
+
+                <div class="pax-popover-footer">
+                  <button type="button" class="btn btn-primary pax-done-btn" id="travellers-done-btn">Done</button>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -228,6 +283,86 @@
           </div>
         </form>
       `;
+
+      const updateTravellersUI = () => {
+        const tot = searchState.flight.adults + searchState.flight.children + searchState.flight.infants;
+        const sumEl = document.getElementById("travellers-summary-text");
+        const subEl = document.getElementById("travellers-sub-text");
+        if (sumEl) sumEl.textContent = `${tot} Traveller${tot > 1 ? "s" : ""}`;
+        if (subEl) subEl.textContent = searchState.flight.cabin;
+
+        const adVal = document.getElementById("pax-val-adults");
+        const chVal = document.getElementById("pax-val-children");
+        const inVal = document.getElementById("pax-val-infants");
+        if (adVal) adVal.textContent = searchState.flight.adults;
+        if (chVal) chVal.textContent = searchState.flight.children;
+        if (inVal) inVal.textContent = searchState.flight.infants;
+
+        container.querySelectorAll(".pax-step-btn").forEach(btn => {
+          const type = btn.getAttribute("data-pax-type");
+          const dir = Number(btn.getAttribute("data-pax-dir"));
+          const min = type === "adults" ? 1 : 0;
+          const max = 9;
+          const cur = searchState.flight[type];
+          btn.disabled = (dir < 0 && cur <= min) || (dir > 0 && cur >= max);
+        });
+      };
+
+      const popover = document.getElementById("travellers-popover");
+      const triggerBtn = document.getElementById("travellers-trigger-btn");
+      const fieldBox = document.getElementById("travellers-field-box");
+
+      triggerBtn?.addEventListener("click", e => {
+        e.stopPropagation();
+        if (popover) {
+          popover.hidden = !popover.hidden;
+          triggerBtn.setAttribute("aria-expanded", String(!popover.hidden));
+        }
+      });
+
+      popover?.addEventListener("click", e => {
+        e.stopPropagation();
+      });
+
+      container.querySelectorAll(".pax-step-btn").forEach(btn => {
+        btn.addEventListener("click", e => {
+          e.stopPropagation();
+          const type = btn.getAttribute("data-pax-type");
+          const dir = Number(btn.getAttribute("data-pax-dir"));
+          const min = type === "adults" ? 1 : 0;
+          const max = 9;
+          const next = Math.min(max, Math.max(min, searchState.flight[type] + dir));
+          searchState.flight[type] = next;
+          updateTravellersUI();
+        });
+      });
+
+      container.querySelectorAll('input[name="flCabinRadio"]').forEach(r => {
+        r.addEventListener("change", e => {
+          searchState.flight.cabin = e.target.value;
+          updateTravellersUI();
+        });
+      });
+
+      document.getElementById("travellers-done-btn")?.addEventListener("click", e => {
+        e.stopPropagation();
+        if (popover) {
+          popover.hidden = true;
+          triggerBtn?.setAttribute("aria-expanded", "false");
+        }
+      });
+
+      if (!window.__acTravellersOutsideBound) {
+        window.__acTravellersOutsideBound = true;
+        document.addEventListener("click", e => {
+          const pop = document.getElementById("travellers-popover");
+          const box = document.getElementById("travellers-field-box");
+          if (pop && !pop.hidden && box && !box.contains(e.target)) {
+            pop.hidden = true;
+            document.getElementById("travellers-trigger-btn")?.setAttribute("aria-expanded", "false");
+          }
+        });
+      }
 
       container.querySelectorAll('input[name="tripType"]').forEach(r => {
         r.addEventListener("change", e => {
@@ -257,14 +392,11 @@
       });
       document.getElementById("ota-flight-form")?.addEventListener("submit", e => {
         e.preventDefault();
+        if (popover) popover.hidden = true;
         searchState.flight.from = document.getElementById("fl-from").value;
         searchState.flight.to = document.getElementById("fl-to").value;
         searchState.flight.departDate = document.getElementById("fl-depart").value;
         searchState.flight.returnDate = document.getElementById("fl-return").value;
-        searchState.flight.adults = Number(document.getElementById("fl-adults").value || 1);
-        searchState.flight.children = Number(document.getElementById("fl-children").value || 0);
-        searchState.flight.infants = Number(document.getElementById("fl-infants").value || 0);
-        searchState.flight.cabin = document.getElementById("fl-cabin").value;
         if (searchState.flight.from === searchState.flight.to) {
           window.AC.showToast("Origin and destination airports cannot be the same.", "error");
           return;

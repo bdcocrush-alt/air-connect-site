@@ -479,6 +479,166 @@ button, input, select, textarea {
   text-overflow: ellipsis;
 }
 
+.field-box.has-popover {
+  overflow: visible;
+  cursor: pointer;
+  user-select: none;
+}
+
+.travellers-trigger {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+}
+
+.travellers-trigger strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  padding: 2px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.travellers-popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 320px;
+  max-width: calc(100vw - 32px);
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 18px 20px;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.22);
+  z-index: 80;
+  cursor: default;
+}
+
+.pax-counter-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 0;
+}
+
+.pax-counter-info strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.25;
+}
+
+.pax-counter-info span {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.pax-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pax-step-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: #f8fafc;
+  color: var(--brand-primary);
+  font-size: 18px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  line-height: 1;
+  padding: 0;
+}
+
+.pax-step-btn:hover:not(:disabled) {
+  background: var(--brand-primary);
+  border-color: var(--brand-primary);
+  color: #ffffff;
+}
+
+.pax-step-btn:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+  color: var(--muted);
+}
+
+.pax-step-val {
+  min-width: 22px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.pax-class-section {
+  border-top: 1px solid var(--line);
+  margin-top: 10px;
+  padding-top: 14px;
+}
+
+.pax-class-title {
+  display: block;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+
+.pax-class-options {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.pax-class-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+  margin: 0;
+}
+
+.pax-class-radio input[type="radio"] {
+  width: 17px;
+  height: 17px;
+  accent-color: var(--brand-primary);
+  margin: 0;
+  cursor: pointer;
+}
+
+.pax-popover-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.pax-done-btn {
+  padding: 8px 24px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
 .swap-btn {
   align-self: center;
   width: 36px;
