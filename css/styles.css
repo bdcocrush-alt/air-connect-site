@@ -74,23 +74,37 @@ button, input, select, textarea {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 72px;
-  gap: 16px;
+  min-height: 76px;
+  padding: 10px 0;
+  gap: 20px;
 }
 
 .brand-logo {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 12px;
   cursor: pointer;
+  flex-shrink: 0;
+  text-decoration: none;
 }
 
 .brand-logo img {
   width: 46px;
   height: 46px;
+  min-width: 46px;
   border-radius: 10px;
-  object-fit: cover;
+  object-fit: contain;
+  background: #ffffff;
   border: 1px solid var(--line);
+  flex-shrink: 0;
+}
+
+.brand-logo-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  white-space: nowrap;
 }
 
 .brand-logo-text strong {
@@ -98,34 +112,41 @@ button, input, select, textarea {
   font-family: "Bricolage Grotesque", sans-serif;
   font-size: 20px;
   font-weight: 800;
+  line-height: 1.15;
   color: var(--ink);
-  letter-spacing: -0.4px;
+  letter-spacing: -0.3px;
+  white-space: nowrap;
 }
 
 .brand-logo-text small {
   display: block;
-  font-size: 11px;
+  font-size: 11.5px;
+  line-height: 1.25;
   color: var(--muted);
   font-weight: 500;
+  letter-spacing: 0.1px;
+  white-space: nowrap;
 }
 
 .header-nav {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
+  flex-shrink: 0;
 }
 
 .header-nav-btn {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 8px 14px;
+  gap: 6px;
+  padding: 8px 13px;
   border-radius: 999px;
   border: 0;
   background: transparent;
   color: var(--text);
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13.5px;
+  white-space: nowrap;
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -147,7 +168,8 @@ button, input, select, textarea {
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 .currency-select {
@@ -1884,6 +1906,9 @@ button, input, select, textarea {
 
 /* Responsive Breakpoints */
 @media (max-width: 1140px) {
+  .header-nav {
+    display: none;
+  }
   .search-grid-flight,
   .mc-segment-row {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1905,8 +1930,15 @@ button, input, select, textarea {
 }
 
 @media (max-width: 768px) {
-  .header-nav {
-    display: none;
+  .ota-header-inner {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .brand-logo-text strong {
+    font-size: 18px;
+  }
+  .brand-logo-text small {
+    font-size: 11px;
   }
   .search-card {
     padding: 32px 16px 34px;

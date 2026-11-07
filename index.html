@@ -18,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=8">
+  <link rel="stylesheet" href="css/styles.css?v=9">
 </head>
 <body>
 
@@ -273,10 +273,10 @@
       <div class="footer-grid">
         <div>
           <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
-            <img src="assets/logo.jpg" alt="Air Connect Ltd" style="width:44px;height:44px;border-radius:10px">
-            <div>
-              <strong style="color:#fff;font-size:19px;display:block">Air Connect Ltd</strong>
-              <small style="color:#94a3b8">Travel • Explore • Experience</small>
+            <img src="assets/logo.jpg" alt="Air Connect Ltd" style="width:44px;height:44px;min-width:44px;border-radius:10px;object-fit:contain;background:#fff;flex-shrink:0">
+            <div style="display:flex;flex-direction:column;gap:3px;white-space:nowrap">
+              <strong style="color:#fff;font-size:19px;line-height:1.15;display:block">Air Connect Ltd</strong>
+              <small style="color:#94a3b8;font-size:11.5px;line-height:1.25;display:block">Travel • Explore • Experience</small>
             </div>
           </div>
           <p style="font-size:13px;line-height:1.65;color:#94a3b8;margin:0 0 14px">
@@ -339,11 +339,11 @@
 
   <!-- Supabase SDK & Application Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/config.js?v=8"></script>
-  <script src="js/supabase-client.js?v=8"></script>
-  <script src="js/search-and-results.js?v=8"></script>
-  <script src="js/booking-checkout.js?v=8"></script>
-  <script src="js/customer-portal.js?v=8"></script>
+  <script src="js/config.js?v=9"></script>
+  <script src="js/supabase-client.js?v=9"></script>
+  <script src="js/search-and-results.js?v=9"></script>
+  <script src="js/booking-checkout.js?v=9"></script>
+  <script src="js/customer-portal.js?v=9"></script>
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
       window.ACPortal.renderHeaderAuthArea();
