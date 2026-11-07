@@ -314,14 +314,22 @@
                 .map(
                   p => `
                 <tr>
-                  <td><strong>${escapeHtml(p.title)}</strong></td>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:10px">
+                      ${p.image_url ? `<img src="${escapeHtml(p.image_url)}" alt="${escapeHtml(p.title)}" style="width:48px;height:34px;border-radius:6px;object-fit:cover;border:1px solid var(--line);flex-shrink:0">` : ""}
+                      <strong>${escapeHtml(p.title)}</strong>
+                    </div>
+                  </td>
                   <td><span class="status-badge status-PROCESSING">${escapeHtml(p.category)}</span> (${escapeHtml(p.package_level)})</td>
                   <td>${escapeHtml(p.destination)}, ${escapeHtml(p.country)}</td>
                   <td>${escapeHtml(p.duration)}</td>
                   <td><strong>${formatMoney(p.discount_price || p.price, "BDT")}</strong></td>
                   <td><span class="status-badge ${p.active ? "status-CONFIRMED" : "status-CANCELLED"}">${p.active ? "Active" : "Hidden"}</span></td>
                   <td>
-                    <button type="button" class="btn btn-outline btn-sm" onclick="window.ACAdmin.toggleActive('packages','${escapeHtml(p.id)}',${!p.active})">${p.active ? "Hide" : "Activate"}</button>
+                    <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+                      <button type="button" class="btn btn-primary btn-sm" onclick="window.ACAdmin.openEditPackageModal('${escapeHtml(p.id)}')">✏ Edit</button>
+                      <button type="button" class="btn btn-outline btn-sm" onclick="window.ACAdmin.toggleActive('packages','${escapeHtml(p.id)}',${!p.active})">${p.active ? "Hide" : "Activate"}</button>
+                    </div>
                   </td>
                 </tr>`
                 )
@@ -723,6 +731,183 @@
     });
   }
 
+  function openEditPackageModal(pkgId) {
+    const pkg = admState.packages.find(x => String(x.id) === String(pkgId));
+    if (!pkg) {
+      window.AC.showToast("Package not found.", "error");
+      return;
+    }
+    const { escapeHtml } = window.AC;
+    const currentSellingPrice = Number(pkg.discount_price || pkg.price || 0);
+    const currentRegPrice =
+      pkg.discount_price && Number(pkg.price) > Number(pkg.discount_price)
+        ? Number(pkg.price)
+        : "";
+
+    window.ACSearch.showModal(`
+      <h3>✏ Edit Package Details</h3>
+      <p style="font-size:13px;color:var(--muted);margin:4px 0 16px">Update the package headline/title, price (BDT), and banner image below.</p>
+      <form id="adm-edit-pkg-form">
+        <div class="form-field">
+          <label>Package Title (PACKAGE TITLE) *</label>
+          <input type="text" id="ep-title" value="${escapeHtml(pkg.title || "")}" placeholder="Enter package headline / title" required>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-field">
+            <label>Package Price (PRICE - BDT) *</label>
+            <input type="number" id="ep-price" value="${currentSellingPrice}" min="0" step="1" required>
+          </div>
+          <div class="form-field">
+            <label>Regular / Strikethrough Price (BDT) <small style="color:var(--muted);font-weight:400">(Optional)</small></label>
+            <input type="number" id="ep-reg-price" value="${currentRegPrice}" min="0" step="1" placeholder="Leave blank if no discount">
+          </div>
+        </div>
+
+        <div style="padding:12px;background:#f8fafc;border:1px solid var(--line);border-radius:12px;margin-bottom:14px">
+          <label style="display:block;font-size:12px;font-weight:700;color:var(--ink);margin-bottom:8px;text-transform:uppercase">Package Image / Banner</label>
+          <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:10px">
+            <img id="ep-preview-img" src="${escapeHtml(pkg.image_url || "")}" alt="Package Banner Preview" style="width:120px;height:76px;object-fit:cover;border-radius:8px;border:1px solid var(--line);background:#e2e8f0">
+            <div style="flex:1;min-width:200px;font-size:12px;color:var(--muted)">
+              Provide a direct image URL below or upload a new banner image file from your device.
+            </div>
+          </div>
+          <div class="form-grid-2" style="margin-bottom:0">
+            <div class="form-field" style="margin-bottom:0">
+              <label>Banner Image URL *</label>
+              <input type="text" id="ep-img" value="${escapeHtml(pkg.image_url || "")}" placeholder="https://..." required>
+            </div>
+            <div class="form-field" style="margin-bottom:0">
+              <label>Or Upload New Banner Photo</label>
+              <input type="file" id="ep-file" accept="image/*">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-grid-3">
+          <div class="form-field">
+            <label>Category *</label>
+            <select id="ep-cat">
+              ${["UMRAH", "HAJJ", "OUTBOUND_TOUR", "INBOUND_TOUR"]
+                .map(c => `<option value="${c}" ${pkg.category === c ? "selected" : ""}>${c}</option>`)
+                .join("")}
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Tier / Level *</label>
+            <select id="ep-level">
+              ${["Economy", "Standard", "Premium", "VIP"]
+                .map(l => `<option value="${l}" ${pkg.package_level === l ? "selected" : ""}>${l}</option>`)
+                .join("")}
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Duration *</label>
+            <input type="text" id="ep-dur" value="${escapeHtml(pkg.duration || "")}" required>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-field">
+            <label>Destination City *</label>
+            <input type="text" id="ep-dest" value="${escapeHtml(pkg.destination || "")}" required>
+          </div>
+          <div class="form-field">
+            <label>Country *</label>
+            <input type="text" id="ep-country" value="${escapeHtml(pkg.country || "")}" required>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label>Package Overview</label>
+          <textarea id="ep-desc" rows="3">${escapeHtml(pkg.overview || "")}</textarea>
+        </div>
+
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px">
+          <button type="button" class="btn btn-outline" onclick="window.ACSearch.closeModal()">Cancel</button>
+          <button type="submit" id="ep-save-btn" class="btn btn-primary">💾 Save Changes</button>
+        </div>
+      </form>
+    `);
+
+    const imgInput = document.getElementById("ep-img");
+    const fileInput = document.getElementById("ep-file");
+    const previewImg = document.getElementById("ep-preview-img");
+
+    imgInput?.addEventListener("input", () => {
+      const val = imgInput.value.trim();
+      if (val && previewImg) previewImg.src = val;
+    });
+
+    fileInput?.addEventListener("change", () => {
+      const file = fileInput.files?.[0];
+      if (file && previewImg) {
+        const reader = new FileReader();
+        reader.onload = ev => {
+          if (ev.target?.result) previewImg.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    document.getElementById("adm-edit-pkg-form")?.addEventListener("submit", async e => {
+      e.preventDefault();
+      const saveBtn = document.getElementById("ep-save-btn");
+      if (saveBtn) {
+        saveBtn.disabled = true;
+        saveBtn.textContent = "Saving Changes...";
+      }
+
+      let finalImageUrl = document.getElementById("ep-img").value.trim();
+      if (fileInput?.files?.[0]) {
+        const uploadedUrl = await uploadImageToMediaBucket(fileInput);
+        if (uploadedUrl) {
+          finalImageUrl = uploadedUrl;
+        }
+      }
+
+      const newSellingPrice = Number(document.getElementById("ep-price").value);
+      const rawRegPrice = document.getElementById("ep-reg-price").value.trim();
+      const parsedRegPrice = rawRegPrice ? Number(rawRegPrice) : null;
+
+      const finalRegPrice =
+        parsedRegPrice && parsedRegPrice > newSellingPrice ? parsedRegPrice : newSellingPrice;
+      const finalDiscountPrice = newSellingPrice;
+
+      const updates = {
+        title: document.getElementById("ep-title").value.trim(),
+        price: finalRegPrice,
+        discount_price: finalDiscountPrice,
+        image_url: finalImageUrl,
+        category: document.getElementById("ep-cat").value,
+        package_level: document.getElementById("ep-level").value,
+        duration: document.getElementById("ep-dur").value.trim(),
+        destination: document.getElementById("ep-dest").value.trim(),
+        country: document.getElementById("ep-country").value.trim(),
+        overview: document.getElementById("ep-desc").value.trim()
+      };
+
+      const { error } = await window.AC.supabase
+        .from("packages")
+        .update(updates)
+        .eq("id", pkg.id);
+
+      if (error) {
+        window.AC.showToast("Failed to update package: " + error.message, "error");
+        if (saveBtn) {
+          saveBtn.disabled = false;
+          saveBtn.textContent = "💾 Save Changes";
+        }
+        return;
+      }
+
+      window.AC.showToast("Package updated successfully!", "success");
+      window.ACSearch.closeModal();
+      await refreshAllData();
+      renderActiveTab();
+    });
+  }
+
   function openAddHotelModal() {
     window.ACSearch.showModal(`
       <h3>🏨 Add New Partner Hotel</h3>
@@ -859,6 +1044,7 @@
     toggleActive,
     openFlightModal,
     openAddPackageModal,
+    openEditPackageModal,
     openAddHotelModal,
     openAddVisaModal,
     openAddBannerModal,
