@@ -18,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=6">
+  <link rel="stylesheet" href="css/styles.css?v=7">
 </head>
 <body>
 
@@ -104,23 +104,7 @@
     <!-- Dynamic Book Now Checkout Container (Appears on Book Now) -->
     <section id="checkout-section" hidden></section>
 
-    <!-- 1. Popular Flight Routes & Promo Fares (mynztrip style) -->
-    <section class="ota-section" id="flights-promo-section">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <h2>✈ Popular Flight Routes &amp; Special Fares</h2>
-            <p>Click any route to search live schedules, Student &amp; Umrah baggage allowances, and instant booking holds.</p>
-          </div>
-          <button type="button" class="btn btn-outline btn-sm" onclick="window.ACSearch.switchSearchTab('flight');window.ACSearch.executeFlightSearch()">
-            View All Flights →
-          </button>
-        </div>
-        <div class="promo-flights-scroll" id="home-flight-deals"></div>
-      </div>
-    </section>
-
-    <!-- 2. Special Offers & Exclusive Campaigns -->
+    <!-- 1. Special Offers & Exclusive Campaigns -->
     <section class="ota-section">
       <div class="container">
         <div class="section-head">
@@ -355,11 +339,11 @@
 
   <!-- Supabase SDK & Application Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/config.js?v=6"></script>
-  <script src="js/supabase-client.js?v=6"></script>
-  <script src="js/search-and-results.js?v=6"></script>
-  <script src="js/booking-checkout.js?v=6"></script>
-  <script src="js/customer-portal.js?v=6"></script>
+  <script src="js/config.js?v=7"></script>
+  <script src="js/supabase-client.js?v=7"></script>
+  <script src="js/search-and-results.js?v=7"></script>
+  <script src="js/booking-checkout.js?v=7"></script>
+  <script src="js/customer-portal.js?v=7"></script>
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
       window.ACPortal.renderHeaderAuthArea();

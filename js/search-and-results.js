@@ -1291,58 +1291,9 @@
 
   // Homepage Sections Renderer
   function renderHomepageCatalog(activeFilter = "ALL") {
-    const { formatMoney, escapeHtml, state } = window.AC;
+    const { escapeHtml, state } = window.AC;
 
-    // 1. Flight Promo Cards (mynztrip style)
-    const flightGrid = document.getElementById("home-flight-deals");
-    if (flightGrid) {
-      flightGrid.innerHTML = state.flightDeals
-        .slice(0, 8)
-        .map(f => {
-          const color = cfg.AIRLINES[f.airline_code]?.color || "#c00000";
-          const total = Number(f.base_fare) + Number(f.taxes || 4500);
-          return `
-            <div class="flight-promo-card" onclick="window.ACSearch.quickSelectFlightDeal('${escapeHtml(f.from_code)}','${escapeHtml(f.to_code)}','${escapeHtml(f.trip_type)}','${escapeHtml(f.fare_type)}')">
-              ${f.discount_pct ? `<span class="badge-discount">${f.discount_pct}% OFF</span>` : ""}
-              <div class="airline-row">
-                <div class="airline-avatar" style="background:${color}">${escapeHtml(f.airline_code)}</div>
-                <div>
-                  <strong style="display:block;font-size:14px;color:var(--ink)">${escapeHtml(f.airline)}</strong>
-                  <span style="font-size:12px;color:var(--muted)">${escapeHtml(f.cabin_class)} • ${escapeHtml(f.fare_type)}</span>
-                </div>
-              </div>
-              <div class="route-visual">
-                <div class="route-endpoint">
-                  <span>FROM</span>
-                  <strong>${escapeHtml(f.from_code)}</strong>
-                  <span>${escapeHtml(f.from_city)}</span>
-                </div>
-                <div class="route-line">
-                  <span>✈</span>
-                </div>
-                <div class="route-endpoint" style="text-align:right">
-                  <span>TO</span>
-                  <strong>${escapeHtml(f.to_code)}</strong>
-                  <span>${escapeHtml(f.to_city)}</span>
-                </div>
-              </div>
-              <div class="flight-promo-footer">
-                <div>
-                  <small style="display:block;font-size:11px;color:var(--muted)">${escapeHtml(f.trip_type)} • ${escapeHtml(f.stops)}</small>
-                  <span style="font-size:12px;font-weight:600;color:var(--text)">🧳 ${escapeHtml(f.baggage.split("+")[0])}</span>
-                </div>
-                <div class="flight-promo-price" style="text-align:right">
-                  <small>Starting From</small>
-                  <strong>${formatMoney(total)}</strong>
-                </div>
-              </div>
-            </div>
-          `;
-        })
-        .join("");
-    }
-
-    // 2. Special Offers Banners
+    // 1. Special Offers Banners
     const offersGrid = document.getElementById("home-offers-grid");
     if (offersGrid) {
       offersGrid.innerHTML = state.promoBanners
