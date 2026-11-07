@@ -1541,7 +1541,7 @@
               </div>
               <div class="catalog-body">
                 <div class="catalog-meta">Validity: ${escapeHtml(visa.validity)} • Max Stay: ${escapeHtml(visa.max_stay)}</div>
-                <h3>${escapeHtml(visa.country)} Visa</h3>
+                <h3>${escapeHtml(visa.country)}${/\bvisa\b/i.test(visa.country || "") ? "" : " Visa"}</h3>
                 <p class="catalog-desc">${escapeHtml(visa.description)}</p>
                 <div class="catalog-footer">
                   <div class="price-block">
@@ -1781,7 +1781,7 @@
         </div>
         <div class="catalog-body">
           <div class="catalog-meta">Validity: ${escapeHtml(v.validity)} • Max Stay: ${escapeHtml(v.max_stay)}</div>
-          <h3>${escapeHtml(v.country)} Visa</h3>
+          <h3>${escapeHtml(v.country)}${/\bvisa\b/i.test(v.country || "") ? "" : " Visa"}</h3>
           <p class="catalog-desc">${escapeHtml(v.description)}</p>
           <div class="catalog-footer">
             <div class="price-block">
@@ -1914,7 +1914,7 @@
 
     showModal(`
       <span class="status-badge status-PROCESSING">${escapeHtml(visa.flag_emoji)} ${escapeHtml(visa.visa_type)}</span>
-      <h2 style="margin-top:8px;font-size:24px">${escapeHtml(visa.country)} Visa Requirements</h2>
+      <h2 style="margin-top:8px;font-size:24px">${escapeHtml(visa.country)}${/\bvisa\b/i.test(visa.country || "") ? " Requirements" : " Visa Requirements"}</h2>
       <p style="color:var(--muted);margin:6px 0 16px">⏱ Processing: ${escapeHtml(visa.processing_time)} • Validity: ${escapeHtml(visa.validity)} • Max Stay: ${escapeHtml(visa.max_stay)}</p>
       <p>${escapeHtml(visa.description)}</p>
 

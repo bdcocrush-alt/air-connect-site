@@ -392,10 +392,11 @@
           <table class="admin-table">
             <thead>
               <tr>
-                <th>Country</th>
+                <th>Country / Visa Title</th>
                 <th>Visa Type</th>
                 <th>Processing Time</th>
                 <th>Fee (BDT)</th>
+                <th>Status</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -404,12 +405,21 @@
                 .map(
                   v => `
                 <tr>
-                  <td><strong>${escapeHtml(v.flag_emoji)} ${escapeHtml(v.country)}</strong></td>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:10px">
+                      ${v.image_url ? `<img src="${escapeHtml(v.image_url)}" alt="${escapeHtml(v.country)}" style="width:48px;height:34px;border-radius:6px;object-fit:cover;border:1px solid var(--line);flex-shrink:0">` : ""}
+                      <strong><span style="font-size:16px;margin-right:4px">${escapeHtml(v.flag_emoji || "🌍")}</span>${escapeHtml(v.country)}</strong>
+                    </div>
+                  </td>
                   <td>${escapeHtml(v.visa_type)}</td>
                   <td>${escapeHtml(v.processing_time)}</td>
                   <td><strong>${formatMoney(v.fee, "BDT")}</strong></td>
+                  <td><span class="status-badge ${v.active !== false ? "status-CONFIRMED" : "status-CANCELLED"}">${v.active !== false ? "Active" : "Hidden"}</span></td>
                   <td>
-                    <button type="button" class="btn btn-outline btn-sm" onclick="window.ACAdmin.toggleActive('visa_services','${escapeHtml(v.id)}',${!v.active})">${v.active ? "Hide" : "Activate"}</button>
+                    <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+                      <button type="button" class="btn btn-primary btn-sm" onclick="window.ACAdmin.openEditVisaModal('${escapeHtml(v.id)}')">✏ Edit</button>
+                      <button type="button" class="btn btn-outline btn-sm" onclick="window.ACAdmin.toggleActive('visa_services','${escapeHtml(v.id)}',${!(v.active !== false)})">${v.active !== false ? "Hide" : "Activate"}</button>
+                    </div>
                   </td>
                 </tr>`
                 )
@@ -961,13 +971,17 @@
       <h3>🛂 Add Country Visa Service</h3>
       <form id="adm-add-visa-form">
         <div class="form-grid-2">
-          <div class="form-field"><label>Country Name *</label><input type="text" id="av-country" placeholder="e.g. Turkey" required></div>
-          <div class="form-field"><label>Flag Emoji</label><input type="text" id="av-flag" value="🇹🇷"></div>
+          <div class="form-field"><label>Visa Service Headline / Country Title *</label><input type="text" id="av-country" placeholder="e.g. Turkey" required></div>
+          <div class="form-field"><label>Country Flag Icon / Emoji</label><input type="text" id="av-flag" value="🇹🇷"></div>
         </div>
         <div class="form-grid-3">
           <div class="form-field"><label>Visa Type *</label><input type="text" id="av-type" value="Tourist Sticker / e-Visa" required></div>
           <div class="form-field"><label>Processing Time *</label><input type="text" id="av-proc" value="5 - 7 Working Days" required></div>
           <div class="form-field"><label>Total Fee (BDT) *</label><input type="number" id="av-fee" value="14500" required></div>
+        </div>
+        <div class="form-grid-2">
+          <div class="form-field"><label>Banner Image URL</label><input type="text" id="av-img" value="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=800&q=80"></div>
+          <div class="form-field"><label>Or Upload Banner Photo</label><input type="file" id="av-file" accept="image/*"></div>
         </div>
         <div class="form-field"><label>Description *</label><textarea id="av-desc" rows="2" required>Complete visa documentation, appointment & submission support.</textarea></div>
         <button type="submit" class="btn btn-primary" style="width:100%">+ Save Visa Service</button>
@@ -976,6 +990,7 @@
 
     document.getElementById("adm-add-visa-form")?.addEventListener("submit", async e => {
       e.preventDefault();
+      const uploadedUrl = await uploadImageToMediaBucket(document.getElementById("av-file"));
       const country = document.getElementById("av-country").value.trim();
       const slug = country.toLowerCase().replace(/[^a-z0-9]+/g, "-") + "-visa-" + Math.floor(100 + Math.random() * 899);
       const payload = {
@@ -989,11 +1004,184 @@
         fee: Number(document.getElementById("av-fee").value),
         description: document.getElementById("av-desc").value.trim(),
         documents: ["Passport (6+ months validity)", "2 White Background Photos", "6 Months Bank Statement & Solvency"],
-        image_url: "https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=800&q=80"
+        image_url: uploadedUrl || document.getElementById("av-img").value.trim() || "https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=800&q=80",
+        active: true
       };
       const { error } = await window.AC.supabase.from("visa_services").insert([payload]);
       if (error) return window.AC.showToast(error.message, "error");
       window.AC.showToast("New visa service added!", "success");
+      window.ACSearch.closeModal();
+      await refreshAllData();
+      renderActiveTab();
+    });
+  }
+
+  function openEditVisaModal(visaId) {
+    const visa = admState.visas.find(x => String(x.id) === String(visaId));
+    if (!visa) {
+      window.AC.showToast("Visa service not found.", "error");
+      return;
+    }
+    const { escapeHtml } = window.AC;
+    const docsText = Array.isArray(visa.documents) ? visa.documents.join("\n") : "";
+
+    window.ACSearch.showModal(`
+      <h3>✏ Edit Visa Service Details</h3>
+      <p style="font-size:13px;color:var(--muted);margin:4px 0 16px">Update the visa service headline/title, fee (BDT), country flag icon, and banner image below.</p>
+      <form id="adm-edit-visa-form">
+        <div class="form-grid-2">
+          <div class="form-field">
+            <label>Visa Service Headline / Country Title *</label>
+            <input type="text" id="ev-country" value="${escapeHtml(visa.country || "")}" placeholder="e.g. Malaysia or Saudi Arabia (Umrah & Tourist)" required>
+          </div>
+          <div class="form-field">
+            <label>Visa Fee / Price (BDT) *</label>
+            <input type="number" id="ev-fee" value="${Number(visa.fee || 0)}" min="0" step="1" required>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-field">
+            <label>Country Flag Icon / Emoji *</label>
+            <input type="text" id="ev-flag" value="${escapeHtml(visa.flag_emoji || "🌍")}" placeholder="e.g. 🇲🇾, 🇦🇪, 🇸🇦" required>
+          </div>
+          <div class="form-field">
+            <label>Visa Type / Category Badge *</label>
+            <input type="text" id="ev-type" value="${escapeHtml(visa.visa_type || "")}" placeholder="e.g. Tourist / Student e-Visa" required>
+          </div>
+        </div>
+
+        <div style="padding:12px;background:#f8fafc;border:1px solid var(--line);border-radius:12px;margin-bottom:14px">
+          <label style="display:block;font-size:12px;font-weight:700;color:var(--ink);margin-bottom:8px;text-transform:uppercase">Associated Image / Banner &amp; Flag Preview</label>
+          <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:10px">
+            <div style="position:relative;width:120px;height:76px;border-radius:8px;overflow:hidden;border:1px solid var(--line);background:#e2e8f0;flex-shrink:0">
+              <img id="ev-preview-img" src="${escapeHtml(visa.image_url || "")}" alt="Visa Banner Preview" style="width:100%;height:100%;object-fit:cover">
+              <span id="ev-preview-flag" style="position:absolute;top:6px;left:6px;background:rgba(15,23,42,0.82);color:#fff;font-size:13px;padding:2px 7px;border-radius:999px">${escapeHtml(visa.flag_emoji || "🌍")}</span>
+            </div>
+            <div style="flex:1;min-width:200px;font-size:12px;color:var(--muted)">
+              Provide a direct image URL below or upload a new banner image file from your device.
+            </div>
+          </div>
+          <div class="form-grid-2" style="margin-bottom:0">
+            <div class="form-field" style="margin-bottom:0">
+              <label>Banner Image URL *</label>
+              <input type="text" id="ev-img" value="${escapeHtml(visa.image_url || "")}" placeholder="https://..." required>
+            </div>
+            <div class="form-field" style="margin-bottom:0">
+              <label>Or Upload New Banner Photo</label>
+              <input type="file" id="ev-file" accept="image/*">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-grid-3">
+          <div class="form-field">
+            <label>Processing Time *</label>
+            <input type="text" id="ev-proc" value="${escapeHtml(visa.processing_time || "")}" required>
+          </div>
+          <div class="form-field">
+            <label>Validity</label>
+            <input type="text" id="ev-validity" value="${escapeHtml(visa.validity || "90 Days")}">
+          </div>
+          <div class="form-field">
+            <label>Max Stay</label>
+            <input type="text" id="ev-stay" value="${escapeHtml(visa.max_stay || "30 Days")}">
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label>Service Description</label>
+          <textarea id="ev-desc" rows="2">${escapeHtml(visa.description || "")}</textarea>
+        </div>
+
+        <div class="form-field">
+          <label>Required Documents Checklist <small style="color:var(--muted);font-weight:400">(One document per line)</small></label>
+          <textarea id="ev-docs" rows="3">${escapeHtml(docsText)}</textarea>
+        </div>
+
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px">
+          <button type="button" class="btn btn-outline" onclick="window.ACSearch.closeModal()">Cancel</button>
+          <button type="submit" id="ev-save-btn" class="btn btn-primary">💾 Save Changes</button>
+        </div>
+      </form>
+    `);
+
+    const imgInput = document.getElementById("ev-img");
+    const fileInput = document.getElementById("ev-file");
+    const flagInput = document.getElementById("ev-flag");
+    const previewImg = document.getElementById("ev-preview-img");
+    const previewFlag = document.getElementById("ev-preview-flag");
+
+    imgInput?.addEventListener("input", () => {
+      const val = imgInput.value.trim();
+      if (val && previewImg) previewImg.src = val;
+    });
+
+    flagInput?.addEventListener("input", () => {
+      if (previewFlag) previewFlag.textContent = flagInput.value.trim() || "🌍";
+    });
+
+    fileInput?.addEventListener("change", () => {
+      const file = fileInput.files?.[0];
+      if (file && previewImg) {
+        const reader = new FileReader();
+        reader.onload = ev => {
+          if (ev.target?.result) previewImg.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    document.getElementById("adm-edit-visa-form")?.addEventListener("submit", async e => {
+      e.preventDefault();
+      const saveBtn = document.getElementById("ev-save-btn");
+      if (saveBtn) {
+        saveBtn.disabled = true;
+        saveBtn.textContent = "Saving Changes...";
+      }
+
+      let finalImageUrl = document.getElementById("ev-img").value.trim();
+      if (fileInput?.files?.[0]) {
+        const uploadedUrl = await uploadImageToMediaBucket(fileInput);
+        if (uploadedUrl) {
+          finalImageUrl = uploadedUrl;
+        }
+      }
+
+      const rawDocs = document.getElementById("ev-docs").value;
+      const docsArray = rawDocs
+        .split(/\r?\n/)
+        .map(s => s.trim())
+        .filter(Boolean);
+
+      const updates = {
+        country: document.getElementById("ev-country").value.trim(),
+        fee: Number(document.getElementById("ev-fee").value),
+        flag_emoji: document.getElementById("ev-flag").value.trim() || "🌍",
+        visa_type: document.getElementById("ev-type").value.trim(),
+        image_url: finalImageUrl,
+        processing_time: document.getElementById("ev-proc").value.trim(),
+        validity: document.getElementById("ev-validity").value.trim(),
+        max_stay: document.getElementById("ev-stay").value.trim(),
+        description: document.getElementById("ev-desc").value.trim(),
+        documents: docsArray.length ? docsArray : visa.documents
+      };
+
+      const { error } = await window.AC.supabase
+        .from("visa_services")
+        .update(updates)
+        .eq("id", visa.id);
+
+      if (error) {
+        window.AC.showToast("Failed to update visa service: " + error.message, "error");
+        if (saveBtn) {
+          saveBtn.disabled = false;
+          saveBtn.textContent = "💾 Save Changes";
+        }
+        return;
+      }
+
+      window.AC.showToast("Visa service updated successfully!", "success");
       window.ACSearch.closeModal();
       await refreshAllData();
       renderActiveTab();
@@ -1047,6 +1235,7 @@
     openEditPackageModal,
     openAddHotelModal,
     openAddVisaModal,
+    openEditVisaModal,
     openAddBannerModal,
     logoutAdmin
   };
