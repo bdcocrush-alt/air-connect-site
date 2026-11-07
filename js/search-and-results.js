@@ -14,7 +14,11 @@
       adults: 1,
       children: 0,
       infants: 0,
-      cabin: "Economy"
+      cabin: "Economy",
+      multiCitySegments: [
+        { from: "DAC", to: "CXB", departDate: getFutureDate(5) },
+        { from: "", to: "", departDate: "" }
+      ]
     },
     hotel: {
       city: "All",
@@ -63,8 +67,30 @@
   }
 
   function getAirportCity(code) {
+    if (!code) return "Select a city";
     const ap = window.AC.state.airports.find(a => a.code === code);
     return ap ? ap.city : code;
+  }
+
+  function getAirportSubText(code) {
+    if (!code) return "Click to choose an airport";
+    const ap = window.AC.state.airports.find(a => a.code === code);
+    if (ap) return `${ap.code}, ${ap.name}`;
+    return code;
+  }
+
+  function formatMultiCityDate(dateStr) {
+    if (!dateStr) return null;
+    const parts = dateStr.split("-");
+    if (parts.length !== 3) return null;
+    const dt = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+    if (isNaN(dt.getTime())) return null;
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const dayNum = String(dt.getDate());
+    const monthYear = `${months[dt.getMonth()]}'${String(dt.getFullYear()).slice(-2)}`;
+    const weekday = days[dt.getDay()];
+    return { dayNum, monthYear, weekday };
   }
 
   function switchSearchTab(tab, subOption) {
@@ -147,6 +173,12 @@
       if (f.cabin !== "Economy" && f.cabin !== "Business") {
         f.cabin = "Economy";
       }
+      if (!Array.isArray(f.multiCitySegments) || f.multiCitySegments.length < 2) {
+        f.multiCitySegments = [
+          { from: f.from || "DAC", to: f.to || "CXB", departDate: f.departDate || getFutureDate(5) },
+          { from: "", to: "", departDate: "" }
+        ];
+      }
       const totalPax = f.adults + f.children + f.infants;
       const airportOptions = dir =>
         airports
@@ -156,34 +188,153 @@
           )
           .join("");
 
-      container.innerHTML = `
-        <div class="search-top-controls">
-          <div class="trip-type-group">
-            ${["One Way", "Round Trip", "Multi-City"]
-              .map(
-                t => `
-              <label class="pill-radio ${f.tripType === t ? "active" : ""}">
-                <input type="radio" name="tripType" value="${t}" ${f.tripType === t ? "checked" : ""}>
-                ${t}
-              </label>`
-              )
-              .join("")}
+      const mcAirportOptions = selectedCode =>
+        `<option value="" ${!selectedCode ? "selected" : ""}>Select a city (Choose an airport)</option>` +
+        airports
+          .map(
+            a =>
+              `<option value="${escapeHtml(a.code)}" ${selectedCode === a.code ? "selected" : ""}>${escapeHtml(a.city)} — ${escapeHtml(a.code)}, ${escapeHtml(a.name)} (${escapeHtml(a.country)})</option>`
+          )
+          .join("");
+
+      const travellersPopoverHtml = `
+        <div class="travellers-popover" id="travellers-popover" hidden>
+          <div class="pax-counter-row">
+            <div class="pax-counter-info">
+              <strong>Adult</strong>
+              <span>12 years and above</span>
+            </div>
+            <div class="pax-stepper">
+              <button type="button" class="pax-step-btn" data-pax-type="adults" data-pax-dir="-1" ${f.adults <= 1 ? "disabled" : ""}>−</button>
+              <span class="pax-step-val" id="pax-val-adults">${f.adults}</span>
+              <button type="button" class="pax-step-btn" data-pax-type="adults" data-pax-dir="1" ${f.adults >= 9 ? "disabled" : ""}>+</button>
+            </div>
           </div>
-          <div class="fare-type-group">
-            <span class="fare-tag-label">Fare Type:</span>
-            ${["Regular", "Student", "Labour", "Umrah"]
-              .map(
-                ft => `
-              <label class="pill-radio ${f.fareType === ft ? "active" : ""}">
-                <input type="radio" name="fareType" value="${ft}" ${f.fareType === ft ? "checked" : ""}>
-                ${ft}
-              </label>`
-              )
-              .join("")}
+
+          <div class="pax-counter-row">
+            <div class="pax-counter-info">
+              <strong>Children</strong>
+              <span>2–11 years</span>
+            </div>
+            <div class="pax-stepper">
+              <button type="button" class="pax-step-btn" data-pax-type="children" data-pax-dir="-1" ${f.children <= 0 ? "disabled" : ""}>−</button>
+              <span class="pax-step-val" id="pax-val-children">${f.children}</span>
+              <button type="button" class="pax-step-btn" data-pax-type="children" data-pax-dir="1" ${f.children >= 9 ? "disabled" : ""}>+</button>
+            </div>
+          </div>
+
+          <div class="pax-counter-row">
+            <div class="pax-counter-info">
+              <strong>Infant</strong>
+              <span>Below 2 years</span>
+            </div>
+            <div class="pax-stepper">
+              <button type="button" class="pax-step-btn" data-pax-type="infants" data-pax-dir="-1" ${f.infants <= 0 ? "disabled" : ""}>−</button>
+              <span class="pax-step-val" id="pax-val-infants">${f.infants}</span>
+              <button type="button" class="pax-step-btn" data-pax-type="infants" data-pax-dir="1" ${f.infants >= 9 ? "disabled" : ""}>+</button>
+            </div>
+          </div>
+
+          <div class="pax-class-section">
+            <span class="pax-class-title">Class</span>
+            <div class="pax-class-options">
+              <label class="pax-class-radio">
+                <input type="radio" name="flCabinRadio" value="Economy" ${f.cabin === "Economy" ? "checked" : ""}>
+                Economy
+              </label>
+              <label class="pax-class-radio">
+                <input type="radio" name="flCabinRadio" value="Business" ${f.cabin === "Business" ? "checked" : ""}>
+                Business
+              </label>
+            </div>
+          </div>
+
+          <div class="pax-popover-footer">
+            <button type="button" class="btn btn-primary pax-done-btn" id="travellers-done-btn">Done</button>
           </div>
         </div>
+      `;
 
-        <form id="ota-flight-form">
+      const isMultiCity = f.tripType === "Multi-City";
+
+      const multiCityRowsHtml = isMultiCity
+        ? `
+          <div class="mc-segments-list">
+            ${f.multiCitySegments
+              .map((seg, idx) => {
+                const dInfo = formatMultiCityDate(seg.departDate);
+                return `
+                  <div class="mc-segment-row" data-mc-row="${idx}">
+                    <!-- FROM -->
+                    <div class="mc-field-box">
+                      <span class="mc-field-label">FROM</span>
+                      <div class="mc-field-main ${!seg.from ? "is-placeholder" : ""}" id="mc-from-city-${idx}">
+                        ${escapeHtml(seg.from ? getAirportCity(seg.from) : "Select a city")}
+                      </div>
+                      <div class="mc-field-sub" id="mc-from-sub-${idx}">
+                        ${escapeHtml(getAirportSubText(seg.from))}
+                      </div>
+                      <select class="mc-overlay-select" data-mc-from="${idx}" aria-label="From City Row ${idx + 1}">
+                        ${mcAirportOptions(seg.from)}
+                      </select>
+                    </div>
+
+                    <!-- TO -->
+                    <div class="mc-field-box">
+                      <span class="mc-field-label">TO</span>
+                      <div class="mc-field-main ${!seg.to ? "is-placeholder" : ""}" id="mc-to-city-${idx}">
+                        ${escapeHtml(seg.to ? getAirportCity(seg.to) : "Select a city")}
+                      </div>
+                      <div class="mc-field-sub" id="mc-to-sub-${idx}">
+                        ${escapeHtml(getAirportSubText(seg.to))}
+                      </div>
+                      <select class="mc-overlay-select" data-mc-to="${idx}" aria-label="To City Row ${idx + 1}">
+                        ${mcAirportOptions(seg.to)}
+                      </select>
+                    </div>
+
+                    <!-- DEPARTURE DATE -->
+                    <div class="mc-field-box" data-mc-date-box="${idx}">
+                      <span class="mc-field-label">DEPARTURE DATE</span>
+                      ${
+                        dInfo
+                          ? `<div class="mc-field-main" id="mc-date-main-${idx}">${escapeHtml(dInfo.dayNum)}<span class="mc-date-month">${escapeHtml(dInfo.monthYear)}</span></div>
+                             <div class="mc-field-sub" id="mc-date-sub-${idx}">${escapeHtml(dInfo.weekday)}</div>`
+                          : `<div class="mc-field-main is-date-placeholder" id="mc-date-main-${idx}">Pick a date</div>
+                             <div class="mc-field-sub" id="mc-date-sub-${idx}">&nbsp;</div>`
+                      }
+                      <input type="date" class="mc-overlay-date" data-mc-date="${idx}" value="${escapeHtml(seg.departDate || "")}" aria-label="Departure Date Row ${idx + 1}">
+                    </div>
+
+                    <!-- 4TH COLUMN: TRAVELER, CLASS (Row 0) OR ADD ANOTHER CITY + REMOVE (Row 1+) -->
+                    ${
+                      idx === 0
+                        ? `
+                        <div class="mc-field-box has-popover" id="travellers-field-box">
+                          <div class="travellers-trigger" id="travellers-trigger-btn" role="button" tabindex="0" aria-expanded="false">
+                            <span class="mc-field-label" style="cursor:pointer">TRAVELER, CLASS</span>
+                            <div class="mc-field-main" id="travellers-summary-text">${totalPax} Traveler${totalPax > 1 ? "s" : ""}</div>
+                            <div class="mc-field-sub" id="travellers-sub-text">${escapeHtml(f.cabin)}</div>
+                          </div>
+                          ${travellersPopoverHtml}
+                        </div>`
+                        : `
+                        <div class="mc-action-box">
+                          <button type="button" class="mc-add-city-btn" data-mc-add="${idx}" ${f.multiCitySegments.length >= 5 ? "disabled" : ""}>
+                            Add Another City
+                          </button>
+                          <div class="mc-remove-cell">
+                            <button type="button" class="mc-remove-btn" data-mc-remove="${idx}" title="Remove city segment">✕</button>
+                          </div>
+                        </div>`
+                    }
+                  </div>
+                `;
+              })
+              .join("")}
+          </div>
+        `
+        : `
           <div class="search-grid-flight">
             <div class="field-box">
               <label>From (Origin)</label>
@@ -217,68 +368,48 @@
                 <strong id="travellers-summary-text">${totalPax} Traveller${totalPax > 1 ? "s" : ""}</strong>
                 <small id="travellers-sub-text">${escapeHtml(f.cabin)}</small>
               </div>
-
-              <div class="travellers-popover" id="travellers-popover" hidden>
-                <div class="pax-counter-row">
-                  <div class="pax-counter-info">
-                    <strong>Adult</strong>
-                    <span>12 years and above</span>
-                  </div>
-                  <div class="pax-stepper">
-                    <button type="button" class="pax-step-btn" data-pax-type="adults" data-pax-dir="-1" ${f.adults <= 1 ? "disabled" : ""}>−</button>
-                    <span class="pax-step-val" id="pax-val-adults">${f.adults}</span>
-                    <button type="button" class="pax-step-btn" data-pax-type="adults" data-pax-dir="1" ${f.adults >= 9 ? "disabled" : ""}>+</button>
-                  </div>
-                </div>
-
-                <div class="pax-counter-row">
-                  <div class="pax-counter-info">
-                    <strong>Children</strong>
-                    <span>2–11 years</span>
-                  </div>
-                  <div class="pax-stepper">
-                    <button type="button" class="pax-step-btn" data-pax-type="children" data-pax-dir="-1" ${f.children <= 0 ? "disabled" : ""}>−</button>
-                    <span class="pax-step-val" id="pax-val-children">${f.children}</span>
-                    <button type="button" class="pax-step-btn" data-pax-type="children" data-pax-dir="1" ${f.children >= 9 ? "disabled" : ""}>+</button>
-                  </div>
-                </div>
-
-                <div class="pax-counter-row">
-                  <div class="pax-counter-info">
-                    <strong>Infant</strong>
-                    <span>Below 2 years</span>
-                  </div>
-                  <div class="pax-stepper">
-                    <button type="button" class="pax-step-btn" data-pax-type="infants" data-pax-dir="-1" ${f.infants <= 0 ? "disabled" : ""}>−</button>
-                    <span class="pax-step-val" id="pax-val-infants">${f.infants}</span>
-                    <button type="button" class="pax-step-btn" data-pax-type="infants" data-pax-dir="1" ${f.infants >= 9 ? "disabled" : ""}>+</button>
-                  </div>
-                </div>
-
-                <div class="pax-class-section">
-                  <span class="pax-class-title">Class</span>
-                  <div class="pax-class-options">
-                    <label class="pax-class-radio">
-                      <input type="radio" name="flCabinRadio" value="Economy" ${f.cabin === "Economy" ? "checked" : ""}>
-                      Economy
-                    </label>
-                    <label class="pax-class-radio">
-                      <input type="radio" name="flCabinRadio" value="Business" ${f.cabin === "Business" ? "checked" : ""}>
-                      Business
-                    </label>
-                  </div>
-                </div>
-
-                <div class="pax-popover-footer">
-                  <button type="button" class="btn btn-primary pax-done-btn" id="travellers-done-btn">Done</button>
-                </div>
-              </div>
+              ${travellersPopoverHtml}
             </div>
           </div>
+        `;
+
+      container.innerHTML = `
+        <div class="search-top-controls">
+          <div class="trip-type-group">
+            ${[
+              { val: "One Way", label: "One Way" },
+              { val: "Round Trip", label: "Round Way" },
+              { val: "Multi-City", label: "Multi City" }
+            ]
+              .map(
+                t => `
+              <label class="pill-radio ${f.tripType === t.val ? "active" : ""}">
+                <input type="radio" name="tripType" value="${t.val}" ${f.tripType === t.val ? "checked" : ""}>
+                ${t.label}
+              </label>`
+              )
+              .join("")}
+          </div>
+          <div class="fare-type-group">
+            <span class="fare-tag-label">Fare Type:</span>
+            ${["Regular", "Student", "Labour", "Umrah"]
+              .map(
+                ft => `
+              <label class="pill-radio ${f.fareType === ft ? "active" : ""}">
+                <input type="radio" name="fareType" value="${ft}" ${f.fareType === ft ? "checked" : ""}>
+                ${ft}
+              </label>`
+              )
+              .join("")}
+          </div>
+        </div>
+
+        <form id="ota-flight-form">
+          ${multiCityRowsHtml}
 
           <div class="search-submit-wrap">
             <button type="submit" class="btn btn-primary search-submit-btn">
-              🔍 Search Flights
+              Search
             </button>
           </div>
         </form>
@@ -288,7 +419,8 @@
         const tot = searchState.flight.adults + searchState.flight.children + searchState.flight.infants;
         const sumEl = document.getElementById("travellers-summary-text");
         const subEl = document.getElementById("travellers-sub-text");
-        if (sumEl) sumEl.textContent = `${tot} Traveller${tot > 1 ? "s" : ""}`;
+        const word = isMultiCity ? "Traveler" : "Traveller";
+        if (sumEl) sumEl.textContent = `${tot} ${word}${tot > 1 ? "s" : ""}`;
         if (subEl) subEl.textContent = searchState.flight.cabin;
 
         const adVal = document.getElementById("pax-val-adults");
@@ -310,7 +442,6 @@
 
       const popover = document.getElementById("travellers-popover");
       const triggerBtn = document.getElementById("travellers-trigger-btn");
-      const fieldBox = document.getElementById("travellers-field-box");
 
       triggerBtn?.addEventListener("click", e => {
         e.stopPropagation();
@@ -364,6 +495,97 @@
         });
       }
 
+      // Bind Multi-City interactive events
+      if (isMultiCity) {
+        container.querySelectorAll("[data-mc-from]").forEach(sel => {
+          sel.addEventListener("change", e => {
+            const idx = Number(sel.getAttribute("data-mc-from"));
+            f.multiCitySegments[idx].from = e.target.value;
+            renderSearchBox();
+          });
+        });
+
+        container.querySelectorAll("[data-mc-to]").forEach(sel => {
+          sel.addEventListener("change", e => {
+            const idx = Number(sel.getAttribute("data-mc-to"));
+            const val = e.target.value;
+            f.multiCitySegments[idx].to = val;
+            if (idx + 1 < f.multiCitySegments.length && !f.multiCitySegments[idx + 1].from && val) {
+              f.multiCitySegments[idx + 1].from = val;
+            }
+            renderSearchBox();
+          });
+        });
+
+        container.querySelectorAll("[data-mc-date-box]").forEach(box => {
+          const idx = Number(box.getAttribute("data-mc-date-box"));
+          const dateInput = box.querySelector(`[data-mc-date="${idx}"]`);
+          box.addEventListener("click", e => {
+            if (e.target !== dateInput && dateInput) {
+              if (typeof dateInput.showPicker === "function") {
+                try {
+                  dateInput.showPicker();
+                } catch (_) {
+                  dateInput.focus();
+                }
+              } else {
+                dateInput.focus();
+              }
+            }
+          });
+        });
+
+        container.querySelectorAll("[data-mc-date]").forEach(inp => {
+          inp.addEventListener("click", e => {
+            if (typeof inp.showPicker === "function") {
+              try {
+                inp.showPicker();
+              } catch (_) {}
+            }
+          });
+          inp.addEventListener("change", e => {
+            const idx = Number(inp.getAttribute("data-mc-date"));
+            f.multiCitySegments[idx].departDate = e.target.value;
+            renderSearchBox();
+          });
+        });
+
+        container.querySelectorAll("[data-mc-add]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            if (f.multiCitySegments.length >= 5) {
+              window.AC.showToast("Maximum 5 flight segments allowed in Multi-City search.", "info");
+              return;
+            }
+            const lastSeg = f.multiCitySegments[f.multiCitySegments.length - 1];
+            f.multiCitySegments.push({
+              from: lastSeg?.to || "",
+              to: "",
+              departDate: ""
+            });
+            renderSearchBox();
+          });
+        });
+
+        container.querySelectorAll("[data-mc-remove]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const idx = Number(btn.getAttribute("data-mc-remove"));
+            if (f.multiCitySegments.length > 2) {
+              f.multiCitySegments.splice(idx, 1);
+              renderSearchBox();
+            } else {
+              const seg = f.multiCitySegments[idx];
+              if (seg && (seg.from || seg.to || seg.departDate)) {
+                f.multiCitySegments[idx] = { from: "", to: "", departDate: "" };
+                renderSearchBox();
+              } else {
+                f.tripType = "One Way";
+                renderSearchBox();
+              }
+            }
+          });
+        });
+      }
+
       container.querySelectorAll('input[name="tripType"]').forEach(r => {
         r.addEventListener("change", e => {
           searchState.flight.tripType = e.target.value;
@@ -393,6 +615,28 @@
       document.getElementById("ota-flight-form")?.addEventListener("submit", e => {
         e.preventDefault();
         if (popover) popover.hidden = true;
+        if (searchState.flight.tripType === "Multi-City") {
+          for (let i = 0; i < f.multiCitySegments.length; i++) {
+            const s = f.multiCitySegments[i];
+            if (!s.from || !s.to) {
+              window.AC.showToast(`Please select both FROM and TO cities for Flight Row ${i + 1}.`, "error");
+              return;
+            }
+            if (s.from === s.to) {
+              window.AC.showToast(`FROM and TO cities cannot be the same in Flight Row ${i + 1}.`, "error");
+              return;
+            }
+            if (!s.departDate) {
+              window.AC.showToast(`Please pick a Departure Date for Flight Row ${i + 1}.`, "error");
+              return;
+            }
+          }
+          searchState.flight.from = f.multiCitySegments[0].from;
+          searchState.flight.to = f.multiCitySegments[f.multiCitySegments.length - 1].to;
+          searchState.flight.departDate = f.multiCitySegments[0].departDate;
+          executeFlightSearch();
+          return;
+        }
         searchState.flight.from = document.getElementById("fl-from").value;
         searchState.flight.to = document.getElementById("fl-to").value;
         searchState.flight.departDate = document.getElementById("fl-depart").value;
@@ -774,8 +1018,43 @@
 
   function executeFlightSearch() {
     const f = searchState.flight;
-    const allResults = generateFlightsForRoute(f.from, f.to, f.tripType, f.cabin, f.fareType);
-    searchState.currentResults = allResults;
+    if (f.tripType === "Multi-City" && Array.isArray(f.multiCitySegments) && f.multiCitySegments.length >= 2) {
+      const legOptions = f.multiCitySegments.map(seg =>
+        generateFlightsForRoute(seg.from, seg.to, "One Way", f.cabin, f.fareType)
+      );
+      const count = Math.min(5, legOptions[0]?.length || 4);
+      const combinedResults = [];
+      for (let i = 0; i < count; i++) {
+        const legs = legOptions.map((opts, legIdx) => {
+          const chosen = opts[i % opts.length];
+          return {
+            ...chosen,
+            departDate: f.multiCitySegments[legIdx].departDate
+          };
+        });
+        const first = legs[0];
+        const last = legs[legs.length - 1];
+        const totalBase = legs.reduce((acc, l) => acc + l.computed_base, 0);
+        const totalTax = legs.reduce((acc, l) => acc + l.computed_tax, 0);
+        combinedResults.push({
+          ...first,
+          id: `mc-${i}`,
+          flight_number: legs.map(l => l.flight_number).join(" / "),
+          from_code: first.from_code,
+          from_city: first.from_city,
+          to_code: last.to_code,
+          to_city: last.to_city,
+          trip_type: "Multi-City",
+          computed_base: totalBase,
+          computed_tax: totalTax,
+          multi_legs: legs
+        });
+      }
+      searchState.currentResults = combinedResults;
+    } else {
+      const allResults = generateFlightsForRoute(f.from, f.to, f.tripType, f.cabin, f.fareType);
+      searchState.currentResults = allResults;
+    }
     renderFlightResultsSection();
     document.getElementById("results-section")?.scrollIntoView({ behavior: "smooth" });
   }
@@ -807,11 +1086,16 @@
       ...new Map(searchState.currentResults.map(r => [r.airline_code, r.airline])).entries()
     ];
 
+    const routeHeadingHtml =
+      f.tripType === "Multi-City" && Array.isArray(f.multiCitySegments)
+        ? f.multiCitySegments.map(s => `${escapeHtml(getAirportCity(s.from))} (${escapeHtml(s.from)}) → ${escapeHtml(getAirportCity(s.to))} (${escapeHtml(s.to)})`).join(" • ")
+        : `${escapeHtml(getAirportCity(f.from))} (${escapeHtml(f.from)}) → ${escapeHtml(getAirportCity(f.to))} (${escapeHtml(f.to)})`;
+
     sec.innerHTML = `
       <div class="container">
         <div class="section-head" style="margin-top:16px">
           <div>
-            <h2>✈ Flights: ${escapeHtml(getAirportCity(f.from))} (${escapeHtml(f.from)}) → ${escapeHtml(getAirportCity(f.to))} (${escapeHtml(f.to)})</h2>
+            <h2>✈ Flights: ${routeHeadingHtml}</h2>
             <p>${escapeHtml(f.tripType)} • ${escapeHtml(f.departDate)}${f.tripType === "Round Trip" ? " to " + escapeHtml(f.returnDate) : ""} • ${paxTotal} Traveller(s) • ${escapeHtml(f.cabin)} • <strong>${escapeHtml(f.fareType)} Fare</strong></p>
           </div>
           <button class="btn btn-outline btn-sm" onclick="document.getElementById('results-section').hidden=true">✕ Close Results</button>
@@ -890,21 +1174,48 @@
                             </div>
                           </div>
 
-                          <div class="flight-timeline">
-                            <div class="flight-time-col">
-                              <strong>${escapeHtml(item.departure_time)}</strong>
-                              <span>${escapeHtml(item.from_code)} (${escapeHtml(item.from_city)})</span>
-                            </div>
-                            <div class="flight-duration-col">
-                              <span>${escapeHtml(item.duration)}</span>
-                              <div class="flight-duration-bar"></div>
-                              <strong style="color:${item.stops === "Non-Stop" ? "var(--brand-green)" : "var(--brand-gold)"};font-size:12px">${escapeHtml(item.stops)}</strong>
-                            </div>
-                            <div class="flight-time-col">
-                              <strong>${escapeHtml(item.arrival_time)}</strong>
-                              <span>${escapeHtml(item.to_code)} (${escapeHtml(item.to_city)})</span>
-                            </div>
-                          </div>
+                          ${
+                            item.multi_legs && item.multi_legs.length
+                              ? `<div style="display:flex;flex-direction:column;gap:10px">
+                                  ${item.multi_legs
+                                    .map(
+                                      (leg, lIdx) => `
+                                    <div class="flight-timeline" style="padding:6px 10px;background:#f8fafc;border-radius:10px;border:1px solid var(--line)">
+                                      <div class="flight-time-col">
+                                        <small style="font-size:10px;font-weight:700;color:var(--brand-primary)">LEG ${lIdx + 1} (${escapeHtml(leg.departDate)})</small>
+                                        <strong>${escapeHtml(leg.departure_time)}</strong>
+                                        <span>${escapeHtml(leg.from_code)} (${escapeHtml(leg.from_city)})</span>
+                                      </div>
+                                      <div class="flight-duration-col">
+                                        <span>${escapeHtml(leg.duration)}</span>
+                                        <div class="flight-duration-bar"></div>
+                                        <strong style="color:${leg.stops === "Non-Stop" ? "var(--brand-green)" : "var(--brand-gold)"};font-size:11px">${escapeHtml(leg.stops)}</strong>
+                                      </div>
+                                      <div class="flight-time-col">
+                                        <small style="font-size:10px;color:var(--muted)">${escapeHtml(leg.flight_number)}</small>
+                                        <strong>${escapeHtml(leg.arrival_time)}</strong>
+                                        <span>${escapeHtml(leg.to_code)} (${escapeHtml(leg.to_city)})</span>
+                                      </div>
+                                    </div>`
+                                    )
+                                    .join("")}
+                                </div>`
+                              : `<div class="flight-timeline">
+                                  <div class="flight-time-col">
+                                    <strong>${escapeHtml(item.departure_time)}</strong>
+                                    <span>${escapeHtml(item.from_code)} (${escapeHtml(item.from_city)})</span>
+                                  </div>
+                                  <div class="flight-duration-col">
+                                    <span>${escapeHtml(item.duration)}</span>
+                                    <div class="flight-duration-bar"></div>
+                                    <strong style="color:${item.stops === "Non-Stop" ? "var(--brand-green)" : "var(--brand-gold)"};font-size:12px">${escapeHtml(item.stops)}</strong>
+                                  </div>
+                                  <div class="flight-time-col">
+                                    <strong>${escapeHtml(item.arrival_time)}</strong>
+                                    <span>${escapeHtml(item.to_code)} (${escapeHtml(item.to_city)})</span>
+                                  </div>
+                                </div>`
+                          }
 
                           <div class="flight-price-col">
                             <div>

@@ -407,6 +407,182 @@ button, input, select, textarea {
   box-sizing: border-box;
 }
 
+/* Multi-City Flight Search Layout (reference image style) */
+.mc-segments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.mc-segment-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  align-items: stretch;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.mc-field-box {
+  background: #ffffff;
+  border: 1px solid #d8e0ea;
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 82px;
+  position: relative;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.mc-field-box:hover,
+.mc-field-box:focus-within {
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px rgba(192, 0, 0, 0.07);
+}
+
+.mc-field-box.has-popover {
+  overflow: visible;
+}
+
+.mc-field-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #475569;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mc-field-main {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mc-field-main .mc-date-month {
+  font-size: 15px;
+  font-weight: 500;
+  color: #334155;
+  margin-left: 3px;
+}
+
+.mc-field-main.is-placeholder {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.mc-field-main.is-date-placeholder {
+  font-size: 15px;
+  font-weight: 500;
+  color: #334155;
+  margin-top: 2px;
+}
+
+.mc-field-sub {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mc-overlay-select,
+.mc-overlay-date {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 3;
+  border: 0;
+}
+
+.mc-action-box {
+  background: #ffffff;
+  border: 1px solid #d8e0ea;
+  border-radius: 12px;
+  min-height: 82px;
+  display: grid;
+  grid-template-columns: 1fr 68px;
+  align-items: stretch;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.mc-add-city-btn {
+  border: 0;
+  background: transparent;
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  transition: background 0.18s, color 0.18s;
+}
+
+.mc-add-city-btn:hover:not(:disabled) {
+  background: #f8fafc;
+  color: var(--brand-primary);
+}
+
+.mc-add-city-btn:disabled {
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.mc-remove-cell {
+  border-left: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mc-remove-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 0;
+  background: #cbd5e1;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background 0.18s, transform 0.18s;
+  line-height: 1;
+  padding: 0;
+}
+
+.mc-remove-btn:hover {
+  background: #ef4444;
+  transform: scale(1.08);
+}
+
 .search-submit-wrap {
   display: flex;
   justify-content: center;
@@ -1708,7 +1884,8 @@ button, input, select, textarea {
 
 /* Responsive Breakpoints */
 @media (max-width: 1140px) {
-  .search-grid-flight {
+  .search-grid-flight,
+  .mc-segment-row {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .swap-btn {
@@ -1735,7 +1912,8 @@ button, input, select, textarea {
     padding: 32px 16px 34px;
   }
   .search-grid-flight,
-  .search-grid-generic {
+  .search-grid-generic,
+  .mc-segment-row {
     grid-template-columns: minmax(0, 1fr);
   }
   .flight-result-main {
