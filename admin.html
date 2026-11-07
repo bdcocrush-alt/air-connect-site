@@ -6,7 +6,7 @@
   <title>Admin Dashboard — Air Connect Ltd Semi-OTA Management</title>
   <link rel="icon" type="image/png" href="assets/favicon.png">
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=12">
+  <link rel="stylesheet" href="css/styles.css?v=13">
   <style>
     .admin-shell {
       display: grid;
@@ -127,7 +127,7 @@
         </div>
       </a>
       <div style="display:flex;align-items:center;gap:10px">
-        <a href="index.html" class="btn btn-outline btn-sm">🌐 View Live Website</a>
+        <a href="index.html" class="btn btn-outline btn-sm">View Live Website</a>
         <button type="button" id="admin-logout-btn" class="btn btn-outline btn-sm" hidden onclick="window.ACAdmin.logoutAdmin()">Logout</button>
       </div>
     </div>
@@ -157,25 +157,25 @@
   <div id="admin-app-shell" class="admin-shell" hidden>
     <aside class="admin-sidebar">
       <button type="button" class="admin-nav-btn active" data-adm-tab="bookings" onclick="window.ACAdmin.switchTab('bookings')">
-        📊 Bookings &amp; Ticketing
+        Bookings &amp; Ticketing
       </button>
       <button type="button" class="admin-nav-btn" data-adm-tab="requests" onclick="window.ACAdmin.switchTab('requests')">
-        🔄 Refund &amp; Reissue
+        Refund &amp; Reissue
       </button>
       <button type="button" class="admin-nav-btn" data-adm-tab="flights" onclick="window.ACAdmin.switchTab('flights')">
-        ✈ Flight Deals &amp; Routes
+        Flight Deals &amp; Routes
       </button>
       <button type="button" class="admin-nav-btn" data-adm-tab="packages" onclick="window.ACAdmin.switchTab('packages')">
-        🕋 Umrah, Hajj &amp; Tours
+        Umrah, Hajj &amp; Tours
       </button>
       <button type="button" class="admin-nav-btn" data-adm-tab="hotels" onclick="window.ACAdmin.switchTab('hotels')">
-        🏨 Hotels Catalog
+        Hotels Catalog
       </button>
       <button type="button" class="admin-nav-btn" data-adm-tab="visas" onclick="window.ACAdmin.switchTab('visas')">
-        🛂 Visas &amp; Banners
+        Visas &amp; Banners
       </button>
       <button type="button" class="admin-nav-btn" data-adm-tab="settings" onclick="window.ACAdmin.switchTab('settings')">
-        ⚙ Site &amp; Payment Settings
+        Site &amp; Payment Settings
       </button>
     </aside>
 
@@ -183,10 +183,10 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/config.js?v=12"></script>
-  <script src="js/supabase-client.js?v=12"></script>
-  <script src="js/search-and-results.js?v=12"></script>
-  <script src="js/booking-checkout.js?v=12"></script>
-  <script src="js/admin.js?v=12"></script>
+  <script src="js/config.js?v=13"></script>
+  <script src="js/supabase-client.js?v=13"></script>
+  <script src="js/search-and-results.js?v=13"></script>
+  <script src="js/booking-checkout.js?v=13"></script>
+  <script src="js/admin.js?v=13"></script>
 </body>
 </html>

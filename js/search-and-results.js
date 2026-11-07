@@ -687,7 +687,7 @@
             </div>
           </div>
           <div class="search-submit-wrap">
-            <button type="submit" class="btn btn-primary search-submit-btn">🔍 Search Hotels</button>
+            <button type="submit" class="btn btn-primary search-submit-btn">Search Hotels</button>
           </div>
         </form>
       `;
@@ -714,11 +714,11 @@
             <span class="fare-tag-label">Select Section:</span>
             <label class="pill-radio ${grp === "HAJJ_UMRAH" ? "active" : ""}">
               <input type="radio" name="pkgGroup" value="HAJJ_UMRAH" ${grp === "HAJJ_UMRAH" ? "checked" : ""}>
-              🕋 Hajj &amp; Umrah Section
+              Hajj &amp; Umrah Section
             </label>
             <label class="pill-radio ${grp === "TOUR" ? "active" : ""}">
               <input type="radio" name="pkgGroup" value="TOUR" ${grp === "TOUR" ? "checked" : ""}>
-              🌍 Tour Packages Section
+              Tour Packages Section
             </label>
           </div>
 
@@ -729,15 +729,15 @@
               <span class="fare-tag-label">Tour Offering:</span>
               <label class="pill-radio ${t.category === "ALL" ? "active" : ""}">
                 <input type="radio" name="tourSubCat" value="ALL" ${t.category === "ALL" ? "checked" : ""}>
-                🌏 All Tour Packages
+                All Tour Packages
               </label>
               <label class="pill-radio ${t.category === "INBOUND_TOUR" ? "active" : ""}">
                 <input type="radio" name="tourSubCat" value="INBOUND_TOUR" ${t.category === "INBOUND_TOUR" ? "checked" : ""}>
-                🇧🇩 Inbound Tours (Bangladesh)
+                Inbound Tours (Bangladesh)
               </label>
               <label class="pill-radio ${t.category === "OUTBOUND_TOUR" ? "active" : ""}">
                 <input type="radio" name="tourSubCat" value="OUTBOUND_TOUR" ${t.category === "OUTBOUND_TOUR" ? "checked" : ""}>
-                ✈️ Outbound Tours (International)
+                Outbound Tours (International)
               </label>
             </div>`
               : `
@@ -745,15 +745,15 @@
               <span class="fare-tag-label">Pilgrimage Type:</span>
               <label class="pill-radio ${u.category === "ALL_SPIRITUAL" ? "active" : ""}">
                 <input type="radio" name="umrahSubCat" value="ALL_SPIRITUAL" ${u.category === "ALL_SPIRITUAL" ? "checked" : ""}>
-                🕋 All Hajj &amp; Umrah
+                All Hajj &amp; Umrah
               </label>
               <label class="pill-radio ${u.category === "UMRAH" ? "active" : ""}">
                 <input type="radio" name="umrahSubCat" value="UMRAH" ${u.category === "UMRAH" ? "checked" : ""}>
-                🕋 Umrah Packages
+                Umrah Packages
               </label>
               <label class="pill-radio ${u.category === "HAJJ" ? "active" : ""}">
                 <input type="radio" name="umrahSubCat" value="HAJJ" ${u.category === "HAJJ" ? "checked" : ""}>
-                🕋 Hajj Packages
+                Hajj Packages
               </label>
             </div>`
           }
@@ -768,8 +768,8 @@
               <label>Tour Category (Inbound / Outbound)</label>
               <select id="tr-cat">
                 <option value="ALL" ${t.category === "ALL" ? "selected" : ""}>All Tour Packages (Inbound &amp; Outbound)</option>
-                <option value="INBOUND_TOUR" ${t.category === "INBOUND_TOUR" ? "selected" : ""}>🇧🇩 Inbound Tours (Explore Bangladesh)</option>
-                <option value="OUTBOUND_TOUR" ${t.category === "OUTBOUND_TOUR" ? "selected" : ""}>✈️ Outbound Tours (World Holidays)</option>
+                <option value="INBOUND_TOUR" ${t.category === "INBOUND_TOUR" ? "selected" : ""}>Inbound Tours (Explore Bangladesh)</option>
+                <option value="OUTBOUND_TOUR" ${t.category === "OUTBOUND_TOUR" ? "selected" : ""}>Outbound Tours (World Holidays)</option>
               </select>
               <small>Domestic Bangladesh &amp; International Holidays</small>
             </div>
@@ -793,7 +793,7 @@
           </div>
           <div class="search-submit-wrap">
             <button type="submit" class="btn btn-primary search-submit-btn">
-              🔍 ${t.category === "INBOUND_TOUR" ? "Find Inbound Tours" : t.category === "OUTBOUND_TOUR" ? "Find Outbound Tours" : "Find Tour Packages"}
+              ${t.category === "INBOUND_TOUR" ? "Find Inbound Tours" : t.category === "OUTBOUND_TOUR" ? "Find Outbound Tours" : "Find Tour Packages"}
             </button>
           </div>
         </form>`
@@ -834,7 +834,7 @@
             </div>
           </div>
           <div class="search-submit-wrap">
-            <button type="submit" class="btn btn-primary search-submit-btn">🕋 Search Hajj &amp; Umrah</button>
+            <button type="submit" class="btn btn-primary search-submit-btn">Search Hajj &amp; Umrah</button>
           </div>
         </form>`
         }
@@ -917,7 +917,7 @@
             </div>
           </div>
           <div class="search-submit-wrap">
-            <button type="submit" class="btn btn-primary search-submit-btn">🛂 Check Visa & Apply</button>
+            <button type="submit" class="btn btn-primary search-submit-btn">Check Visa &amp; Apply</button>
           </div>
         </form>
       `;
@@ -1095,7 +1095,7 @@
       <div class="container">
         <div class="section-head" style="margin-top:16px">
           <div>
-            <h2>✈ Flights: ${routeHeadingHtml}</h2>
+            <h2>Flights: ${routeHeadingHtml}</h2>
             <p>${escapeHtml(f.tripType)} • ${escapeHtml(f.departDate)}${f.tripType === "Round Trip" ? " to " + escapeHtml(f.returnDate) : ""} • ${paxTotal} Traveller(s) • ${escapeHtml(f.cabin)} • <strong>${escapeHtml(f.fareType)} Fare</strong></p>
           </div>
           <button class="btn btn-outline btn-sm" onclick="document.getElementById('results-section').hidden=true">✕ Close Results</button>
@@ -1231,8 +1231,8 @@
 
                         <div class="flight-card-drawer">
                           <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
-                            <span>🧳 <strong>Baggage:</strong> ${escapeHtml(item.baggage)}</span>
-                            <span>📅 <strong>Date:</strong> ${escapeHtml(f.departDate)}${f.tripType === "Round Trip" ? " ⇄ " + escapeHtml(f.returnDate) : ""}</span>
+                            <span><strong>Baggage:</strong> ${escapeHtml(item.baggage)}</span>
+                            <span><strong>Date:</strong> ${escapeHtml(f.departDate)}${f.tripType === "Round Trip" ? " ⇄ " + escapeHtml(f.returnDate) : ""}</span>
                             <button type="button" class="btn btn-outline btn-sm" onclick="this.parentElement.nextElementSibling.hidden = !this.parentElement.nextElementSibling.hidden">
                               Flight Details & Fare Rules ▾
                             </button>
@@ -1353,7 +1353,7 @@
       <div class="container">
         <div class="section-head" style="margin-top:16px">
           <div>
-            <h2>🏨 Hotels in ${escapeHtml(h.city === "All" ? "All Destinations" : h.city)}</h2>
+            <h2>Hotels in ${escapeHtml(h.city === "All" ? "All Destinations" : h.city)}</h2>
             <p>Check-In: ${escapeHtml(h.checkIn)} • Check-Out: ${escapeHtml(h.checkOut)} (${nights} Night${nights > 1 ? "s" : ""}) • ${h.rooms} Room(s), ${h.guests} Guest(s)</p>
           </div>
           <button class="btn btn-outline btn-sm" onclick="document.getElementById('results-section').hidden=true">✕ Close Results</button>
@@ -1371,7 +1371,7 @@
                   <span class="catalog-rating">★ ${escapeHtml(hotel.rating_score || 4.8)} (${escapeHtml(hotel.review_count || 120)})</span>
                 </div>
                 <div class="catalog-body">
-                  <div class="catalog-meta">📍 ${escapeHtml(hotel.city)}, ${escapeHtml(hotel.country)}</div>
+                  <div class="catalog-meta">${escapeHtml(hotel.city)}, ${escapeHtml(hotel.country)}</div>
                   <h3>${escapeHtml(hotel.name)}</h3>
                   <p class="catalog-desc">${escapeHtml(hotel.description)}</p>
                   <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
@@ -1404,11 +1404,11 @@
     const { escapeHtml } = window.AC;
 
     let list = window.AC.state.packages;
-    let heading = "🌍 Tour Packages (Inbound & Outbound)";
+    let heading = "Tour Packages (Inbound & Outbound)";
 
     if (mode === "UMRAH") {
       const u = searchState.umrah;
-      heading = "🕋 Hajj & Umrah Spiritual Packages";
+      heading = "Hajj & Umrah Spiritual Packages";
       list = list.filter(p => {
         if (u.category === "ALL_SPIRITUAL") return p.category === "UMRAH" || p.category === "HAJJ";
         return p.category === u.category;
@@ -1457,7 +1457,7 @@
         <div class="container">
           <div class="section-head" style="margin-top:16px">
             <div>
-              <h2>🌍 Tour Packages — Separated into Inbound &amp; Outbound (${list.length} Available)</h2>
+              <h2>Tour Packages — Separated into Inbound &amp; Outbound (${list.length} Available)</h2>
               <p>Browse domestic Bangladesh Inbound Tours and International Outbound Holidays below.</p>
             </div>
             <button class="btn btn-outline btn-sm" onclick="document.getElementById('results-section').hidden=true">✕ Close Results</button>
@@ -1467,7 +1467,7 @@
             <div class="tour-subgroup-panel inbound-panel">
               <div class="tour-subgroup-header">
                 <div>
-                  <h4>🇧🇩 Inbound Tours (Explore Bangladesh)</h4>
+                  <h4>Inbound Tours (Explore Bangladesh)</h4>
                   <p>Domestic holiday packages in Cox's Bazar, Sundarbans, Sylhet &amp; Hill Tracts (${inboundList.length} Packages)</p>
                 </div>
               </div>
@@ -1479,7 +1479,7 @@
             <div class="tour-subgroup-panel outbound-panel">
               <div class="tour-subgroup-header">
                 <div>
-                  <h4>✈️ Outbound Tours (International Holidays)</h4>
+                  <h4>Outbound Tours (International Holidays)</h4>
                   <p>Guided overseas holidays in Malaysia, Maldives, Dubai, Thailand &amp; beyond (${outboundList.length} Packages)</p>
                 </div>
               </div>
@@ -1491,7 +1491,7 @@
         </div>
       `;
     } else {
-      heading = t.category === "INBOUND_TOUR" ? "🇧🇩 Inbound Tours (Explore Bangladesh)" : "✈️ Outbound Tours (International Holidays)";
+      heading = t.category === "INBOUND_TOUR" ? "Inbound Tours (Explore Bangladesh)" : "Outbound Tours (International Holidays)";
       sec.innerHTML = `
         <div class="container">
           <div class="section-head" style="margin-top:16px">
@@ -1524,7 +1524,7 @@
       <div class="container">
         <div class="section-head" style="margin-top:16px">
           <div>
-            <h2>🛂 Global Visa Processing Services</h2>
+            <h2>Global Visa Processing Services</h2>
             <p>View required document checklists and submit your visa application online.</p>
           </div>
           <button class="btn btn-outline btn-sm" onclick="document.getElementById('results-section').hidden=true">✕ Close Results</button>
@@ -1536,8 +1536,8 @@
             <div class="catalog-card">
               <div class="catalog-thumb">
                 <img src="${escapeHtml(visa.image_url)}" alt="${escapeHtml(visa.country)}">
-                <span class="catalog-tag">${escapeHtml(visa.flag_emoji)} ${escapeHtml(visa.visa_type)}</span>
-                <span class="catalog-rating">⏱ ${escapeHtml(visa.processing_time)}</span>
+                <span class="catalog-tag">${escapeHtml(visa.visa_type)}</span>
+                <span class="catalog-rating">${escapeHtml(visa.processing_time)}</span>
               </div>
               <div class="catalog-body">
                 <div class="catalog-meta">Validity: ${escapeHtml(visa.validity)} • Max Stay: ${escapeHtml(visa.max_stay)}</div>
@@ -1568,10 +1568,10 @@
     const effPrice = Number(pkg.discount_price || pkg.price);
     const hasDiscount = pkg.discount_price && Number(pkg.discount_price) < Number(pkg.price);
     const badgeMap = {
-      UMRAH: "🕋 Umrah",
-      HAJJ: "🕋 Hajj",
-      INBOUND_TOUR: "🇧🇩 Bangladesh Tour",
-      OUTBOUND_TOUR: "✈ World Holiday"
+      UMRAH: "Umrah",
+      HAJJ: "Hajj",
+      INBOUND_TOUR: "Bangladesh Tour",
+      OUTBOUND_TOUR: "World Holiday"
     };
     return `
       <div class="catalog-card">
@@ -1581,7 +1581,7 @@
           <span class="catalog-rating">★ ${escapeHtml(pkg.rating || 4.9)} (${escapeHtml(pkg.review_count || 85)})</span>
         </div>
         <div class="catalog-body">
-          <div class="catalog-meta">📍 ${escapeHtml(pkg.destination)}, ${escapeHtml(pkg.country)} • ⏱ ${escapeHtml(pkg.duration)}</div>
+          <div class="catalog-meta">${escapeHtml(pkg.destination)}, ${escapeHtml(pkg.country)} • ${escapeHtml(pkg.duration)}</div>
           <h3>${escapeHtml(pkg.title)}</h3>
           <p class="catalog-desc">${escapeHtml(pkg.overview)}</p>
           <div class="catalog-footer">
@@ -1632,7 +1632,7 @@
         <div class="package-group-panel hajj-panel">
           <div class="package-group-header">
             <div>
-              <h3>🕋 Hajj &amp; Umrah Section</h3>
+              <h3>Hajj &amp; Umrah Section</h3>
               <p>Spiritually guided Hajj &amp; Umrah packages with direct flights, e-Visa, Haram-view hotels &amp; experienced Muallim guides.</p>
             </div>
             <button type="button" class="btn btn-outline btn-sm" onclick="window.ACSearch.switchSearchTab('umrah');window.scrollTo({top:0,behavior:'smooth'})">
@@ -1649,7 +1649,7 @@
         <div class="tour-subgroup-panel inbound-panel">
           <div class="tour-subgroup-header">
             <div>
-              <h4>🇧🇩 Inbound Tours (Explore Bangladesh)</h4>
+              <h4>Inbound Tours (Explore Bangladesh)</h4>
               <p>Domestic Bangladesh tour packages — Cox's Bazar, Sundarbans, Sylhet &amp; Hill Tracts</p>
             </div>
             <button type="button" class="btn btn-outline btn-sm" onclick="window.ACSearch.switchSearchTab('inbound');window.scrollTo({top:0,behavior:'smooth'})">
@@ -1666,7 +1666,7 @@
         <div class="tour-subgroup-panel outbound-panel">
           <div class="tour-subgroup-header">
             <div>
-              <h4>✈️ Outbound Tours (International Holidays)</h4>
+              <h4>Outbound Tours (International Holidays)</h4>
               <p>All-inclusive overseas holiday packages — Malaysia, Maldives, Dubai, Thailand &amp; Singapore</p>
             </div>
             <button type="button" class="btn btn-outline btn-sm" onclick="window.ACSearch.switchSearchTab('outbound');window.scrollTo({top:0,behavior:'smooth'})">
@@ -1683,15 +1683,15 @@
         <div class="package-group-panel tour-panel">
           <div class="package-group-header">
             <div>
-              <h3>🌍 Tour Packages Section</h3>
+              <h3>Tour Packages Section</h3>
               <p>Curated holiday packages separated into <strong>Inbound Tours (Bangladesh)</strong> and <strong>Outbound Tours (International)</strong>.</p>
             </div>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
               <button type="button" class="btn btn-outline btn-sm" onclick="document.querySelector('[data-cat=\\'INBOUND_TOUR\\']')?.click()">
-                🇧🇩 Inbound Tours (${inboundList.length})
+                Inbound Tours (${inboundList.length})
               </button>
               <button type="button" class="btn btn-outline btn-sm" onclick="document.querySelector('[data-cat=\\'OUTBOUND_TOUR\\']')?.click()">
-                ✈️ Outbound Tours (${outboundList.length})
+                Outbound Tours (${outboundList.length})
               </button>
             </div>
           </div>
@@ -1752,7 +1752,7 @@
             <span class="catalog-rating">★ ${escapeHtml(h.rating_score || 4.8)}</span>
           </div>
           <div class="catalog-body">
-            <div class="catalog-meta">📍 ${escapeHtml(h.city)}, ${escapeHtml(h.country)}</div>
+            <div class="catalog-meta">${escapeHtml(h.city)}, ${escapeHtml(h.country)}</div>
             <h3>${escapeHtml(h.name)}</h3>
             <p class="catalog-desc">${escapeHtml(h.description)}</p>
             <div class="catalog-footer">
@@ -1776,8 +1776,8 @@
       <div class="catalog-card">
         <div class="catalog-thumb">
           <img src="${escapeHtml(v.image_url)}" alt="${escapeHtml(v.country)}">
-          <span class="catalog-tag">${escapeHtml(v.flag_emoji)} ${escapeHtml(v.visa_type)}</span>
-          <span class="catalog-rating">⏱ ${escapeHtml(v.processing_time)}</span>
+          <span class="catalog-tag">${escapeHtml(v.visa_type)}</span>
+          <span class="catalog-rating">${escapeHtml(v.processing_time)}</span>
         </div>
         <div class="catalog-body">
           <div class="catalog-meta">Validity: ${escapeHtml(v.validity)} • Max Stay: ${escapeHtml(v.max_stay)}</div>
@@ -1817,11 +1817,11 @@
     showModal(`
       <span class="status-badge status-CONFIRMED">${escapeHtml(pkg.category)} • ${escapeHtml(pkg.package_level)}</span>
       <h2 style="margin-top:8px;font-size:24px">${escapeHtml(pkg.title)}</h2>
-      <p style="color:var(--muted);margin:6px 0 16px">📍 ${escapeHtml(pkg.destination)}, ${escapeHtml(pkg.country)} • ⏱ ${escapeHtml(pkg.duration)} • ★ ${escapeHtml(pkg.rating)}</p>
+      <p style="color:var(--muted);margin:6px 0 16px">${escapeHtml(pkg.destination)}, ${escapeHtml(pkg.country)} • ${escapeHtml(pkg.duration)} • ★ ${escapeHtml(pkg.rating)}</p>
       <img src="${escapeHtml(pkg.image_url)}" alt="${escapeHtml(pkg.title)}" style="width:100%;height:230px;object-fit:cover;border-radius:14px;margin-bottom:16px">
       <p>${escapeHtml(pkg.overview)}</p>
 
-      <h3 style="margin:18px 0 10px;font-size:17px">📅 Day-by-Day Itinerary</h3>
+      <h3 style="margin:18px 0 10px;font-size:17px">Day-by-Day Itinerary</h3>
       <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:18px">
         ${(pkg.itinerary || [])
           .map(
@@ -1870,16 +1870,16 @@
     showModal(`
       <span class="status-badge status-CONFIRMED">${"★".repeat(hotel.star_rating || 5)} Verified Partner Hotel</span>
       <h2 style="margin-top:8px;font-size:24px">${escapeHtml(hotel.name)}</h2>
-      <p style="color:var(--muted);margin:6px 0 16px">📍 ${escapeHtml(hotel.address)} (${escapeHtml(hotel.city)}, ${escapeHtml(hotel.country)})</p>
+      <p style="color:var(--muted);margin:6px 0 16px">${escapeHtml(hotel.address)} (${escapeHtml(hotel.city)}, ${escapeHtml(hotel.country)})</p>
       <img src="${escapeHtml(hotel.image_url)}" alt="${escapeHtml(hotel.name)}" style="width:100%;height:230px;object-fit:cover;border-radius:14px;margin-bottom:16px">
       <p>${escapeHtml(hotel.description)}</p>
 
-      <h3 style="margin:16px 0 10px;font-size:16px">✨ Key Amenities</h3>
+      <h3 style="margin:16px 0 10px;font-size:16px">Key Amenities</h3>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
         ${(hotel.amenities || []).map(a => `<span class="pill-radio">${escapeHtml(a)}</span>`).join("")}
       </div>
 
-      <h3 style="margin:16px 0 10px;font-size:16px">🛏 Available Room Categories</h3>
+      <h3 style="margin:16px 0 10px;font-size:16px">Available Room Categories</h3>
       <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:18px">
         ${(hotel.room_types || [])
           .map(
@@ -1913,12 +1913,12 @@
     const { formatMoney, escapeHtml } = window.AC;
 
     showModal(`
-      <span class="status-badge status-PROCESSING">${escapeHtml(visa.flag_emoji)} ${escapeHtml(visa.visa_type)}</span>
+      <span class="status-badge status-PROCESSING">${escapeHtml(visa.visa_type)}</span>
       <h2 style="margin-top:8px;font-size:24px">${escapeHtml(visa.country)}${/\bvisa\b/i.test(visa.country || "") ? " Requirements" : " Visa Requirements"}</h2>
-      <p style="color:var(--muted);margin:6px 0 16px">⏱ Processing: ${escapeHtml(visa.processing_time)} • Validity: ${escapeHtml(visa.validity)} • Max Stay: ${escapeHtml(visa.max_stay)}</p>
+      <p style="color:var(--muted);margin:6px 0 16px">Processing: ${escapeHtml(visa.processing_time)} • Validity: ${escapeHtml(visa.validity)} • Max Stay: ${escapeHtml(visa.max_stay)}</p>
       <p>${escapeHtml(visa.description)}</p>
 
-      <h3 style="margin:16px 0 10px;font-size:16px">📋 Required Documents Checklist</h3>
+      <h3 style="margin:16px 0 10px;font-size:16px">Required Documents Checklist</h3>
       <ul style="padding-left:20px;line-height:1.8;margin-bottom:20px">
         ${(visa.documents || []).map(d => `<li><strong>${escapeHtml(d)}</strong></li>`).join("")}
       </ul>

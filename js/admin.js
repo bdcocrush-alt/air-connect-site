@@ -205,7 +205,7 @@
     if (admState.tab === "requests") {
       main.innerHTML = `
         <div class="admin-table-wrap">
-          <h3 style="margin-bottom:16px">🔄 Customer Refund &amp; Reissue (Date Change) Requests</h3>
+          <h3 style="margin-bottom:16px">Customer Refund &amp; Reissue (Date Change) Requests</h3>
           <table class="admin-table">
             <thead>
               <tr>
@@ -251,7 +251,7 @@
       main.innerHTML = `
         <div class="admin-table-wrap">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-            <h3>✈ Manage Flight Deals &amp; Promo Routes</h3>
+            <h3>Manage Flight Deals &amp; Promo Routes</h3>
             <button type="button" class="btn btn-primary btn-sm" onclick="window.ACAdmin.openFlightModal()">+ Add Flight Route</button>
           </div>
           <table class="admin-table">
@@ -294,7 +294,7 @@
       main.innerHTML = `
         <div class="admin-table-wrap">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-            <h3>🕋 Manage Hajj, Umrah &amp; Holiday Tour Packages</h3>
+            <h3>Manage Hajj, Umrah &amp; Holiday Tour Packages</h3>
             <button type="button" class="btn btn-primary btn-sm" onclick="window.ACAdmin.openAddPackageModal()">+ Add New Package</button>
           </div>
           <table class="admin-table">
@@ -345,7 +345,7 @@
       main.innerHTML = `
         <div class="admin-table-wrap">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-            <h3>🏨 Manage Hotels Catalog</h3>
+            <h3>Manage Hotels Catalog</h3>
             <button type="button" class="btn btn-primary btn-sm" onclick="window.ACAdmin.openAddHotelModal()">+ Add New Hotel</button>
           </div>
           <table class="admin-table">
@@ -397,7 +397,7 @@
       main.innerHTML = `
         <div class="admin-table-wrap" style="margin-bottom:24px">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-            <h3>🛂 Manage Visa Services</h3>
+            <h3>Manage Visa Services</h3>
             <button type="button" class="btn btn-primary btn-sm" onclick="window.ACAdmin.openAddVisaModal()">+ Add Visa Country</button>
           </div>
           <table class="admin-table">
@@ -441,7 +441,7 @@
 
         <div class="admin-table-wrap">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-            <h3>🔥 Homepage Special Offer Banners</h3>
+            <h3>Homepage Special Offer Banners</h3>
             <button type="button" class="btn btn-primary btn-sm" onclick="window.ACAdmin.openAddBannerModal()">+ Add Promo Banner</button>
           </div>
           <table class="admin-table">
@@ -478,7 +478,7 @@
       const s = window.AC.state.settings;
       main.innerHTML = `
         <div class="admin-table-wrap" style="max-width:780px">
-          <h3>⚙ Site Contact, Payment Accounts &amp; Currency Settings</h3>
+          <h3>Site Contact, Payment Accounts &amp; Currency Settings</h3>
           <p style="font-size:13px;color:var(--muted);margin-bottom:18px">Changes saved here update airconnectltd.com immediately.</p>
           <form id="adm-settings-form">
             <div class="form-grid-2">

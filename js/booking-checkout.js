@@ -32,7 +32,7 @@
         (p, i) => `
       <div style="padding:16px;background:#f8fafc;border:1px solid var(--line);border-radius:12px;margin-bottom:14px" data-pax-card="${i}">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-          <strong style="color:var(--ink)">👤 Passenger ${i + 1}: ${p.label}</strong>
+          <strong style="color:var(--ink)">Passenger ${i + 1}: ${p.label}</strong>
           <span class="status-badge status-PROCESSING">${p.type}</span>
         </div>
         <input type="hidden" class="pax-type" value="${p.type}">
@@ -108,7 +108,7 @@
       <div class="container">
         <div class="section-head" style="margin-top:16px">
           <div>
-            <h2>🧾 Complete Your Booking</h2>
+            <h2>Complete Your Booking</h2>
             <p>${escapeHtml(d.title)} — ${escapeHtml(d.subtitle || "")}</p>
           </div>
           <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('checkout-section').hidden=true">✕ Cancel Checkout</button>
@@ -181,14 +181,14 @@
                 <label class="pill-radio ${d.bookingMode === "HOLD_PAY_LATER" ? "active" : ""}" style="padding:14px;border-radius:12px">
                   <input type="radio" name="bookingMode" value="HOLD_PAY_LATER" ${d.bookingMode === "HOLD_PAY_LATER" ? "checked" : ""}>
                   <div>
-                    <strong style="display:block;font-size:14px">🕒 Book & Hold (Pay Later)</strong>
-                    <span style="font-size:12px;color:var(--muted)">Get instant Booking Reference & PNR hold; pay after confirmation</span>
+                    <strong style="display:block;font-size:14px">Book &amp; Hold (Pay Later)</strong>
+                    <span style="font-size:12px;color:var(--muted)">Get instant Booking Reference &amp; PNR hold; pay after confirmation</span>
                   </div>
                 </label>
                 <label class="pill-radio ${d.bookingMode === "INSTANT_PAY" ? "active" : ""}" style="padding:14px;border-radius:12px">
                   <input type="radio" name="bookingMode" value="INSTANT_PAY" ${d.bookingMode === "INSTANT_PAY" ? "checked" : ""}>
                   <div>
-                    <strong style="display:block;font-size:14px">💳 Pay Now (bKash / Nagad / Bank)</strong>
+                    <strong style="display:block;font-size:14px">Pay Now (bKash / Nagad / Bank)</strong>
                     <span style="font-size:12px;color:var(--muted)">Priority ticket issuance with Transaction ID / Slip upload</span>
                   </div>
                 </label>
@@ -197,9 +197,9 @@
               <div id="pay-now-panel" ${d.bookingMode === "HOLD_PAY_LATER" ? "hidden" : ""} style="padding:18px;background:#fff1f1;border:1px solid #fecaca;border-radius:12px">
                 <strong style="display:block;margin-bottom:10px;color:var(--brand-primary)">Official Air Connect Ltd Payment Accounts:</strong>
                 <div style="display:grid;gap:8px;font-size:13px;margin-bottom:14px">
-                  <div>📱 <strong>bKash Merchant / Payment:</strong> ${escapeHtml(settings.bkash_number)}</div>
-                  <div>📱 <strong>Nagad Merchant / Payment:</strong> ${escapeHtml(settings.nagad_number)}</div>
-                  <div>🏦 <strong>Bank Transfer:</strong> ${escapeHtml(settings.bank_details)}</div>
+                  <div><strong>bKash Merchant / Payment:</strong> ${escapeHtml(settings.bkash_number)}</div>
+                  <div><strong>Nagad Merchant / Payment:</strong> ${escapeHtml(settings.nagad_number)}</div>
+                  <div><strong>Bank Transfer:</strong> ${escapeHtml(settings.bank_details)}</div>
                 </div>
                 <div class="form-grid-3">
                   <div class="form-field">
@@ -260,7 +260,7 @@
               ${d.bookingMode === "HOLD_PAY_LATER" ? "✓ Confirm & Hold Booking" : "✓ Submit Payment & Confirm"}
             </button>
             <small style="display:block;text-align:center;color:var(--muted);margin-top:10px;font-size:11px">
-              🔒 Instant Booking Reference & Printable E-Ticket Voucher generated immediately.
+              Instant Booking Reference &amp; Printable E-Ticket Voucher generated immediately.
             </small>
           </aside>
         </form>
@@ -498,7 +498,7 @@
         </div>
 
         <div class="no-print" style="display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap">
-          <button type="button" class="btn btn-outline" onclick="window.print()">🖨 Print / Save E-Ticket PDF</button>
+          <button type="button" class="btn btn-outline" onclick="window.print()">Print / Save E-Ticket PDF</button>
           <button type="button" class="btn btn-primary" onclick="window.ACSearch.closeModal();window.ACPortal.openMyBookingsModal()">View in My Bookings</button>
         </div>
       </div>

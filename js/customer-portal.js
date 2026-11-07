@@ -154,24 +154,24 @@
     window.ACSearch.showModal(`
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px">
         <div>
-          <h2 style="font-size:22px">📂 My Bookings & PNR Tracker</h2>
+          <h2 style="font-size:22px">My Bookings &amp; PNR Tracker</h2>
           <p style="color:var(--muted);font-size:13px;margin:2px 0 0">View your bookings, download E-Tickets, pay for held bookings, or request a date change/refund.</p>
         </div>
       </div>
 
       <form id="track-pnr-form" style="display:flex;gap:8px;margin-bottom:16px">
         <input type="text" id="track-pnr-input" value="${escapeHtml(searchRefOrPhone)}" placeholder="Enter Booking Ref (e.g. AC-2026-...) or Phone Number" style="flex:1;padding:10px 14px;border:1px solid var(--line);border-radius:10px">
-        <button type="submit" class="btn btn-primary btn-sm">🔍 Find Booking</button>
+        <button type="submit" class="btn btn-primary btn-sm">Find Booking</button>
       </form>
 
       <div class="filter-pills" style="margin-bottom:16px">
         ${[
           ["ALL", "All Bookings"],
-          ["FLIGHT", "✈ Flights"],
-          ["HOTEL", "🏨 Hotels"],
-          ["UMRAH", "🕋 Hajj & Umrah"],
-          ["TOUR", "🌍 Holidays"],
-          ["VISA", "🛂 Visa"]
+          ["FLIGHT", "Flights"],
+          ["HOTEL", "Hotels"],
+          ["UMRAH", "Hajj & Umrah"],
+          ["TOUR", "Holidays"],
+          ["VISA", "Visa"]
         ]
           .map(
             ([code, label]) => `
@@ -200,7 +200,7 @@
                     <span style="font-size:12px;color:var(--muted);margin-left:8px">PNR: <strong>${escapeHtml(b.pnr_code || "TBA")}</strong></span>
                     <h4 style="margin:6px 0 2px;font-size:15px">${escapeHtml(b.service_title)}</h4>
                     <small style="color:var(--muted)">
-                      📅 Travel Date: ${escapeHtml(b.travel_date || "Flexible")} • 👤 ${escapeHtml(b.customer_name)} (${escapeHtml(b.customer_phone)})
+                      Travel Date: ${escapeHtml(b.travel_date || "Flexible")} • ${escapeHtml(b.customer_name)} (${escapeHtml(b.customer_phone)})
                     </small>
                   </div>
                   <div style="text-align:right">
@@ -211,17 +211,17 @@
 
                 <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)">
                   <button type="button" class="btn btn-outline btn-sm" onclick='window.ACPortal.viewVoucherById("${escapeHtml(b.id)}")'>
-                    🖨 E-Ticket / Voucher
+                    E-Ticket / Voucher
                   </button>
                   ${
                     b.status === "ON_HOLD"
                       ? `<button type="button" class="btn btn-primary btn-sm" onclick='window.ACPortal.openPayHoldModal("${escapeHtml(b.id)}", "${escapeHtml(b.booking_ref)}", ${Number(b.total_amount || 0)})'>
-                          💳 Pay Now to Issue Ticket
+                          Pay Now to Issue Ticket
                         </button>`
                       : ""
                   }
                   <button type="button" class="btn btn-outline btn-sm" onclick='window.ACPortal.openRefundReissueModal("${escapeHtml(b.id)}", "${escapeHtml(b.booking_ref)}", "${escapeHtml(b.customer_phone)}")'>
-                    🔄 Date Change / Refund Request
+                    Date Change / Refund Request
                   </button>
                 </div>
               </div>`
@@ -256,12 +256,12 @@
     const s = state.settings;
     window.ACSearch.showModal(
       `
-      <h3>💳 Complete Payment for ${escapeHtml(bookingRef)}</h3>
+      <h3>Complete Payment for ${escapeHtml(bookingRef)}</h3>
       <p style="font-size:13px;color:var(--muted)">Amount Payable: <strong style="color:var(--brand-primary)">${formatMoney(totalAmount)}</strong></p>
       <div style="padding:12px;background:#fff1f1;border-radius:10px;font-size:13px;margin-bottom:14px">
-        <div>📱 <strong>bKash:</strong> ${escapeHtml(s.bkash_number)}</div>
-        <div>📱 <strong>Nagad:</strong> ${escapeHtml(s.nagad_number)}</div>
-        <div>🏦 <strong>Bank:</strong> ${escapeHtml(s.bank_details)}</div>
+        <div><strong>bKash:</strong> ${escapeHtml(s.bkash_number)}</div>
+        <div><strong>Nagad:</strong> ${escapeHtml(s.nagad_number)}</div>
+        <div><strong>Bank:</strong> ${escapeHtml(s.bank_details)}</div>
       </div>
       <form id="pay-hold-form">
         <div class="form-field">
@@ -308,7 +308,7 @@
     const { escapeHtml, state } = window.AC;
     window.ACSearch.showModal(
       `
-      <h3>🔄 Request Reissue (Date Change) or Refund</h3>
+      <h3>Request Reissue (Date Change) or Refund</h3>
       <p style="font-size:13px;color:var(--muted)">Booking Reference: <strong>${escapeHtml(bookingRef)}</strong></p>
       <form id="refund-reissue-form">
         <div class="form-field">
@@ -418,20 +418,20 @@
     if (!user) {
       el.innerHTML = `
         <button type="button" class="btn btn-outline btn-sm" onclick="window.ACPortal.openMyBookingsModal()">
-          📂 My Bookings
+          My Bookings
         </button>
         <button type="button" class="btn btn-primary btn-sm" onclick="window.ACPortal.openAuthModal('login')">
-          👤 Sign In / Register
+          Sign In / Register
         </button>
       `;
     } else {
       const displayName = profile?.full_name || user.email.split("@")[0];
       el.innerHTML = `
         <button type="button" class="btn btn-outline btn-sm" onclick="window.ACPortal.openMyBookingsModal()">
-          📂 My Bookings
+          My Bookings
         </button>
-        ${isAdmin ? `<a href="admin.html" class="btn btn-accent btn-sm">⚙ Admin Panel</a>` : ""}
-        <span style="font-size:13px;font-weight:700;color:var(--ink)">👤 ${escapeHtml(displayName)}</span>
+        ${isAdmin ? `<a href="admin.html" class="btn btn-accent btn-sm">Admin Panel</a>` : ""}
+        <span style="font-size:13px;font-weight:700;color:var(--ink)">${escapeHtml(displayName)}</span>
         <button type="button" class="btn btn-outline btn-sm" onclick="window.ACPortal.logout()">Logout</button>
       `;
     }
