@@ -1,35 +1,96 @@
 // Air Connect Ltd — Customer Auth, My Bookings Portal, Track PNR, Refund/Reissue & Info Pages
 (function () {
-  function openAuthModal(defaultTab = "login") {
+  async function signInWithGoogle() {
+    try {
+      const { error } = await window.AC.supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: window.location.origin + window.location.pathname
+        }
+      });
+      if (error) {
+        window.AC.showToast(error.message, "error");
+      }
+    } catch (err) {
+      window.AC.showToast(err.message || "Google Sign-In failed.", "error");
+    }
+  }
+
+  function getGoogleButtonHtml(actionText = "Continue with Google") {
+    return `
+      <button type="button" class="btn-google-auth" onclick="window.ACPortal.signInWithGoogle()">
+        <svg class="google-icon" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/>
+          <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/>
+          <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
+          <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.93 6.72-4.93z"/>
+        </svg>
+        <span>${actionText}</span>
+      </button>
+      <div class="auth-divider"><span>or with email</span></div>
+    `;
+  }
+
+  function openAuthModal(defaultTab = "login", targetEmail = "") {
     const { escapeHtml } = window.AC;
+
+    let title = "Welcome Back to Air Connect";
+    let subtitle = "Manage your flights, Umrah packages, E-Tickets, and instant holds in one place.";
+    if (defaultTab === "signup") {
+      title = "Create Your Customer Account";
+      subtitle = "Instant registration — start booking flights, hotels & tours immediately.";
+    } else if (defaultTab === "forgot") {
+      title = "Reset Your Password";
+      subtitle = "Enter your registered email to receive an official OTP confirmation code.";
+    } else if (defaultTab === "verify-otp") {
+      title = "Verify OTP & Set New Password";
+      subtitle = `Enter the confirmation OTP sent to ${escapeHtml(targetEmail || "your email")} and choose a new password.`;
+    }
+
+    const showTabs = defaultTab === "login" || defaultTab === "signup";
+
     window.ACSearch.showModal(
       `
       <div style="text-align:center;margin-bottom:18px">
         <img src="assets/logo.jpg" alt="Air Connect Ltd" style="width:52px;height:52px;border-radius:12px;margin-bottom:8px">
-        <h2 id="auth-modal-title">${defaultTab === "login" ? "Welcome Back to Air Connect" : "Create Your Customer Account"}</h2>
-        <p style="color:var(--muted);font-size:13px;margin:4px 0 0">Manage your flights, Umrah packages, E-Tickets, and instant holds in one place.</p>
+        <h2 id="auth-modal-title">${title}</h2>
+        <p style="color:var(--muted);font-size:13px;margin:4px 0 0">${subtitle}</p>
       </div>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px;background:#f1f5f9;padding:5px;border-radius:10px">
-        <button type="button" class="btn btn-sm ${defaultTab === "login" ? "btn-primary" : ""}" id="tab-btn-login" onclick="window.ACPortal.openAuthModal('login')">Sign In</button>
-        <button type="button" class="btn btn-sm ${defaultTab === "signup" ? "btn-primary" : ""}" id="tab-btn-signup" onclick="window.ACPortal.openAuthModal('signup')">Create Account</button>
-      </div>
+      ${
+        showTabs
+          ? `
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px;background:#f1f5f9;padding:5px;border-radius:10px">
+          <button type="button" class="btn btn-sm ${defaultTab === "login" ? "btn-primary" : ""}" id="tab-btn-login" onclick="window.ACPortal.openAuthModal('login')">Sign In</button>
+          <button type="button" class="btn btn-sm ${defaultTab === "signup" ? "btn-primary" : ""}" id="tab-btn-signup" onclick="window.ACPortal.openAuthModal('signup')">Create Account</button>
+        </div>`
+          : ""
+      }
 
       ${
         defaultTab === "login"
           ? `
+        ${getGoogleButtonHtml("Continue with Google")}
         <form id="ac-login-form">
           <div class="form-field">
             <label>Email Address *</label>
-            <input type="email" id="login-email" placeholder="you@example.com" required>
+            <input type="email" id="login-email" placeholder="you@example.com" value="${escapeHtml(targetEmail)}" required>
           </div>
           <div class="form-field">
             <label>Password *</label>
             <input type="password" id="login-password" placeholder="••••••••" required>
           </div>
-          <button type="submit" class="btn btn-primary" style="width:100%;margin-top:8px" id="login-submit-btn">Sign In</button>
+          <div style="display:flex;justify-content:flex-end;margin-top:-6px;margin-bottom:14px">
+            <a href="javascript:void(0)" style="font-size:12.5px;color:var(--brand-primary);font-weight:700" onclick="window.ACPortal.openAuthModal('forgot', document.getElementById('login-email')?.value || '')">Forgot Password?</a>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%" id="login-submit-btn">Sign In</button>
+          <div style="text-align:center;margin-top:14px;font-size:13px;color:var(--muted)">
+            Don't have an account? <a href="javascript:void(0)" style="color:var(--brand-primary);font-weight:700" onclick="window.ACPortal.openAuthModal('signup')">Create One Now</a>
+          </div>
         </form>`
-          : `
+          : defaultTab === "signup"
+          ? `
+        ${getGoogleButtonHtml("Sign Up with Google")}
         <form id="ac-signup-form">
           <div class="form-field">
             <label>Full Name (As in Passport) *</label>
@@ -47,13 +108,54 @@
             <label>Password (Min 6 characters) *</label>
             <input type="password" id="su-password" minlength="6" placeholder="Create a strong password" required>
           </div>
-          <button type="submit" class="btn btn-primary" style="width:100%;margin-top:8px" id="su-submit-btn">Create Account</button>
+          <button type="submit" class="btn btn-primary" style="width:100%;margin-top:8px" id="su-submit-btn">Instant Sign Up</button>
+          <div style="text-align:center;margin-top:14px;font-size:13px;color:var(--muted)">
+            Already have an account? <a href="javascript:void(0)" style="color:var(--brand-primary);font-weight:700" onclick="window.ACPortal.openAuthModal('login')">Sign In</a>
+          </div>
+        </form>`
+          : defaultTab === "forgot"
+          ? `
+        <form id="ac-forgot-form">
+          <div class="form-field">
+            <label>Registered Email Address *</label>
+            <input type="email" id="forgot-email" placeholder="you@example.com" value="${escapeHtml(targetEmail)}" required>
+          </div>
+          <p style="font-size:12px;color:var(--muted);margin:-4px 0 16px;line-height:1.5">
+            An official OTP code will be dispatched to your email address from <strong>@airconnectltd.com</strong>.
+          </p>
+          <button type="submit" class="btn btn-primary" style="width:100%" id="forgot-submit-btn">Send Confirmation OTP</button>
+          <div style="text-align:center;margin-top:14px;font-size:13px">
+            <a href="javascript:void(0)" style="color:var(--muted);font-weight:600" onclick="window.ACPortal.openAuthModal('login', document.getElementById('forgot-email')?.value || '')">← Back to Sign In</a>
+          </div>
+        </form>`
+          : `
+        <!-- verify-otp view -->
+        <form id="ac-otp-form">
+          <input type="hidden" id="otp-target-email" value="${escapeHtml(targetEmail)}">
+          <div class="form-field">
+            <label>Registered Email</label>
+            <input type="email" value="${escapeHtml(targetEmail)}" readonly style="background:#f1f5f9;cursor:not-allowed">
+          </div>
+          <div class="form-field">
+            <label>6-Digit Confirmation OTP *</label>
+            <input type="text" id="otp-token" placeholder="e.g. 123456" maxlength="8" style="font-size:18px;letter-spacing:4px;text-align:center;font-weight:800" required>
+          </div>
+          <div class="form-field">
+            <label>New Password (Min 6 characters) *</label>
+            <input type="password" id="otp-new-password" minlength="6" placeholder="Enter new strong password" required>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%;margin-top:6px" id="otp-submit-btn">Verify OTP &amp; Update Password</button>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;font-size:12.5px">
+            <a href="javascript:void(0)" style="color:var(--brand-primary);font-weight:600" onclick="window.ACPortal.openAuthModal('forgot', '${escapeHtml(targetEmail)}')">Resend OTP</a>
+            <a href="javascript:void(0)" style="color:var(--muted);font-weight:600" onclick="window.ACPortal.openAuthModal('login', '${escapeHtml(targetEmail)}')">Cancel &amp; Sign In</a>
+          </div>
         </form>`
       }
     `,
       true
     );
 
+    // Form Handlers
     document.getElementById("ac-login-form")?.addEventListener("submit", async e => {
       e.preventDefault();
       const email = document.getElementById("login-email").value.trim();
@@ -68,7 +170,7 @@
         btn.textContent = "Sign In";
         return;
       }
-      window.AC.showToast("Signed in successfully!", "success");
+      window.AC.showToast("Signed in successfully! Welcome back.", "success");
       window.ACSearch.closeModal();
     });
 
@@ -82,6 +184,7 @@
       btn.disabled = true;
       btn.textContent = "Creating account...";
 
+      // Sign up without mandatory email verification barrier
       const { data, error } = await window.AC.supabase.auth.signUp({
         email,
         password,
@@ -93,16 +196,101 @@
       if (error) {
         window.AC.showToast(error.message, "error");
         btn.disabled = false;
-        btn.textContent = "Create Account";
+        btn.textContent = "Instant Sign Up";
         return;
       }
 
-      if (data?.session) {
-        window.AC.showToast("Account created and signed in!", "success");
-      } else {
-        window.AC.showToast("Account created! Please check your email or sign in.", "success");
+      // Automatically sign in immediately so user can book right away
+      if (!data?.session) {
+        const { error: loginErr } = await window.AC.supabase.auth.signInWithPassword({ email, password });
+        if (loginErr) {
+          console.warn("Auto-login note:", loginErr.message);
+        }
       }
+
+      window.AC.showToast(`Welcome to Air Connect Ltd, ${fullName}! Your account is active.`, "success");
       window.ACSearch.closeModal();
+    });
+
+    document.getElementById("ac-forgot-form")?.addEventListener("submit", async e => {
+      e.preventDefault();
+      const email = document.getElementById("forgot-email").value.trim();
+      const btn = document.getElementById("forgot-submit-btn");
+      btn.disabled = true;
+      btn.textContent = "Sending OTP...";
+
+      try {
+        const { error } = await window.AC.supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: window.location.origin + window.location.pathname
+        });
+
+        if (error) {
+          window.AC.showToast(error.message, "error");
+          btn.disabled = false;
+          btn.textContent = "Send Confirmation OTP";
+          return;
+        }
+
+        window.AC.showToast(`OTP confirmation code dispatched to ${email}!`, "success");
+        openAuthModal("verify-otp", email);
+      } catch (err) {
+        window.AC.showToast(err.message || "Could not send OTP.", "error");
+        btn.disabled = false;
+        btn.textContent = "Send Confirmation OTP";
+      }
+    });
+
+    document.getElementById("ac-otp-form")?.addEventListener("submit", async e => {
+      e.preventDefault();
+      const email = document.getElementById("otp-target-email").value.trim();
+      const token = document.getElementById("otp-token").value.trim();
+      const newPassword = document.getElementById("otp-new-password").value;
+      const btn = document.getElementById("otp-submit-btn");
+      btn.disabled = true;
+      btn.textContent = "Verifying & Updating...";
+
+      try {
+        // Verify recovery OTP
+        const { error: verifyErr } = await window.AC.supabase.auth.verifyOtp({
+          email,
+          token,
+          type: "recovery"
+        });
+
+        if (verifyErr) {
+          // Fallback to email OTP if recovery type returned error
+          const { error: emailOtpErr } = await window.AC.supabase.auth.verifyOtp({
+            email,
+            token,
+            type: "email"
+          });
+          if (emailOtpErr) {
+            window.AC.showToast("Invalid or expired OTP. Please check and try again.", "error");
+            btn.disabled = false;
+            btn.textContent = "Verify OTP & Update Password";
+            return;
+          }
+        }
+
+        // Update to new password
+        const { error: updateErr } = await window.AC.supabase.auth.updateUser({
+          password: newPassword
+        });
+
+        if (updateErr) {
+          window.AC.showToast(updateErr.message, "error");
+          btn.disabled = false;
+          btn.textContent = "Verify OTP & Update Password";
+          return;
+        }
+
+        window.AC.showToast("Password updated successfully! Welcome back.", "success");
+        window.ACSearch.closeModal();
+      } catch (err) {
+        window.AC.showToast(err.message || "Verification failed.", "error");
+        btn.disabled = false;
+        btn.textContent = "Verify OTP & Update Password";
+      }
     });
   }
 
@@ -661,6 +849,7 @@
 
   window.ACPortal = {
     openAuthModal,
+    signInWithGoogle,
     logout,
     openMyBookingsModal,
     viewVoucherById,

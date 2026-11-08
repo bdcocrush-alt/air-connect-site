@@ -6,7 +6,7 @@
   <title>Admin Dashboard — Air Connect Ltd Semi-OTA Management</title>
   <link rel="icon" type="image/png" href="assets/favicon.png">
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=28">
+  <link rel="stylesheet" href="css/styles.css?v=29">
   <style>
     .admin-shell {
       display: grid;
@@ -159,6 +159,9 @@
       <button type="button" class="admin-nav-btn active" data-adm-tab="bookings" onclick="window.ACAdmin.switchTab('bookings')">
         Bookings &amp; Ticketing
       </button>
+      <button type="button" class="admin-nav-btn" data-adm-tab="customers" onclick="window.ACAdmin.switchTab('customers')">
+        Customer Database
+      </button>
       <button type="button" class="admin-nav-btn" data-adm-tab="requests" onclick="window.ACAdmin.switchTab('requests')">
         Refund &amp; Reissue
       </button>
@@ -191,10 +194,10 @@
   </a>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/config.js?v=25"></script>
-  <script src="js/supabase-client.js?v=28"></script>
-  <script src="js/search-and-results.js?v=28"></script>
-  <script src="js/booking-checkout.js?v=28"></script>
-  <script src="js/admin.js?v=28"></script>
+  <script src="js/config.js?v=29"></script>
+  <script src="js/supabase-client.js?v=29"></script>
+  <script src="js/search-and-results.js?v=29"></script>
+  <script src="js/booking-checkout.js?v=29"></script>
+  <script src="js/admin.js?v=29"></script>
 </body>
 </html>

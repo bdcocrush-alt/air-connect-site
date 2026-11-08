@@ -3,8 +3,10 @@
   const admState = {
     tab: "bookings",
     statusFilter: "ALL",
+    customerSearch: "",
     bookings: [],
     requests: [],
+    customers: [],
     flights: [],
     packages: [],
     hotels: [],
@@ -63,7 +65,7 @@
 
   async function refreshAllData() {
     const { supabase } = window.AC;
-    const [bRes, rRes, fRes, pRes, hRes, vRes, bnRes, sRes] = await Promise.all([
+    const [bRes, rRes, fRes, pRes, hRes, vRes, bnRes, sRes, cRes] = await Promise.all([
       supabase.from("bookings").select("*").order("created_at", { ascending: false }),
       supabase.from("booking_requests").select("*").order("created_at", { ascending: false }),
       supabase.from("flight_deals").select("*").order("created_at", { ascending: false }),
@@ -71,7 +73,8 @@
       supabase.from("hotels").select("*").order("created_at", { ascending: false }),
       supabase.from("visa_services").select("*").order("created_at", { ascending: false }),
       supabase.from("promo_banners").select("*").order("sort_order", { ascending: true }),
-      supabase.from("site_settings").select("*").limit(1).maybeSingle()
+      supabase.from("site_settings").select("*").limit(1).maybeSingle(),
+      supabase.from("profiles").select("*").order("created_at", { ascending: false })
     ]);
 
     admState.bookings = bRes.data || [];
@@ -82,6 +85,7 @@
     admState.visas = vRes.data || [];
     admState.banners = bnRes.data || [];
     if (sRes.data) window.AC.state.settings = sRes.data;
+    admState.customers = cRes.data || [];
   }
 
   function switchTab(tab) {
@@ -199,6 +203,143 @@
           </table>
         </div>
       `;
+      return;
+    }
+
+    if (admState.tab === "customers") {
+      const allCust = admState.customers || [];
+      const search = (admState.customerSearch || "").toLowerCase().trim();
+      const filtered = allCust.filter(c => {
+        if (!search) return true;
+        const name = (c.full_name || "").toLowerCase();
+        const email = (c.email || "").toLowerCase();
+        const phone = (c.phone || "").toLowerCase();
+        const pass = (c.passport_number || "").toLowerCase();
+        return name.includes(search) || email.includes(search) || phone.includes(search) || pass.includes(search);
+      });
+
+      const totalCust = allCust.filter(c => c.role !== "admin").length;
+      const activeCount = allCust.filter(c => c.status !== "SUSPENDED" && c.role !== "admin").length;
+      const adminCount = allCust.filter(c => c.role === "admin").length;
+      const bookedEmails = new Set(admState.bookings.map(b => (b.customer_email || "").toLowerCase()));
+      const withBookingsCount = allCust.filter(c => bookedEmails.has((c.email || "").toLowerCase())).length;
+
+      main.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+          <div>
+            <h2 style="font-size:22px;color:var(--ink);margin:0 0 4px">Customer Database &amp; Registered Accounts</h2>
+            <p style="font-size:13px;color:var(--muted);margin:0">View registered customer records, sign-up dates, email addresses, and account statuses.</p>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <input type="text" id="adm-cust-search" placeholder="Search name, email, phone, passport..." value="${escapeHtml(admState.customerSearch)}" style="padding:9px 14px;border:1px solid var(--line);border-radius:10px;font-size:13px;width:280px">
+            <button type="button" class="btn btn-outline btn-sm" onclick="window.ACAdmin.refreshCustomers()">↻ Refresh</button>
+          </div>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <small>Total Customers</small>
+            <strong>${totalCust}</strong>
+          </div>
+          <div class="kpi-card">
+            <small>Active Accounts</small>
+            <strong style="color:var(--brand-green)">${activeCount}</strong>
+          </div>
+          <div class="kpi-card">
+            <small>Customers With Bookings</small>
+            <strong style="color:var(--brand-primary)">${withBookingsCount}</strong>
+          </div>
+          <div class="kpi-card">
+            <small>System Administrators</small>
+            <strong style="color:var(--brand-blue)">${adminCount}</strong>
+          </div>
+        </div>
+
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Customer Name</th>
+                <th>Email Address</th>
+                <th>Phone / WhatsApp</th>
+                <th>Passport / ID</th>
+                <th>Registered Date</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${
+                filtered.length === 0
+                  ? `<tr><td colspan="9" style="text-align:center;padding:36px;color:var(--muted)">No customer records found matching your search.</td></tr>`
+                  : filtered
+                      .map((c, idx) => {
+                        const dateStr = c.created_at ? new Date(c.created_at).toLocaleString("en-GB", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "-";
+                        const isSuspended = c.status === "SUSPENDED";
+                        const statusBadge = isSuspended
+                          ? `<span class="status-badge status-CANCELLED">SUSPENDED</span>`
+                          : `<span class="status-badge status-CONFIRMED">ACTIVE</span>`;
+                        const roleBadge = c.role === "admin"
+                          ? `<span class="status-badge" style="background:#e0e7ff;color:#4338ca">ADMIN</span>`
+                          : `<span class="status-badge" style="background:#f1f5f9;color:var(--ink)">CUSTOMER</span>`;
+                        const bookingCount = admState.bookings.filter(b => (b.customer_email || "").toLowerCase() === (c.email || "").toLowerCase()).length;
+
+                        return `
+                        <tr>
+                          <td>${idx + 1}</td>
+                          <td>
+                            <strong>${escapeHtml(c.full_name || "Guest")}</strong>
+                            ${bookingCount > 0 ? `<br><small style="color:var(--brand-primary);font-weight:700">${bookingCount} Booking${bookingCount > 1 ? "s" : ""}</small>` : ""}
+                          </td>
+                          <td>
+                            <a href="mailto:${escapeHtml(c.email)}" style="color:var(--ink);text-decoration:none;font-weight:600">${escapeHtml(c.email)}</a>
+                          </td>
+                          <td>
+                            ${c.phone ? `<a href="tel:${escapeHtml(c.phone)}" style="color:var(--muted);text-decoration:none">${escapeHtml(c.phone)}</a>` : '<span style="color:#cbd5e1">-</span>'}
+                          </td>
+                          <td>
+                            ${c.passport_number ? `<code style="background:#f8fafc;padding:2px 6px;border-radius:4px;border:1px solid #e2e8f0;font-size:12px">${escapeHtml(c.passport_number)}</code>` : '<span style="color:#cbd5e1">-</span>'}
+                          </td>
+                          <td style="font-size:12px;color:var(--muted)">${dateStr}</td>
+                          <td>${roleBadge}</td>
+                          <td>${statusBadge}</td>
+                          <td>
+                            <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+                              ${
+                                bookingCount > 0
+                                  ? `<button type="button" class="btn btn-outline btn-sm" style="padding:4px 8px;font-size:11px" onclick="window.ACAdmin.viewCustomerBookings('${escapeHtml(c.email)}')">Bookings (${bookingCount})</button>`
+                                  : ""
+                              }
+                              ${
+                                c.role !== "admin"
+                                  ? `<button type="button" class="btn btn-sm ${isSuspended ? "btn-primary" : "btn-outline"}" style="padding:4px 8px;font-size:11px;${isSuspended ? "" : "color:#dc2626;border-color:#fca5a5"}" onclick="window.ACAdmin.toggleCustomerStatus('${c.id}', '${c.status || "ACTIVE"}')">
+                                      ${isSuspended ? "Activate" : "Suspend"}
+                                    </button>`
+                                  : ""
+                              }
+                            </div>
+                          </td>
+                        </tr>`;
+                      })
+                      .join("")
+              }
+            </tbody>
+          </table>
+        </div>
+      `;
+
+      const searchInput = document.getElementById("adm-cust-search");
+      if (searchInput) {
+        searchInput.focus();
+        searchInput.setSelectionRange(searchInput.value.length, searchInput.value.length);
+        searchInput.addEventListener("input", e => {
+          admState.customerSearch = e.target.value;
+          renderActiveTab();
+        });
+      }
+
       return;
     }
 
@@ -1443,6 +1584,41 @@
     });
   }
 
+  async function toggleCustomerStatus(userId, currentStatus) {
+    const newStatus = currentStatus === "SUSPENDED" ? "ACTIVE" : "SUSPENDED";
+    const { error } = await window.AC.supabase
+      .from("profiles")
+      .update({ status: newStatus, updated_at: new Date().toISOString() })
+      .eq("id", userId);
+    if (error) {
+      window.AC.showToast(error.message, "error");
+      return;
+    }
+    window.AC.showToast(`Customer account status updated to ${newStatus}.`, "success");
+    await refreshAllData();
+    renderActiveTab();
+  }
+
+  async function refreshCustomers() {
+    window.AC.showToast("Refreshing customer records...", "info");
+    await refreshAllData();
+    renderActiveTab();
+  }
+
+  function viewCustomerBookings(customerEmail) {
+    admState.tab = "bookings";
+    admState.statusFilter = "ALL";
+    document.querySelectorAll("[data-adm-tab]").forEach(btn => {
+      btn.classList.toggle("active", btn.getAttribute("data-adm-tab") === "bookings");
+    });
+    renderActiveTab();
+    const searchInput = document.getElementById("adm-booking-search");
+    if (searchInput && customerEmail) {
+      searchInput.value = customerEmail;
+      searchInput.dispatchEvent(new Event("input"));
+    }
+  }
+
   document.addEventListener("DOMContentLoaded", initAdmin);
 
   window.ACAdmin = {
@@ -1450,6 +1626,9 @@
     setBookingFilter,
     openManageBookingModal,
     updateRequestStatus,
+    toggleCustomerStatus,
+    refreshCustomers,
+    viewCustomerBookings,
     toggleActive,
     openFlightModal,
     openAddPackageModal,

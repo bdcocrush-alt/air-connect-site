@@ -80,7 +80,39 @@
       .replace(/'/g, "&#39;");
   }
 
+  function syncSessionCookie(session) {
+    try {
+      if (session?.access_token) {
+        const maxAge = session.expires_in || 604800; // 7 days
+        document.cookie = `ac_session=${encodeURIComponent(session.access_token)}; path=/; max-age=${maxAge}; SameSite=Lax; secure`;
+        document.cookie = `ac_user=${encodeURIComponent(session.user?.email || "")}; path=/; max-age=${maxAge}; SameSite=Lax; secure`;
+      } else {
+        document.cookie = "ac_session=; path=/; max-age=0; SameSite=Lax; secure";
+        document.cookie = "ac_user=; path=/; max-age=0; SameSite=Lax; secure";
+      }
+    } catch (e) {
+      console.warn("Cookie sync error:", e);
+    }
+  }
+
+  function initCookieConsent() {
+    const consent = localStorage.getItem("ac_cookie_consent");
+    const banner = document.getElementById("cookie-consent-banner");
+    if (!consent && banner) {
+      banner.hidden = false;
+    }
+  }
+
+  function acceptCookies() {
+    localStorage.setItem("ac_cookie_consent", "accepted");
+    document.cookie = "ac_consent=true; path=/; max-age=31536000; SameSite=Lax; secure";
+    const banner = document.getElementById("cookie-consent-banner");
+    if (banner) banner.hidden = true;
+    showToast("Cookie preferences saved.", "success");
+  }
+
   async function syncAuthUser(session) {
+    syncSessionCookie(session);
     state.user = session?.user || null;
     state.isAdmin = Boolean(
       state.user?.app_metadata?.role === "admin" ||
@@ -185,6 +217,9 @@
     showToast,
     escapeHtml,
     copyText,
+    initCookieConsent,
+    acceptCookies,
+    syncSessionCookie,
     loadInitialCatalog,
     syncAuthUser
   };
