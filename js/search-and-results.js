@@ -1723,10 +1723,9 @@
     if (!hvGrid) return;
     const { formatMoney, escapeHtml, state } = window.AC;
 
-    const hotelsHtml = state.hotels
-      .map(h => {
-        const price = Number(h.discount_price || h.price_per_night);
-        return `
+    const hotelCards = state.hotels.map(h => {
+      const price = Number(h.discount_price || h.price_per_night);
+      return `
         <div class="catalog-card">
           <div class="catalog-thumb">
             <img src="${escapeHtml(h.image_url)}" alt="${escapeHtml(h.name)}">
@@ -1749,12 +1748,10 @@
             </div>
           </div>
         </div>`;
-      })
-      .join("");
+    });
 
-    const visasHtml = state.visaServices
-      .map(
-        v => `
+    const visaCards = state.visaServices.map(
+      v => `
       <div class="catalog-card">
         <div class="catalog-thumb">
           <img src="${escapeHtml(v.image_url)}" alt="${escapeHtml(v.country)}">
@@ -1777,15 +1774,50 @@
           </div>
         </div>
       </div>`
-      )
-      .join("");
+    );
 
+    let activeCards = [];
     if (hvFilter === "HOTEL") {
-      hvGrid.innerHTML = hotelsHtml;
+      activeCards = hotelCards;
     } else if (hvFilter === "VISA") {
-      hvGrid.innerHTML = visasHtml;
+      activeCards = visaCards;
     } else {
-      hvGrid.innerHTML = `${hotelsHtml}${visasHtml}`;
+      activeCards = [...hotelCards, ...visaCards];
+    }
+
+    hvGrid.className = "hv-carousel-viewport";
+
+    if (!activeCards.length) {
+      hvGrid.innerHTML = `<p style="color:var(--muted)">No items available in this category.</p>`;
+      return;
+    }
+
+    // Ensure each half of the infinite carousel has at least 5 cards so it spans wider than the viewport
+    const repeatFactor = Math.max(1, Math.ceil(5 / activeCards.length));
+    const singleHalfCards = [];
+    for (let i = 0; i < repeatFactor; i++) {
+      singleHalfCards.push(...activeCards);
+    }
+    const halfHtml = singleHalfCards.join("");
+    const durationSec = Math.max(20, Math.round(singleHalfCards.length * 5.5));
+
+    hvGrid.innerHTML = `
+      <div class="hv-carousel-track" style="--hv-slide-duration: ${durationSec}s">
+        ${halfHtml}
+        ${halfHtml}
+      </div>
+    `;
+
+    const track = hvGrid.querySelector(".hv-carousel-track");
+    if (track) {
+      hvGrid.querySelectorAll(".catalog-card").forEach(card => {
+        card.addEventListener("mouseenter", () => {
+          track.classList.add("is-paused");
+        });
+        card.addEventListener("mouseleave", () => {
+          track.classList.remove("is-paused");
+        });
+      });
     }
   }
 

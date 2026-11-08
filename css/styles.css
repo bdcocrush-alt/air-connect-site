@@ -1211,6 +1211,52 @@ button, input, select, textarea {
   gap: 20px;
 }
 
+/* Horizontal Auto-Sliding Carousel for Featured Partner Hotels & Visa Services */
+.hv-carousel-viewport {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  padding: 8px 0 16px;
+}
+
+.hv-carousel-track {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  width: max-content;
+  will-change: transform;
+  animation: hvAutoSlide var(--hv-slide-duration, 30s) linear infinite;
+}
+
+.hv-carousel-track:hover,
+.hv-carousel-track:focus-within,
+.hv-carousel-track.is-paused {
+  animation-play-state: paused !important;
+}
+
+.hv-carousel-track .catalog-card {
+  flex: 0 0 330px;
+  width: 330px;
+  margin-right: 20px;
+}
+
+@keyframes hvAutoSlide {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@media (max-width: 768px) {
+  .hv-carousel-track .catalog-card {
+    flex: 0 0 285px;
+    width: 285px;
+    margin-right: 16px;
+  }
+}
+
 .catalog-card {
   background: var(--card);
   border: 1px solid var(--line);
