@@ -1020,9 +1020,11 @@ button, input, select, textarea {
 
 /* Special Offers Banner Grid */
 .offers-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 18px;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .offer-banner-card {
@@ -1250,6 +1252,12 @@ button, input, select, textarea {
   margin-right: 20px;
 }
 
+.hv-carousel-track .offer-banner-card {
+  flex: 0 0 360px;
+  width: 360px;
+  margin-right: 20px;
+}
+
 @keyframes hvAutoSlide {
   0% {
     transform: translate3d(0, 0, 0);
@@ -1260,7 +1268,8 @@ button, input, select, textarea {
 }
 
 @media (max-width: 768px) {
-  .hv-carousel-track .catalog-card {
+  .hv-carousel-track .catalog-card,
+  .hv-carousel-track .offer-banner-card {
     flex: 0 0 285px;
     width: 285px;
     margin-right: 16px;

@@ -1582,7 +1582,7 @@
   function bindCarouselPauseOnHover(rootEl) {
     if (!rootEl) return;
     rootEl.querySelectorAll(".hv-carousel-track").forEach(track => {
-      track.querySelectorAll(".catalog-card").forEach(card => {
+      track.querySelectorAll(".catalog-card, .offer-banner-card").forEach(card => {
         card.addEventListener("mouseenter", () => {
           track.classList.add("is-paused");
         });
@@ -1597,12 +1597,11 @@
   function renderHomepageCatalog(activeFilter = "ALL") {
     const { escapeHtml, state } = window.AC;
 
-    // 1. Special Offers Banners
+    // 1. Special Offers Banners (Single-Line Auto-Sliding Carousel with Pause-on-Hover)
     const offersGrid = document.getElementById("home-offers-grid");
     if (offersGrid) {
-      offersGrid.innerHTML = state.promoBanners
-        .map(
-          b => `
+      const offerCards = state.promoBanners.map(
+        b => `
         <div class="offer-banner-card" style="background-image:url('${escapeHtml(b.image_url)}')" onclick="window.ACSearch.switchSearchTab('${escapeHtml(b.service_tab || "flight")}')">
           <div class="offer-banner-content">
             <span class="offer-badge">${escapeHtml(b.badge_text)}</span>
@@ -1610,8 +1609,9 @@
             <p>${escapeHtml(b.subtitle)}</p>
           </div>
         </div>`
-        )
-        .join("");
+      );
+      offersGrid.innerHTML = buildAutoCarouselHtml(offerCards, "No special offers available right now.");
+      bindCarouselPauseOnHover(offersGrid);
     }
 
     // 3. Grouped Hajj & Umrah + Tour Packages
