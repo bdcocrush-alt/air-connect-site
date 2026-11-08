@@ -158,6 +158,7 @@
 
     const targetEl =
       document.getElementById(targetId) ||
+      (targetId === "hotels" ? document.getElementById("flights") : null) ||
       (targetId === "tour-packages" ? document.getElementById("tour-packages-section") : null) ||
       (targetId === "umrah-packages" ? document.getElementById("umrah-packages-section") : null) ||
       (targetId === "visa" ? document.getElementById("hotels-visas-section") : null);

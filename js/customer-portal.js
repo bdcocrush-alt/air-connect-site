@@ -48,7 +48,12 @@
         }
       });
       if (error) {
-        window.AC.showToast(error.message, "error");
+        const msg = error.message || "";
+        if (msg.includes("Unsupported provider") || msg.includes("provider is not enabled")) {
+          window.AC.showToast("Google Sign-In is awaiting Google Client ID configuration in Supabase Dashboard. Please sign in with Email & Password.", "warning", 6000);
+        } else {
+          window.AC.showToast(msg, "error");
+        }
       }
     } catch (err) {
       window.AC.showToast(err.message || "Google Sign-In failed.", "error");
