@@ -1433,42 +1433,17 @@
     }
 
     if (t.category === "ALL") {
-      const inboundList = list.filter(p => p.category === "INBOUND_TOUR");
-      const outboundList = list.filter(p => p.category === "OUTBOUND_TOUR");
       sec.innerHTML = `
         <div class="container">
           <div class="section-head" style="margin-top:16px">
             <div>
-              <h2>Tour Packages — Separated into Inbound &amp; Outbound (${list.length} Available)</h2>
+              <h2>Tour Packages (${list.length} Available)</h2>
               <p>Browse domestic Bangladesh Inbound Tours and International Outbound Holidays below.</p>
             </div>
             <button class="btn btn-outline btn-sm" onclick="document.getElementById('results-section').hidden=true">✕ Close Results</button>
           </div>
-
-          <div class="tour-subgroups-wrapper" style="margin-bottom:36px">
-            <div class="tour-subgroup-panel inbound-panel">
-              <div class="tour-subgroup-header">
-                <div>
-                  <h4>Inbound Tours (Explore Bangladesh)</h4>
-                  <p>Domestic holiday packages in Cox's Bazar, Sundarbans, Sylhet &amp; Hill Tracts (${inboundList.length} Packages)</p>
-                </div>
-              </div>
-              <div class="catalog-grid">
-                ${inboundList.length ? inboundList.map(pkg => renderPackageCardHtml(pkg)).join("") : `<p style="color:var(--muted)">No matching Inbound Tours found.</p>`}
-              </div>
-            </div>
-
-            <div class="tour-subgroup-panel outbound-panel">
-              <div class="tour-subgroup-header">
-                <div>
-                  <h4>Outbound Tours (International Holidays)</h4>
-                  <p>Guided overseas holidays in Malaysia, Maldives, Dubai, Thailand &amp; beyond (${outboundList.length} Packages)</p>
-                </div>
-              </div>
-              <div class="catalog-grid">
-                ${outboundList.length ? outboundList.map(pkg => renderPackageCardHtml(pkg)).join("") : `<p style="color:var(--muted)">No matching Outbound Tours found.</p>`}
-              </div>
-            </div>
+          <div class="package-group-panel tour-panel" style="margin-bottom:36px">
+            ${buildAutoCarouselHtml(list.map(pkg => renderPackageCardHtml(pkg)), "No matching Tour Packages found.")}
           </div>
         </div>
       `;
@@ -1483,12 +1458,13 @@
             </div>
             <button class="btn btn-outline btn-sm" onclick="document.getElementById('results-section').hidden=true">✕ Close Results</button>
           </div>
-          <div class="catalog-grid" style="margin-bottom:36px">
-            ${list.map(pkg => renderPackageCardHtml(pkg)).join("")}
+          <div class="package-group-panel tour-panel" style="margin-bottom:36px">
+            ${buildAutoCarouselHtml(list.map(pkg => renderPackageCardHtml(pkg)), "No matching Tour Packages found.")}
           </div>
         </div>
       `;
     }
+    bindCarouselPauseOnHover(sec);
     sec.scrollIntoView({ behavior: "smooth" });
   }
 
@@ -1582,6 +1558,41 @@
     `;
   }
 
+  function buildAutoCarouselHtml(cardHtmlList, emptyMessage = "No items available in this category.") {
+    if (!cardHtmlList || !cardHtmlList.length) {
+      return `<p style="color:var(--muted)">${emptyMessage}</p>`;
+    }
+    const repeatFactor = Math.max(1, Math.ceil(5 / cardHtmlList.length));
+    const singleHalfCards = [];
+    for (let i = 0; i < repeatFactor; i++) {
+      singleHalfCards.push(...cardHtmlList);
+    }
+    const halfHtml = singleHalfCards.join("");
+    const durationSec = Math.max(20, Math.round(singleHalfCards.length * 5.5));
+    return `
+      <div class="hv-carousel-viewport">
+        <div class="hv-carousel-track" style="--hv-slide-duration: ${durationSec}s">
+          ${halfHtml}
+          ${halfHtml}
+        </div>
+      </div>
+    `;
+  }
+
+  function bindCarouselPauseOnHover(rootEl) {
+    if (!rootEl) return;
+    rootEl.querySelectorAll(".hv-carousel-track").forEach(track => {
+      track.querySelectorAll(".catalog-card").forEach(card => {
+        card.addEventListener("mouseenter", () => {
+          track.classList.add("is-paused");
+        });
+        card.addEventListener("mouseleave", () => {
+          track.classList.remove("is-paused");
+        });
+      });
+    });
+  }
+
   // Homepage Sections Renderer
   function renderHomepageCatalog(activeFilter = "ALL") {
     const { escapeHtml, state } = window.AC;
@@ -1603,12 +1614,13 @@
         .join("");
     }
 
-    // 3. Grouped Hajj & Umrah + Tour Packages (Separated into Inbound Tours & Outbound Tours)
+    // 3. Grouped Hajj & Umrah + Tour Packages
     const catalogGrid = document.getElementById("home-catalog-grid");
     if (catalogGrid) {
       const hajjUmrahList = state.packages.filter(p => p.category === "UMRAH" || p.category === "HAJJ");
       const inboundList = state.packages.filter(p => p.category === "INBOUND_TOUR");
       const outboundList = state.packages.filter(p => p.category === "OUTBOUND_TOUR");
+      const allTourList = [...inboundList, ...outboundList];
 
       const hajjPanelHtml = `
         <div class="package-group-panel hajj-panel">
@@ -1628,37 +1640,29 @@
       `;
 
       const inboundSubPanelHtml = `
-        <div class="tour-subgroup-panel inbound-panel">
-          <div class="tour-subgroup-header">
-            <div>
-              <h4>Inbound Tours (Explore Bangladesh)</h4>
-              <p>Domestic Bangladesh tour packages — Cox's Bazar, Sundarbans, Sylhet &amp; Hill Tracts</p>
-            </div>
-            <button type="button" class="btn btn-outline btn-sm" onclick="window.ACSearch.switchSearchTab('inbound');window.scrollTo({top:0,behavior:'smooth'})">
-              Search Inbound Tours →
-            </button>
+        <div class="package-group-header">
+          <div>
+            <h3>Inbound Tours (Explore Bangladesh)</h3>
+            <p>Domestic Bangladesh tour packages — Cox's Bazar, Sundarbans, Sylhet &amp; Hill Tracts</p>
           </div>
-          <div class="catalog-grid">
-            ${inboundList.map(p => renderPackageCardHtml(p)).join("")}
-          </div>
+          <button type="button" class="btn btn-outline btn-sm" onclick="window.ACSearch.switchSearchTab('inbound');window.scrollTo({top:0,behavior:'smooth'})">
+            Search Inbound Tours →
+          </button>
         </div>
+        ${buildAutoCarouselHtml(inboundList.map(p => renderPackageCardHtml(p)), "No Inbound Tour packages available.")}
       `;
 
       const outboundSubPanelHtml = `
-        <div class="tour-subgroup-panel outbound-panel">
-          <div class="tour-subgroup-header">
-            <div>
-              <h4>Outbound Tours (International Holidays)</h4>
-              <p>All-inclusive overseas holiday packages — Malaysia, Maldives, Dubai, Thailand &amp; Singapore</p>
-            </div>
-            <button type="button" class="btn btn-outline btn-sm" onclick="window.ACSearch.switchSearchTab('outbound');window.scrollTo({top:0,behavior:'smooth'})">
-              Search Outbound Tours →
-            </button>
+        <div class="package-group-header">
+          <div>
+            <h3>Outbound Tours (International Holidays)</h3>
+            <p>All-inclusive overseas holiday packages — Malaysia, Maldives, Dubai, Thailand &amp; Singapore</p>
           </div>
-          <div class="catalog-grid">
-            ${outboundList.map(p => renderPackageCardHtml(p)).join("")}
-          </div>
+          <button type="button" class="btn btn-outline btn-sm" onclick="window.ACSearch.switchSearchTab('outbound');window.scrollTo({top:0,behavior:'smooth'})">
+            Search Outbound Tours →
+          </button>
         </div>
+        ${buildAutoCarouselHtml(outboundList.map(p => renderPackageCardHtml(p)), "No Outbound Tour packages available.")}
       `;
 
       const tourPanelHtml = `
@@ -1666,7 +1670,7 @@
           <div class="package-group-header">
             <div>
               <h3>Tour Packages Section</h3>
-              <p>Curated holiday packages separated into <strong>Inbound Tours (Bangladesh)</strong> and <strong>Outbound Tours (International)</strong>.</p>
+              <p>Curated holiday packages across <strong>Inbound Tours (Bangladesh)</strong> and <strong>Outbound Tours (International)</strong>.</p>
             </div>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
               <button type="button" class="btn btn-outline btn-sm" onclick="document.querySelector('[data-cat=\\'INBOUND_TOUR\\']')?.click()">
@@ -1677,10 +1681,7 @@
               </button>
             </div>
           </div>
-          <div class="tour-subgroups-wrapper">
-            ${inboundSubPanelHtml}
-            ${outboundSubPanelHtml}
-          </div>
+          ${buildAutoCarouselHtml(allTourList.map(p => renderPackageCardHtml(p)), "No Tour packages available.")}
         </div>
       `;
 
@@ -1708,6 +1709,8 @@
           </div>
         `;
       }
+
+      bindCarouselPauseOnHover(catalogGrid);
     }
 
     // 4. Hotels & Visa Services Grid (if present on homepage)

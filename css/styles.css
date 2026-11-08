@@ -1113,6 +1113,8 @@ button, input, select, textarea {
   display: flex;
   flex-direction: column;
   gap: 28px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .package-group-panel {
@@ -1121,6 +1123,9 @@ button, input, select, textarea {
   border-radius: 20px;
   padding: 24px;
   box-shadow: var(--shadow-sm);
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .package-group-panel.hajj-panel {
@@ -1163,6 +1168,8 @@ button, input, select, textarea {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .tour-subgroup-panel {
@@ -1170,6 +1177,9 @@ button, input, select, textarea {
   border: 1px solid var(--line);
   border-radius: 16px;
   padding: 20px;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .tour-subgroup-panel.inbound-panel {
