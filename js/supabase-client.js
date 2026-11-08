@@ -148,6 +148,35 @@
     });
   }
 
+  function copyText(text, label = "Text") {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(`${label} copied to clipboard!`, "success");
+      }).catch(() => {
+        fallbackCopy(text, label);
+      });
+    } else {
+      fallbackCopy(text, label);
+    }
+  }
+
+  function fallbackCopy(text, label) {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try {
+      document.execCommand("copy");
+      showToast(`${label} copied to clipboard!`, "success");
+    } catch (e) {
+      showToast(`Copy failed. Please copy manually: ${text}`, "info");
+    }
+    document.body.removeChild(ta);
+  }
+
   window.AC = {
     supabase,
     state,
@@ -155,6 +184,7 @@
     setCurrency,
     showToast,
     escapeHtml,
+    copyText,
     loadInitialCatalog,
     syncAuthUser
   };

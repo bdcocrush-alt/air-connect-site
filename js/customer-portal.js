@@ -353,65 +353,175 @@
     });
   }
 
-  function openPaymentDetailsModal(defaultMethod = "BANK_TRANSFER") {
-    const active = defaultMethod || "BANK_TRANSFER";
-    window.ACSearch.showModal(`
-      <div style="margin-bottom:14px">
-        <span class="status-badge status-PROCESSING">OFFICIAL PAYMENT ACCOUNTS</span>
-        <h2 style="margin:8px 0 4px;font-size:21px">Air Connect Ltd — Payment Methods</h2>
-        <p style="font-size:13px;color:var(--muted);margin:0">Click any payment option below to view official account details.</p>
-      </div>
+  function openPaymentDetailsModal(defaultMethod = "ALL") {
+    let activeFilter = defaultMethod || "ALL";
+    if (activeFilter === "BKASH" || activeFilter === "NAGAD") activeFilter = "MFS";
+    if (activeFilter === "BANK_TRANSFER") activeFilter = "BANK";
 
-      <div class="payment-methods-grid" style="margin-bottom:16px">
-        <label class="payment-option-card ${active === "BKASH" ? "active" : ""}" data-modal-pay="BKASH">
-          <input type="radio" name="modalPayChoice" value="BKASH" ${active === "BKASH" ? "checked" : ""}>
-          <div class="payment-logo-wrap"><img src="assets/payments/bkash.svg" alt="bKash"></div>
-          <div class="payment-option-info">
-            <strong>bKash Payment</strong>
-            <span class="payment-merchant-num">+880 1322-937800</span>
-            <small>Merchant / Send Money</small>
+    function renderModalContent(filter) {
+      const showMfs = filter === "ALL" || filter === "MFS";
+      const showBank = filter === "ALL" || filter === "BANK";
+
+      return `
+        <div style="margin-bottom:18px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap">
+            <span class="status-badge status-CONFIRMED" style="font-weight:700">OFFICIAL VERIFIED ACCOUNTS</span>
+            <span class="status-badge status-PROCESSING">AIR CONNECT LTD</span>
           </div>
-        </label>
+          <h2 style="font-size:22px;color:var(--ink);margin:0 0 6px">Payment Methods &amp; Bank Details</h2>
+          <p style="font-size:13.5px;color:var(--muted);margin:0">
+            Pay safely and conveniently via <strong>bKash</strong>, <strong>Nagad</strong>, or <strong>BRAC Bank PLC</strong> transfer.
+          </p>
+        </div>
 
-        <label class="payment-option-card ${active === "NAGAD" ? "active" : ""}" data-modal-pay="NAGAD">
-          <input type="radio" name="modalPayChoice" value="NAGAD" ${active === "NAGAD" ? "checked" : ""}>
-          <div class="payment-logo-wrap"><img src="assets/payments/nagad.svg" alt="Nagad"></div>
-          <div class="payment-option-info">
-            <strong>Nagad Payment</strong>
-            <span class="payment-merchant-num">+880 1322-937800</span>
-            <small>Merchant / Send Money</small>
+        <!-- Filter / Switcher Bar -->
+        <div class="filter-pill-bar" style="margin-bottom:18px;display:flex;gap:8px;flex-wrap:wrap">
+          <button type="button" class="filter-pill ${filter === "ALL" ? "active" : ""}" data-pm-filter="ALL">All Options</button>
+          <button type="button" class="filter-pill ${filter === "MFS" ? "active" : ""}" data-pm-filter="MFS">bKash &amp; Nagad</button>
+          <button type="button" class="filter-pill ${filter === "BANK" ? "active" : ""}" data-pm-filter="BANK">BRAC Bank PLC</button>
+        </div>
+
+        <div style="display:grid;gap:18px">
+          <!-- 1. bKash & Nagad (Mobile Banking) -->
+          <div id="pm-card-mfs" style="display:${showMfs ? "block" : "none"}">
+            <div class="bank-transfer-details-card" style="border-color:#fbcfe8;background:#ffffff;margin-bottom:0">
+              <div class="bank-details-header" style="border-bottom-color:#fecdd3">
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                  <span class="payment-logo-wrap" style="width:68px;height:34px"><img src="assets/payments/bkash.svg" alt="bKash"></span>
+                  <span class="payment-logo-wrap" style="width:68px;height:34px"><img src="assets/payments/nagad.svg" alt="Nagad"></span>
+                </div>
+                <div>
+                  <strong style="color:#e2136e;font-size:16px">bKash &amp; Nagad Official Receiver / Merchant</strong>
+                  <small>Send Money or Merchant Payment to our official hotline number</small>
+                </div>
+              </div>
+
+              <div class="bank-details-grid" style="margin-bottom:12px">
+                <div class="bank-detail-item" style="background:#fff1f2;border-color:#fecdd3">
+                  <span>Merchant / Receiver Number</span>
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+                    <strong style="color:var(--brand-primary);font-size:16px">+880 1322-937800</strong>
+                    <button type="button" class="btn btn-outline btn-sm" style="padding:4px 9px;font-size:11px" onclick="window.AC.copyText('+880 1322-937800', 'bKash/Nagad Number')">Copy</button>
+                  </div>
+                </div>
+                <div class="bank-detail-item">
+                  <span>Channel Type</span>
+                  <strong>Personal &amp; Merchant (Send Money Accepted)</strong>
+                </div>
+                <div class="bank-detail-item">
+                  <span>Payment Reference</span>
+                  <strong>Booking Ref (e.g. AC-2026-...) or Name</strong>
+                </div>
+                <div class="bank-detail-item">
+                  <span>Verification Speed</span>
+                  <strong style="color:var(--brand-green)">Instant (10–15 minutes)</strong>
+                </div>
+              </div>
+
+              <div style="padding:10px 14px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;font-size:12.5px;color:var(--text);line-height:1.55">
+                💡 <strong>How to Pay:</strong> Open your bKash or Nagad app → Choose <em>Send Money</em> or <em>Make Payment</em> → Enter <strong style="color:var(--brand-primary)">+880 1322-937800</strong> → Enter booking amount → Type your <strong>Booking Reference</strong> in the reference field → Confirm PIN. Save the <strong>TrxID</strong> to confirm your booking.
+              </div>
+            </div>
           </div>
-        </label>
 
-        <label class="payment-option-card ${active === "BANK_TRANSFER" ? "active" : ""}" data-modal-pay="BANK_TRANSFER">
-          <input type="radio" name="modalPayChoice" value="BANK_TRANSFER" ${active === "BANK_TRANSFER" ? "checked" : ""}>
-          <div class="payment-logo-wrap"><img src="assets/payments/bracbank.png" alt="BRAC Bank PLC"></div>
-          <div class="payment-option-info">
-            <strong>Bank Transfer</strong>
-            <span class="payment-merchant-num" style="color:#0054a6">BRAC Bank PLC</span>
-            <small>A/C: 1511202219754001</small>
+          <!-- 2. BRAC Bank PLC Transfer -->
+          <div id="pm-card-bank" style="display:${showBank ? "block" : "none"}">
+            <div class="bank-transfer-details-card" style="border-color:#bfdbfe;background:#ffffff;margin-bottom:0">
+              <div class="bank-details-header">
+                <span class="bank-details-logo" style="height:44px;padding:4px 10px">
+                  <img src="assets/payments/bracbank.png" alt="BRAC Bank PLC" style="max-height:36px;width:auto">
+                </span>
+                <div>
+                  <strong style="color:#0054a6;font-size:16px">BRAC Bank PLC — Official Bank Account</strong>
+                  <small>For BEFTN, NPSB, RTGS, BRAC Bank Astha App, or Branch Cash Deposit</small>
+                </div>
+              </div>
+
+              <div class="bank-details-grid" style="margin-bottom:12px">
+                <div class="bank-detail-item">
+                  <span>Bank Name</span>
+                  <strong>BRAC Bank PLC</strong>
+                </div>
+                <div class="bank-detail-item">
+                  <span>Account Name</span>
+                  <strong>SHAKILA JASMIN RUNA</strong>
+                </div>
+                <div class="bank-detail-item" style="background:#eff6ff;border-color:#bfdbfe">
+                  <span>Account Number</span>
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+                    <strong style="color:#0054a6;font-size:16px;letter-spacing:0.5px">1511202219754001</strong>
+                    <button type="button" class="btn btn-outline btn-sm" style="padding:4px 9px;font-size:11px" onclick="window.AC.copyText('1511202219754001', 'Bank Account Number')">Copy</button>
+                  </div>
+                </div>
+                <div class="bank-detail-item">
+                  <span>Branch Name</span>
+                  <strong>MIRPUR BRANCH</strong>
+                </div>
+                <div class="bank-detail-item">
+                  <span>Routing Number</span>
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+                    <strong>060262983</strong>
+                    <button type="button" class="btn btn-outline btn-sm" style="padding:4px 9px;font-size:11px" onclick="window.AC.copyText('060262983', 'Routing Number')">Copy</button>
+                  </div>
+                </div>
+                <div class="bank-detail-item">
+                  <span>SWIFT Code</span>
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+                    <strong>BRAKBDDH</strong>
+                    <button type="button" class="btn btn-outline btn-sm" style="padding:4px 9px;font-size:11px" onclick="window.AC.copyText('BRAKBDDH', 'SWIFT Code')">Copy</button>
+                  </div>
+                </div>
+              </div>
+
+              <div style="padding:10px 14px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;font-size:12.5px;color:#166534;line-height:1.55">
+                ✓ <strong>Transfer Guidance:</strong> Transfer from any Bangladeshi bank via Internet Banking (NPSB / BEFTN) or deposit cash at any BRAC Bank branch. Please mention your <strong>Booking Reference</strong> in the remarks/narration.
+              </div>
+            </div>
           </div>
-        </label>
-      </div>
 
-      <div id="modal-payment-details-body">
-        ${window.ACBooking.getPaymentDetailsPanelHtml(active)}
-      </div>
-    `);
+          <!-- 3. Book & Hold Strip -->
+          <div style="padding:12px 16px;background:#f8fafc;border:1.5px dashed var(--line);border-radius:12px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap">
+            <div>
+              <div style="display:flex;align-items:center;gap:6px">
+                <span class="status-badge" style="background:#0caf61;color:#fff;font-weight:700">BOOK &amp; HOLD</span>
+                <strong style="font-size:13.5px;color:var(--ink)">Prefer to hold PNR before paying?</strong>
+              </div>
+              <p style="font-size:12px;color:var(--muted);margin:4px 0 0">
+                You can select <strong>Book &amp; Hold</strong> at checkout to reserve your tickets first, then complete payment within the hold deadline.
+              </p>
+            </div>
+            <button type="button" class="btn btn-outline btn-sm" onclick="window.ACSearch.closeModal();window.ACPortal.openMyBookingsModal()">
+              Track Booking
+            </button>
+          </div>
+        </div>
 
-    document.querySelectorAll("[data-modal-pay]").forEach(card => {
-      card.addEventListener("click", () => {
-        const m = card.getAttribute("data-modal-pay");
-        document.querySelectorAll("[data-modal-pay]").forEach(c => {
-          const isSel = c.getAttribute("data-modal-pay") === m;
-          c.classList.toggle("active", isSel);
-          const r = c.querySelector('input[type="radio"]');
-          if (r) r.checked = isSel;
+        <div style="margin-top:20px;padding-top:14px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+          <a href="https://wa.me/8801322937800?text=Hello%20Air%20Connect%20Ltd%2C%20I%20have%20a%20question%20about%20payment%20methods." target="_blank" rel="noopener" class="btn btn-outline btn-sm" style="color:#059669;border-color:#34d399;display:flex;align-items:center;gap:6px">
+            <svg viewBox="0 0 32 32" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M16.004 2.667C8.64 2.667 2.667 8.64 2.667 16c0 2.35.612 4.644 1.775 6.67L2.56 29.333l6.835-1.792A13.28 13.28 0 0 0 16.004 29.333c7.363 0 13.33-5.973 13.33-13.333 0-3.562-1.387-6.912-3.904-9.43A13.245 13.245 0 0 0 16.004 2.667zm6.08 16.116c-.333-.167-1.97-.972-2.275-1.083-.305-.111-.527-.167-.75.167-.222.333-.86 1.083-1.055 1.305-.194.222-.388.25-.721.083-.333-.167-1.406-.518-2.678-1.652-.99-.883-1.658-1.974-1.852-2.307-.194-.333-.02-.514.146-.68.15-.15.333-.389.5-.583.166-.195.222-.334.333-.556.111-.222.056-.417-.028-.583-.083-.167-.75-1.805-1.027-2.472-.27-.65-.546-.562-.75-.572l-.638-.011c-.222 0-.583.083-.888.417-.305.333-1.166 1.139-1.166 2.777s1.194 3.222 1.36 3.444c.167.222 2.35 3.587 5.692 5.03.795.343 1.416.548 1.9.702.798.254 1.525.218 2.1.132.64-.096 1.97-.805 2.248-1.583.277-.777.277-1.444.194-1.583-.083-.139-.305-.222-.638-.389z"/></svg>
+            <span>WhatsApp Payment Support</span>
+          </a>
+          <button type="button" class="btn btn-primary btn-sm" onclick="window.ACSearch.closeModal()">
+            Done
+          </button>
+        </div>
+      `;
+    }
+
+    window.ACSearch.showModal(renderModalContent(activeFilter));
+
+    function bindFilterPills() {
+      document.querySelectorAll("[data-pm-filter]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const f = btn.getAttribute("data-pm-filter");
+          activeFilter = f;
+          window.ACSearch.showModal(renderModalContent(f));
+          bindFilterPills();
         });
-        const body = document.getElementById("modal-payment-details-body");
-        if (body) body.innerHTML = window.ACBooking.getPaymentDetailsPanelHtml(m);
       });
-    });
+    }
+
+    bindFilterPills();
   }
 
   function openRefundReissueModal(bookingId, bookingRef, customerPhone) {
