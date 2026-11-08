@@ -208,13 +208,13 @@
 
                 <label class="payment-option-card ${d.bookingMode === "INSTANT_PAY" && d.paymentMethod === "BANK_TRANSFER" ? "active" : ""}">
                   <input type="radio" name="checkoutPayChoice" value="BANK_TRANSFER" ${d.bookingMode === "INSTANT_PAY" && d.paymentMethod === "BANK_TRANSFER" ? "checked" : ""}>
-                  <div class="payment-logo-wrap" style="font-weight:800;font-size:12px;color:var(--brand-accent)">
-                    BANK
+                  <div class="payment-logo-wrap">
+                    <img src="assets/payments/bracbank.svg" alt="BRAC Bank PLC Official Logo">
                   </div>
                   <div class="payment-option-info">
-                    <strong>Bank Deposit / Transfer</strong>
-                    <span class="payment-merchant-num" style="color:var(--brand-accent)">City Bank PLC</span>
-                    <small>NPSB / BEFTN / Deposit</small>
+                    <strong>Bank Transfer</strong>
+                    <span class="payment-merchant-num" style="color:#0054a6">BRAC Bank PLC</span>
+                    <small>A/C: 1511202219754001</small>
                   </div>
                 </label>
 
@@ -232,25 +232,70 @@
               </div>
 
               <div id="pay-now-panel" ${d.bookingMode === "HOLD_PAY_LATER" ? "hidden" : ""} style="padding:18px;background:#fff1f1;border:1px solid #fecaca;border-radius:12px">
-                <strong style="display:block;margin-bottom:10px;color:var(--brand-primary)">Official Air Connect Ltd Payment Accounts:</strong>
-                <div style="display:grid;gap:10px;font-size:13px;margin-bottom:16px">
-                  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-                    <span class="payment-logo-wrap" style="width:56px;height:30px"><img src="assets/payments/bkash.svg" alt="bKash"></span>
-                    <span><strong>bKash Merchant / Receiver Number:</strong> <strong style="color:var(--brand-primary);font-size:14px">+880 1322-937800</strong></span>
-                  </div>
-                  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-                    <span class="payment-logo-wrap" style="width:56px;height:30px"><img src="assets/payments/nagad.svg" alt="Nagad"></span>
-                    <span><strong>Nagad Merchant / Receiver Number:</strong> <strong style="color:var(--brand-primary);font-size:14px">+880 1322-937800</strong></span>
-                  </div>
-                  <div><strong>Bank Transfer:</strong> ${escapeHtml(settings.bank_details)}</div>
-                </div>
+                <strong style="display:block;margin-bottom:12px;color:var(--brand-primary)">Official Air Connect Ltd Payment Accounts:</strong>
+                ${
+                  d.paymentMethod === "BANK_TRANSFER"
+                    ? `
+                  <div class="bank-transfer-details-card">
+                    <div class="bank-details-header">
+                      <span class="bank-details-logo">
+                        <img src="assets/payments/bracbank.svg" alt="BRAC Bank PLC">
+                      </span>
+                      <div>
+                        <strong>Bank Name: BRAC Bank PLC</strong>
+                        <small>Official Bank Transfer / Deposit / NPSB / BEFTN Account</small>
+                      </div>
+                    </div>
+                    <div class="bank-details-grid">
+                      <div class="bank-detail-item">
+                        <span>Bank Name</span>
+                        <strong>BRAC Bank PLC</strong>
+                      </div>
+                      <div class="bank-detail-item">
+                        <span>Account Name</span>
+                        <strong>SHAKILA JASMIN RUNA</strong>
+                      </div>
+                      <div class="bank-detail-item">
+                        <span>Account Number</span>
+                        <strong style="color:var(--brand-primary)">1511202219754001</strong>
+                      </div>
+                      <div class="bank-detail-item">
+                        <span>Branch Name</span>
+                        <strong>MIRPUR BRANCH</strong>
+                      </div>
+                      <div class="bank-detail-item">
+                        <span>Routing Number</span>
+                        <strong>060262983</strong>
+                      </div>
+                      <div class="bank-detail-item">
+                        <span>SWIFT Code</span>
+                        <strong>BRAKBDDH</strong>
+                      </div>
+                    </div>
+                  </div>`
+                    : `
+                  <div style="display:grid;gap:10px;font-size:13px;margin-bottom:16px">
+                    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                      <span class="payment-logo-wrap" style="width:56px;height:30px"><img src="assets/payments/bkash.svg" alt="bKash"></span>
+                      <span><strong>bKash Merchant / Receiver Number:</strong> <strong style="color:var(--brand-primary);font-size:14px">+880 1322-937800</strong></span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                      <span class="payment-logo-wrap" style="width:56px;height:30px"><img src="assets/payments/nagad.svg" alt="Nagad"></span>
+                      <span><strong>Nagad Merchant / Receiver Number:</strong> <strong style="color:var(--brand-primary);font-size:14px">+880 1322-937800</strong></span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                      <span class="payment-logo-wrap" style="width:56px;height:30px"><img src="assets/payments/bracbank.svg" alt="BRAC Bank PLC"></span>
+                      <span><strong>Bank Transfer (BRAC Bank PLC):</strong> A/C Name: <strong>SHAKILA JASMIN RUNA</strong> • A/C No: <strong style="color:var(--brand-primary)">1511202219754001</strong> • Branch: <strong>MIRPUR BRANCH</strong> • Routing: <strong>060262983</strong> • SWIFT: <strong>BRAKBDDH</strong></span>
+                    </div>
+                  </div>`
+                }
                 <div class="form-grid-3">
                   <div class="form-field">
                     <label>Payment Channel *</label>
                     <select id="chk-pay-method">
                       <option value="BKASH" ${d.paymentMethod === "BKASH" ? "selected" : ""}>bKash (+880 1322-937800)</option>
                       <option value="NAGAD" ${d.paymentMethod === "NAGAD" ? "selected" : ""}>Nagad (+880 1322-937800)</option>
-                      <option value="BANK_TRANSFER" ${d.paymentMethod === "BANK_TRANSFER" ? "selected" : ""}>Bank Deposit / NPSB / BEFTN</option>
+                      <option value="BANK_TRANSFER" ${d.paymentMethod === "BANK_TRANSFER" ? "selected" : ""}>Bank Transfer — BRAC Bank PLC (1511202219754001)</option>
                     </select>
                   </div>
                   <div class="form-field">

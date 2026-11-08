@@ -267,7 +267,25 @@
           <span class="payment-logo-wrap" style="width:54px;height:28px"><img src="assets/payments/nagad.svg" alt="Nagad"></span>
           <span><strong>Nagad Merchant / Receiver:</strong> <strong style="color:var(--brand-primary)">+880 1322-937800</strong></span>
         </div>
-        <div><strong>Bank:</strong> ${escapeHtml(s.bank_details)}</div>
+        <div class="bank-transfer-details-card" style="margin-bottom:0">
+          <div class="bank-details-header">
+            <span class="bank-details-logo">
+              <img src="assets/payments/bracbank.svg" alt="BRAC Bank PLC">
+            </span>
+            <div>
+              <strong>Bank Name: BRAC Bank PLC</strong>
+              <small>Bank Transfer / Deposit Details</small>
+            </div>
+          </div>
+          <div class="bank-details-grid">
+            <div class="bank-detail-item"><span>Bank Name</span><strong>BRAC Bank PLC</strong></div>
+            <div class="bank-detail-item"><span>Account Name</span><strong>SHAKILA JASMIN RUNA</strong></div>
+            <div class="bank-detail-item"><span>Account Number</span><strong style="color:var(--brand-primary)">1511202219754001</strong></div>
+            <div class="bank-detail-item"><span>Branch Name</span><strong>MIRPUR BRANCH</strong></div>
+            <div class="bank-detail-item"><span>Routing Number</span><strong>060262983</strong></div>
+            <div class="bank-detail-item"><span>SWIFT Code</span><strong>BRAKBDDH</strong></div>
+          </div>
+        </div>
       </div>
       <form id="pay-hold-form">
         <div class="form-field">
@@ -275,7 +293,7 @@
           <select id="ph-method" required>
             <option value="BKASH">bKash (+880 1322-937800)</option>
             <option value="NAGAD">Nagad (+880 1322-937800)</option>
-            <option value="BANK_TRANSFER">Bank Deposit / Transfer</option>
+            <option value="BANK_TRANSFER">Bank Transfer — BRAC Bank PLC (1511202219754001)</option>
           </select>
         </div>
         <div class="form-field">

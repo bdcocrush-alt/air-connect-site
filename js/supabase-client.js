@@ -19,7 +19,7 @@
       address: "House 10, Road 2, Sector 17/D Uttara Dhaka",
       bkash_number: "+880 1322-937800",
       nagad_number: "+880 1322-937800",
-      bank_details: "City Bank PLC | A/C Name: Air Connect Ltd | A/C No: 1402938475001 | Branch: Banani, Dhaka",
+      bank_details: "BRAC Bank PLC | Account Name: SHAKILA JASMIN RUNA | Account Number: 1511202219754001 | Branch Name: MIRPUR BRANCH | Routing Number: 060262983 | SWIFT Code: BRAKBDDH",
       currency_rates: { BDT: 1, USD: 0.0083, MYR: 0.037, SAR: 0.031 }
     },
     airports: cfg.DEFAULT_AIRPORTS || [],
