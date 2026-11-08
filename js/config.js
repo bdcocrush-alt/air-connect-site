@@ -30,33 +30,33 @@ window.AIRCONNECT_CONFIG = {
   HERO_BANNERS: {
     flight: {
       title: "From Plans to Paradise — Instantly",
-      subtitle: "Search real-time fares, Student & Umrah tickets, and book with instant hold or easy payment.",
-      bg: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=1800&q=80"
+      subtitle: "Search real-time fares, domestic & international tickets, and book with instant hold or easy payment.",
+      bg: "https://images.unsplash.com/photo-1559128010-7c1ad6e1b6a5?auto=format&fit=crop&w=2000&q=85"
     },
     hotel: {
       title: "Find Your Perfect Stay Worldwide",
       subtitle: "Handpicked 3-star to 5-star hotels in Makkah, Madinah, Cox's Bazar, Kuala Lumpur & Dubai.",
-      bg: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1800&q=80"
+      bg: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=2000&q=85"
     },
     packages: {
       title: "Hajj, Umrah & Guided Tour Packages",
       subtitle: "All-inclusive Spiritual Hajj & Umrah journeys, Bangladesh Inbound Tours, and International Outbound Holidays.",
-      bg: "https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=1800&q=80"
+      bg: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=2000&q=85"
     },
     tour: {
       title: "Unforgettable Inbound & Outbound Tour Packages",
       subtitle: "All-inclusive Bangladesh Inbound Tours and International Outbound Holidays with flights, hotels & guided sightseeing.",
-      bg: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1800&q=80"
+      bg: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=2000&q=85"
     },
     umrah: {
       title: "Begin Your Blessed Hajj & Umrah Journey",
       subtitle: "Complete spiritual packages with direct flights, e-Visa, Haram-view hotels, and experienced Muallim guides.",
-      bg: "https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=1800&q=80"
+      bg: "https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=2000&q=85"
     },
     visa: {
       title: "Fast & Reliable Global Visa Processing",
       subtitle: "Express e-Visa and sticker visa support for Malaysia, UAE, Saudi Arabia, Thailand, Singapore & Schengen.",
-      bg: "https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=1800&q=80"
+      bg: "https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=2000&q=85"
     }
   },
   DEFAULT_AIRPORTS: [
