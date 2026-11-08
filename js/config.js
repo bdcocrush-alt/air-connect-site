@@ -39,8 +39,8 @@ window.AIRCONNECT_CONFIG = {
       bg: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=2000&q=85"
     },
     packages: {
-      title: "Hajj, Umrah & Guided Tour Packages",
-      subtitle: "All-inclusive Spiritual Hajj & Umrah journeys, Bangladesh Inbound Tours, and International Outbound Holidays.",
+      title: "Tour & Umrah Packages",
+      subtitle: "All-inclusive Umrah spiritual journeys, Bangladesh Inbound Tours, and International Outbound Holidays.",
       bg: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=2000&q=85"
     },
     tour: {
@@ -49,8 +49,8 @@ window.AIRCONNECT_CONFIG = {
       bg: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=2000&q=85"
     },
     umrah: {
-      title: "Begin Your Blessed Hajj & Umrah Journey",
-      subtitle: "Complete spiritual packages with direct flights, e-Visa, Haram-view hotels, and experienced Muallim guides.",
+      title: "Begin Your Blessed Umrah Journey",
+      subtitle: "Complete spiritual Umrah packages with direct flights, e-Visa, Haram-view hotels, and experienced Muallim guides.",
       bg: "https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=2000&q=85"
     },
     visa: {
@@ -294,6 +294,32 @@ window.AIRCONNECT_CONFIG = {
       documents: ["Passport scan (6+ months validity)", "Passport-size white-background photo", "Saudi Visa Bio App enrolment"],
       description: "Express 24-48 hour Saudi Umrah e-Visa processing including mandatory health insurance.",
       image_url: "https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=800&q=80"
+    },
+    {
+      country: "Thailand",
+      slug: "thailand-tourist-e-visa",
+      flag_emoji: "🇹🇭",
+      visa_type: "Single Entry Tourist e-Visa",
+      processing_time: "7 - 10 Working Days",
+      validity: "90 Days",
+      max_stay: "60 Days",
+      fee: 6200,
+      documents: ["Passport copy (6+ months validity)", "Recent 35x45mm photo", "Bank statement & ticket voucher"],
+      description: "Official Thailand Tourist & Medical e-Visa application filing with complete cover letter & itinerary.",
+      image_url: "https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=800&q=80"
+    },
+    {
+      country: "Singapore",
+      slug: "singapore-tourist-visa",
+      flag_emoji: "🇸🇬",
+      visa_type: "Tourist / Business e-Visa",
+      processing_time: "5 - 7 Working Days",
+      validity: "Up to 2 Years",
+      max_stay: "30 Days",
+      fee: 6500,
+      documents: ["Valid Passport", "Form 14A", "Photograph with white background", "Company NOC or visiting card"],
+      description: "Authorized Singapore Visa processing support with document preparation and rapid submission.",
+      image_url: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=800&q=80"
     }
   ],
   DEFAULT_BANNERS: [

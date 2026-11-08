@@ -96,13 +96,14 @@
   function switchSearchTab(tab, subOption) {
     let bannerKey = tab;
     if (tab === "umrah" || tab === "hajj") {
-      searchState.activeTab = "packages";
+      searchState.activeTab = "umrah";
       searchState.packagesGroup = "HAJJ_UMRAH";
       if (tab === "hajj") searchState.umrah.category = "HAJJ";
       else if (subOption) searchState.umrah.category = subOption;
+      else searchState.umrah.category = "ALL_SPIRITUAL";
       bannerKey = "umrah";
     } else if (tab === "tour" || tab === "inbound" || tab === "outbound") {
-      searchState.activeTab = "packages";
+      searchState.activeTab = "tour";
       searchState.packagesGroup = "TOUR";
       if (tab === "inbound" || subOption === "INBOUND_TOUR") {
         searchState.tour.category = "INBOUND_TOUR";
@@ -113,11 +114,11 @@
       }
       bannerKey = "tour";
     } else if (tab === "packages") {
-      searchState.activeTab = "packages";
+      searchState.activeTab = subOption === "HAJJ_UMRAH" ? "umrah" : "tour";
       if (subOption === "HAJJ_UMRAH" || subOption === "TOUR") {
         searchState.packagesGroup = subOption;
       }
-      bannerKey = searchState.packagesGroup === "HAJJ_UMRAH" ? "umrah" : "packages";
+      bannerKey = searchState.packagesGroup === "HAJJ_UMRAH" ? "umrah" : "tour";
     } else {
       if (!cfg.HERO_BANNERS[tab]) tab = "flight";
       searchState.activeTab = tab;
@@ -142,6 +143,20 @@
       btn.classList.toggle("active", btn.getAttribute("data-header-tab") === activeKey);
     });
 
+    // Sync homepage catalog filter pills if on homepage
+    if (activeKey === "tour") {
+      const cat = searchState.tour.category === "INBOUND_TOUR" ? "INBOUND_TOUR" : searchState.tour.category === "OUTBOUND_TOUR" ? "OUTBOUND_TOUR" : "TOUR_ALL";
+      document.querySelectorAll("#home-catalog-tabs .filter-pill").forEach(btn => {
+        btn.classList.toggle("active", btn.getAttribute("data-cat") === cat);
+      });
+      renderHomepageCatalog(cat);
+    } else if (activeKey === "umrah") {
+      document.querySelectorAll("#home-catalog-tabs .filter-pill").forEach(btn => {
+        btn.classList.toggle("active", btn.getAttribute("data-cat") === "UMRAH_HAJJ");
+      });
+      renderHomepageCatalog("UMRAH_HAJJ");
+    }
+
     renderSearchBox();
   }
 
@@ -151,16 +166,18 @@
     }
     switchSearchTab(tab);
 
-    // Sync target section filter pills so the scrolled section displays the selected category
+    // Scroll to visa section
     if (targetId === "hotels" || targetId === "visa") {
-      const hvCode = targetId === "hotels" ? "HOTEL" : "VISA";
-      document.querySelectorAll("#home-hv-tabs .filter-pill").forEach(btn => {
-        btn.classList.toggle("active", btn.getAttribute("data-hv") === hvCode);
-      });
-      renderHotelsVisasSection(hvCode);
-    } else if (targetId === "hajj-tours") {
+      renderHotelsVisasSection();
+    } else if (
+      targetId === "hajj-tours" ||
+      targetId === "packages-section" ||
+      targetId === "tour-packages" ||
+      targetId === "umrah-packages"
+    ) {
       let catCode = "ALL";
       if (tab === "umrah" || tab === "hajj") catCode = "UMRAH_HAJJ";
+      else if (tab === "tour" || tab === "packages") catCode = "TOUR_ALL";
       else if (tab === "inbound") catCode = "INBOUND_TOUR";
       else if (tab === "outbound") catCode = "OUTBOUND_TOUR";
       document.querySelectorAll("#home-catalog-tabs .filter-pill").forEach(btn => {
@@ -172,7 +189,7 @@
     const targetEl =
       targetId === "hotels" || targetId === "visa"
         ? document.getElementById("hotels-visas-section") || document.getElementById(targetId)
-        : document.getElementById(targetId);
+        : document.getElementById(targetId) || document.getElementById("packages-section") || document.getElementById("hajj-tours");
 
     if (targetEl) {
       const headerEl = document.querySelector(".ota-header");
@@ -726,65 +743,31 @@
       return;
     }
 
-    if (tab === "packages" || tab === "tour" || tab === "umrah") {
-      const grp = searchState.packagesGroup || "TOUR";
+    if (tab === "tour" || (tab === "packages" && searchState.packagesGroup === "TOUR")) {
       const t = searchState.tour;
-      const u = searchState.umrah;
 
       container.innerHTML = `
-        <div class="search-top-controls" style="flex-direction:column;gap:12px;margin-bottom:18px">
-          <div class="trip-type-group">
-            <span class="fare-tag-label">Select Section:</span>
-            <label class="pill-radio ${grp === "HAJJ_UMRAH" ? "active" : ""}">
-              <input type="radio" name="pkgGroup" value="HAJJ_UMRAH" ${grp === "HAJJ_UMRAH" ? "checked" : ""}>
-              Hajj &amp; Umrah Section
+        <div class="search-top-controls" style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap">
+          <div class="fare-type-group">
+            <span class="fare-tag-label">Tour Offering:</span>
+            <label class="pill-radio ${t.category === "ALL" ? "active" : ""}">
+              <input type="radio" name="tourSubCat" value="ALL" ${t.category === "ALL" ? "checked" : ""}>
+              All Tour Packages
             </label>
-            <label class="pill-radio ${grp === "TOUR" ? "active" : ""}">
-              <input type="radio" name="pkgGroup" value="TOUR" ${grp === "TOUR" ? "checked" : ""}>
-              Tour Packages Section
+            <label class="pill-radio ${t.category === "INBOUND_TOUR" ? "active" : ""}">
+              <input type="radio" name="tourSubCat" value="INBOUND_TOUR" ${t.category === "INBOUND_TOUR" ? "checked" : ""}>
+              Inbound Tours (Bangladesh)
+            </label>
+            <label class="pill-radio ${t.category === "OUTBOUND_TOUR" ? "active" : ""}">
+              <input type="radio" name="tourSubCat" value="OUTBOUND_TOUR" ${t.category === "OUTBOUND_TOUR" ? "checked" : ""}>
+              Outbound Tours (International)
             </label>
           </div>
-
-          ${
-            grp === "TOUR"
-              ? `
-            <div class="fare-type-group">
-              <span class="fare-tag-label">Tour Offering:</span>
-              <label class="pill-radio ${t.category === "ALL" ? "active" : ""}">
-                <input type="radio" name="tourSubCat" value="ALL" ${t.category === "ALL" ? "checked" : ""}>
-                All Tour Packages
-              </label>
-              <label class="pill-radio ${t.category === "INBOUND_TOUR" ? "active" : ""}">
-                <input type="radio" name="tourSubCat" value="INBOUND_TOUR" ${t.category === "INBOUND_TOUR" ? "checked" : ""}>
-                Inbound Tours (Bangladesh)
-              </label>
-              <label class="pill-radio ${t.category === "OUTBOUND_TOUR" ? "active" : ""}">
-                <input type="radio" name="tourSubCat" value="OUTBOUND_TOUR" ${t.category === "OUTBOUND_TOUR" ? "checked" : ""}>
-                Outbound Tours (International)
-              </label>
-            </div>`
-              : `
-            <div class="fare-type-group">
-              <span class="fare-tag-label">Pilgrimage Type:</span>
-              <label class="pill-radio ${u.category === "ALL_SPIRITUAL" ? "active" : ""}">
-                <input type="radio" name="umrahSubCat" value="ALL_SPIRITUAL" ${u.category === "ALL_SPIRITUAL" ? "checked" : ""}>
-                All Hajj &amp; Umrah
-              </label>
-              <label class="pill-radio ${u.category === "UMRAH" ? "active" : ""}">
-                <input type="radio" name="umrahSubCat" value="UMRAH" ${u.category === "UMRAH" ? "checked" : ""}>
-                Umrah Packages
-              </label>
-              <label class="pill-radio ${u.category === "HAJJ" ? "active" : ""}">
-                <input type="radio" name="umrahSubCat" value="HAJJ" ${u.category === "HAJJ" ? "checked" : ""}>
-                Hajj Packages
-              </label>
-            </div>`
-          }
+          <a href="#tour-packages" class="pill-action-link" style="font-size:13px;font-weight:600;color:var(--brand-primary);text-decoration:none" onclick="return window.ACSearch.handleHeaderNavClick(event, 'tour', 'tour-packages')">
+            Browse Tour Catalog ↓
+          </a>
         </div>
 
-        ${
-          grp === "TOUR"
-            ? `
         <form id="ota-tour-form">
           <div class="search-grid-generic">
             <div class="field-box">
@@ -819,27 +802,71 @@
               ${t.category === "INBOUND_TOUR" ? "Find Inbound Tours" : t.category === "OUTBOUND_TOUR" ? "Find Outbound Tours" : "Find Tour Packages"}
             </button>
           </div>
-        </form>`
-            : `
+        </form>
+      `;
+
+      container.querySelectorAll('input[name="tourSubCat"]').forEach(r => {
+        r.addEventListener("change", e => {
+          searchState.tour.category = e.target.value;
+          renderSearchBox();
+        });
+      });
+
+      document.getElementById("tr-cat")?.addEventListener("change", e => {
+        searchState.tour.category = e.target.value;
+        renderSearchBox();
+      });
+
+      document.getElementById("ota-tour-form")?.addEventListener("submit", e => {
+        e.preventDefault();
+        searchState.tour.category = document.getElementById("tr-cat").value;
+        searchState.tour.destination = document.getElementById("tr-dest").value.trim();
+        searchState.tour.travelDate = document.getElementById("tr-date").value;
+        searchState.tour.adults = Number(document.getElementById("tr-adults").value || 2);
+        executePackageSearch("TOUR");
+      });
+      return;
+    }
+
+    if (tab === "umrah" || (tab === "packages" && searchState.packagesGroup === "HAJJ_UMRAH")) {
+      const u = searchState.umrah;
+
+      container.innerHTML = `
+        <div class="search-top-controls" style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap">
+          <div class="fare-type-group">
+            <span class="fare-tag-label">Umrah Tier:</span>
+            <label class="pill-radio ${u.level === "All" ? "active" : ""}">
+              <input type="radio" name="umrahTierRadio" value="All" ${u.level === "All" ? "checked" : ""}>
+              All Tiers
+            </label>
+            <label class="pill-radio ${u.level === "VIP" ? "active" : ""}">
+              <input type="radio" name="umrahTierRadio" value="VIP" ${u.level === "VIP" ? "checked" : ""}>
+              5★ VIP Clock Tower
+            </label>
+            <label class="pill-radio ${u.level === "Standard" ? "active" : ""}">
+              <input type="radio" name="umrahTierRadio" value="Standard" ${u.level === "Standard" ? "checked" : ""}>
+              Standard 3★ / 4★
+            </label>
+            <label class="pill-radio ${u.level === "Economy" ? "active" : ""}">
+              <input type="radio" name="umrahTierRadio" value="Economy" ${u.level === "Economy" ? "checked" : ""}>
+              Economy Shuttle
+            </label>
+          </div>
+          <a href="#umrah-packages" class="pill-action-link" style="font-size:13px;font-weight:600;color:var(--brand-primary);text-decoration:none" onclick="return window.ACSearch.handleHeaderNavClick(event, 'umrah', 'umrah-packages')">
+            Browse Umrah Catalog ↓
+          </a>
+        </div>
+
         <form id="ota-umrah-form">
           <div class="search-grid-generic">
             <div class="field-box">
-              <label>Pilgrimage Type</label>
-              <select id="um-cat">
-                <option value="ALL_SPIRITUAL" ${u.category === "ALL_SPIRITUAL" ? "selected" : ""}>All Hajj &amp; Umrah Packages</option>
-                <option value="UMRAH" ${u.category === "UMRAH" ? "selected" : ""}>Umrah Packages (10 - 14 Days)</option>
-                <option value="HAJJ" ${u.category === "HAJJ" ? "selected" : ""}>Hajj Packages (Shifting &amp; Non-Shifting)</option>
-              </select>
-              <small>Includes Visa, Flights, Haram Hotels &amp; Muallim</small>
-            </div>
-            <div class="field-box">
-              <label>Package Tier</label>
+              <label>Umrah Package Tier</label>
               <select id="um-level">
                 <option value="All" ${u.level === "All" ? "selected" : ""}>All Tiers (Economy to 5★ VIP)</option>
-                <option value="Economy" ${u.level === "Economy" ? "selected" : ""}>Economy Shuttle / Walking</option>
-                <option value="Standard" ${u.level === "Standard" ? "selected" : ""}>Standard 3★ / 4★</option>
-                <option value="Premium" ${u.level === "Premium" ? "selected" : ""}>Premium 5★</option>
                 <option value="VIP" ${u.level === "VIP" ? "selected" : ""}>VIP 5★ Clock Tower Haram View</option>
+                <option value="Premium" ${u.level === "Premium" ? "selected" : ""}>Premium 5★</option>
+                <option value="Standard" ${u.level === "Standard" ? "selected" : ""}>Standard 3★ / 4★ (Short Walking)</option>
+                <option value="Economy" ${u.level === "Economy" ? "selected" : ""}>Economy Shuttle / Walking</option>
               </select>
               <small>Makkah &amp; Madinah Verified Hotels</small>
             </div>
@@ -855,56 +882,32 @@
               </select>
               <small>Twin / Quad sharing options</small>
             </div>
+            <div class="field-box">
+              <label>Spiritual Inclusions</label>
+              <input type="text" value="Visa + Direct Flights + Hotels + Muallim" readonly>
+              <small>All-inclusive Umrah package</small>
+            </div>
           </div>
           <div class="search-submit-wrap">
-            <button type="submit" class="btn btn-primary search-submit-btn">Search Hajj &amp; Umrah</button>
+            <button type="submit" class="btn btn-primary search-submit-btn">Search Umrah Packages</button>
           </div>
-        </form>`
-        }
+        </form>
       `;
 
-      container.querySelectorAll('input[name="pkgGroup"]').forEach(r => {
+      container.querySelectorAll('input[name="umrahTierRadio"]').forEach(r => {
         r.addEventListener("change", e => {
-          switchSearchTab("packages", e.target.value);
-        });
-      });
-
-      container.querySelectorAll('input[name="tourSubCat"]').forEach(r => {
-        r.addEventListener("change", e => {
-          searchState.tour.category = e.target.value;
+          searchState.umrah.level = e.target.value;
           renderSearchBox();
         });
       });
 
-      container.querySelectorAll('input[name="umrahSubCat"]').forEach(r => {
-        r.addEventListener("change", e => {
-          searchState.umrah.category = e.target.value;
-          renderSearchBox();
-        });
-      });
-
-      document.getElementById("tr-cat")?.addEventListener("change", e => {
-        searchState.tour.category = e.target.value;
+      document.getElementById("um-level")?.addEventListener("change", e => {
+        searchState.umrah.level = e.target.value;
         renderSearchBox();
-      });
-
-      document.getElementById("um-cat")?.addEventListener("change", e => {
-        searchState.umrah.category = e.target.value;
-        renderSearchBox();
-      });
-
-      document.getElementById("ota-tour-form")?.addEventListener("submit", e => {
-        e.preventDefault();
-        searchState.tour.category = document.getElementById("tr-cat").value;
-        searchState.tour.destination = document.getElementById("tr-dest").value.trim();
-        searchState.tour.travelDate = document.getElementById("tr-date").value;
-        searchState.tour.adults = Number(document.getElementById("tr-adults").value || 2);
-        executePackageSearch("TOUR");
       });
 
       document.getElementById("ota-umrah-form")?.addEventListener("submit", e => {
         e.preventDefault();
-        searchState.umrah.category = document.getElementById("um-cat").value;
         searchState.umrah.level = document.getElementById("um-level").value;
         searchState.umrah.month = document.getElementById("um-month").value;
         searchState.umrah.adults = Number(document.getElementById("um-adults").value || 2);
@@ -1431,9 +1434,9 @@
 
     if (mode === "UMRAH") {
       const u = searchState.umrah;
-      heading = "Hajj & Umrah Spiritual Packages";
+      heading = "Umrah Packages";
       list = list.filter(p => {
-        if (u.category === "ALL_SPIRITUAL") return p.category === "UMRAH" || p.category === "HAJJ";
+        if (u.category === "ALL_SPIRITUAL" || !u.category) return p.category === "UMRAH" || p.category === "HAJJ";
         return p.category === u.category;
       });
       if (u.level !== "All") {
@@ -1445,7 +1448,7 @@
           <div class="section-head" style="margin-top:16px">
             <div>
               <h2>${heading} (${list.length} Available)</h2>
-              <p>Select any Hajj or Umrah package to inspect the itinerary or complete your booking online.</p>
+              <p>Select any Umrah package to inspect the itinerary or complete your booking online.</p>
             </div>
             <button class="btn btn-outline btn-sm" onclick="document.getElementById('results-section').hidden=true">✕ Close Results</button>
           </div>
@@ -1655,7 +1658,7 @@
       bindCarouselPauseOnHover(offersGrid);
     }
 
-    // 3. Grouped Hajj & Umrah + Tour Packages
+    // 3. Grouped Tour & Umrah Packages
     const catalogGrid = document.getElementById("home-catalog-grid");
     if (catalogGrid) {
       const hajjUmrahList = state.packages.filter(p => p.category === "UMRAH" || p.category === "HAJJ");
@@ -1664,14 +1667,14 @@
       const allTourList = [...inboundList, ...outboundList];
 
       const hajjPanelHtml = `
-        <div class="package-group-panel hajj-panel">
+        <div class="package-group-panel umrah-panel" id="umrah-panel">
           <div class="package-group-header">
             <div>
-              <h3>Hajj &amp; Umrah Section</h3>
-              <p>Spiritually guided Hajj &amp; Umrah packages with direct flights, e-Visa, Haram-view hotels &amp; experienced Muallim guides.</p>
+              <h3>Umrah Packages</h3>
+              <p>Spiritually guided Umrah packages with direct flights, e-Visa, Haram-view hotels &amp; experienced Muallim guides.</p>
             </div>
             <button type="button" class="btn btn-outline btn-sm" onclick="window.ACSearch.switchSearchTab('umrah');window.scrollTo({top:0,behavior:'smooth'})">
-              Search Hajj &amp; Umrah →
+              Search Umrah Packages →
             </button>
           </div>
           <div class="catalog-grid">
@@ -1707,10 +1710,10 @@
       `;
 
       const tourPanelHtml = `
-        <div class="package-group-panel tour-panel">
+        <div class="package-group-panel tour-panel" id="tour-panel">
           <div class="package-group-header">
             <div>
-              <h3>Tour Packages Section</h3>
+              <h3>Tour Packages</h3>
               <p>Curated holiday packages across <strong>Inbound Tours (Bangladesh)</strong> and <strong>Outbound Tours (International)</strong>.</p>
             </div>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -1728,8 +1731,8 @@
 
       if (activeFilter === "ALL") {
         catalogGrid.className = "grouped-packages-wrapper";
-        catalogGrid.innerHTML = `${hajjPanelHtml}${tourPanelHtml}`;
-      } else if (activeFilter === "UMRAH_HAJJ") {
+        catalogGrid.innerHTML = `${tourPanelHtml}${hajjPanelHtml}`;
+      } else if (activeFilter === "UMRAH_HAJJ" || activeFilter === "UMRAH") {
         catalogGrid.className = "grouped-packages-wrapper";
         catalogGrid.innerHTML = hajjPanelHtml;
       } else if (activeFilter === "TOUR_ALL") {
@@ -1754,11 +1757,10 @@
       bindCarouselPauseOnHover(catalogGrid);
     }
 
-    // 4. Hotels & Visa Services Grid (if present on homepage)
+    // 4. Visa Services Grid (if present on homepage)
     const hvGrid = document.getElementById("home-hotels-visas-grid");
     if (hvGrid) {
-      const hvFilter = document.querySelector("#home-hv-tabs .filter-pill.active")?.getAttribute("data-hv") || "ALL_HV";
-      renderHotelsVisasSection(hvFilter);
+      renderHotelsVisasSection();
     }
 
     // 5. Airline Partners Carousel (if present on homepage)
@@ -1768,45 +1770,36 @@
     }
   }
 
-  function renderHotelsVisasSection(hvFilter = "ALL_HV") {
+  function renderHotelsVisasSection() {
     const hvGrid = document.getElementById("home-hotels-visas-grid");
     if (!hvGrid) return;
     const { formatMoney, escapeHtml, state } = window.AC;
 
-    const hotelCards = state.hotels.map(h => {
-      const price = Number(h.discount_price || h.price_per_night);
-      return `
-        <div class="catalog-card">
-          <div class="catalog-thumb">
-            <img src="${escapeHtml(h.image_url)}" alt="${escapeHtml(h.name)}">
-            <span class="catalog-tag">${"★".repeat(h.star_rating || 5)} Hotel</span>
-            <span class="catalog-rating">★ ${escapeHtml(h.rating_score || 4.8)}</span>
-          </div>
-          <div class="catalog-body">
-            <div class="catalog-meta">${escapeHtml(h.city)}, ${escapeHtml(h.country)}</div>
-            <h3>${escapeHtml(h.name)}</h3>
-            <p class="catalog-desc">${escapeHtml(h.description)}</p>
-            <div class="catalog-footer">
-              <div class="price-block">
-                <small>Per Night</small>
-                <strong>${formatMoney(price)}</strong>
-              </div>
-              <div style="display:flex;gap:6px">
-                <button class="btn btn-outline btn-sm" onclick="window.ACSearch.openHotelModal('${escapeHtml(h.slug)}')">Details</button>
-                <button class="btn btn-primary btn-sm" onclick="window.ACSearch.bookHotelNow('${escapeHtml(h.slug)}', 2, 1, 2)">Book Now</button>
-              </div>
-            </div>
-          </div>
-        </div>`;
+    const visaList = (state.visaServices && state.visaServices.length ? state.visaServices : (window.AIRCONNECT_CONFIG?.DEFAULT_VISAS || []));
+
+    // Priority order: UAE, Saudi Arabia/Umrah, Thailand, followed by Malaysia, Singapore, and Global
+    const priority = {
+      "uae-dubai-tourist-visa": 1,
+      "saudi-arabia-umrah-visa": 2,
+      "thailand-tourist-e-visa": 3,
+      "malaysia-e-visa": 4,
+      "singapore-tourist-visa": 5,
+      "global-sticker-visa-consultancy": 6
+    };
+
+    const sortedVisas = [...visaList].sort((a, b) => {
+      const pA = priority[a.slug] || 99;
+      const pB = priority[b.slug] || 99;
+      return pA - pB;
     });
 
-    const visaCards = state.visaServices.map(
+    const visaCards = sortedVisas.map(
       v => `
       <div class="catalog-card">
         <div class="catalog-thumb">
           <img src="${escapeHtml(v.image_url)}" alt="${escapeHtml(v.country)}">
           <span class="catalog-tag">${escapeHtml(v.visa_type)}</span>
-          <span class="catalog-rating">${escapeHtml(v.processing_time)}</span>
+          <span class="catalog-rating">⏱ ${escapeHtml(v.processing_time)}</span>
         </div>
         <div class="catalog-body">
           <div class="catalog-meta">Validity: ${escapeHtml(v.validity)} • Max Stay: ${escapeHtml(v.max_stay)}</div>
@@ -1826,49 +1819,14 @@
       </div>`
     );
 
-    let activeCards = [];
-    if (hvFilter === "HOTEL") {
-      activeCards = hotelCards;
-    } else if (hvFilter === "VISA") {
-      activeCards = visaCards;
-    } else {
-      activeCards = [...hotelCards, ...visaCards];
-    }
+    hvGrid.className = "catalog-grid";
 
-    hvGrid.className = "hv-carousel-viewport";
-
-    if (!activeCards.length) {
-      hvGrid.innerHTML = `<p style="color:var(--muted)">No items available in this category.</p>`;
+    if (!visaCards.length) {
+      hvGrid.innerHTML = `<p style="color:var(--muted)">No visa services currently available.</p>`;
       return;
     }
 
-    // Ensure each half of the infinite carousel has at least 5 cards so it spans wider than the viewport
-    const repeatFactor = Math.max(1, Math.ceil(5 / activeCards.length));
-    const singleHalfCards = [];
-    for (let i = 0; i < repeatFactor; i++) {
-      singleHalfCards.push(...activeCards);
-    }
-    const halfHtml = singleHalfCards.join("");
-    const durationSec = Math.max(20, Math.round(singleHalfCards.length * 5.5));
-
-    hvGrid.innerHTML = `
-      <div class="hv-carousel-track" style="--hv-slide-duration: ${durationSec}s">
-        ${halfHtml}
-        ${halfHtml}
-      </div>
-    `;
-
-    const track = hvGrid.querySelector(".hv-carousel-track");
-    if (track) {
-      hvGrid.querySelectorAll(".catalog-card").forEach(card => {
-        card.addEventListener("mouseenter", () => {
-          track.classList.add("is-paused");
-        });
-        card.addEventListener("mouseleave", () => {
-          track.classList.remove("is-paused");
-        });
-      });
-    }
+    hvGrid.innerHTML = visaCards.join("");
   }
 
   // Detail Modals & Direct Booking Triggers

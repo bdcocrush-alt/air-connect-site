@@ -152,23 +152,17 @@
       </div>
     </section>
 
-    <!-- 3B. Partner Hotels & Global Visa Services -->
+    <!-- 3B. Global Visa Services -->
     <section class="ota-section" id="hotels-visas-section">
-      <div id="hotels" class="section-scroll-anchor" aria-hidden="true"></div>
       <div id="visa" class="section-scroll-anchor" aria-hidden="true"></div>
       <div class="container">
         <div class="section-head">
           <div>
-            <h2>Featured Partner Hotels &amp; Visa Services</h2>
-            <p>Verified 3-star to 5-star hotels worldwide and fast-track global visa processing.</p>
-          </div>
-          <div class="filter-pills" id="home-hv-tabs">
-            <button type="button" class="filter-pill active" data-hv="ALL_HV">All Hotels &amp; Visas</button>
-            <button type="button" class="filter-pill" data-hv="HOTEL">Top Hotels</button>
-            <button type="button" class="filter-pill" data-hv="VISA">Visa Services</button>
+            <h2>Visa Services</h2>
+            <p>Fast-track, reliable global visa processing and assistance for UAE, Saudi Arabia, Thailand &amp; beyond.</p>
           </div>
         </div>
-        <div class="hv-carousel-viewport" id="home-hotels-visas-grid"></div>
+        <div class="catalog-grid" id="home-hotels-visas-grid"></div>
       </div>
     </section>
 
@@ -483,17 +477,18 @@
 
   <!-- Supabase SDK & Application Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/config.js?v=29"></script>
-  <script src="js/supabase-client.js?v=29"></script>
-  <script src="js/search-and-results.js?v=29"></script>
-  <script src="js/booking-checkout.js?v=29"></script>
-  <script src="js/customer-portal.js?v=30"></script>
+  <script src="js/config.js?v=31"></script>
+  <script src="js/supabase-client.js?v=31"></script>
+  <script src="js/search-and-results.js?v=31"></script>
+  <script src="js/booking-checkout.js?v=31"></script>
+  <script src="js/customer-portal.js?v=31"></script>
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
       window.AC.initCookieConsent();
       window.ACPortal.renderHeaderAuthArea();
       window.ACSearch.renderSearchBox();
       window.ACSearch.renderHomepageCatalog("ALL");
+      window.ACSearch.renderHotelsVisasSection();
 
       // Bind Homepage Grouped Hajj & Tour Filter Pills
       document.querySelectorAll("#home-catalog-tabs .filter-pill").forEach(btn => {
@@ -504,19 +499,11 @@
         });
       });
 
-      // Bind Homepage Hotels & Visas Filter Pills
-      document.querySelectorAll("#home-hv-tabs .filter-pill").forEach(btn => {
-        btn.addEventListener("click", () => {
-          document.querySelectorAll("#home-hv-tabs .filter-pill").forEach(b => b.classList.remove("active"));
-          btn.classList.add("active");
-          window.ACSearch.renderHotelsVisasSection(btn.getAttribute("data-hv"));
-        });
-      });
-
       // Re-render on currency change
       window.addEventListener("ac:currency-changed", () => {
         const activeCat = document.querySelector("#home-catalog-tabs .filter-pill.active")?.getAttribute("data-cat") || "ALL";
         window.ACSearch.renderHomepageCatalog(activeCat);
+        window.ACSearch.renderHotelsVisasSection();
         if (!document.getElementById("results-section").hidden && window.ACSearch.searchState.activeTab === "flight") {
           window.ACSearch.executeFlightSearch();
         }
@@ -550,6 +537,7 @@
       }
       window.ACSearch.renderSearchBox();
       window.ACSearch.renderHomepageCatalog("ALL");
+      window.ACSearch.renderHotelsVisasSection();
     });
   </script>
 </body>
