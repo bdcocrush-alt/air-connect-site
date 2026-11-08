@@ -174,40 +174,83 @@
               </div>
             </div>
 
-            <!-- 4. Booking Mode: Hold (Pay Later) vs Pay Now -->
+            <!-- 4. Booking Mode: Hold (Pay Later) vs Pay Now (bKash / Nagad / Bank) -->
             <div class="checkout-box">
-              <h3>4. Choose Booking & Payment Option</h3>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px">
-                <label class="pill-radio ${d.bookingMode === "HOLD_PAY_LATER" ? "active" : ""}" style="padding:14px;border-radius:12px">
-                  <input type="radio" name="bookingMode" value="HOLD_PAY_LATER" ${d.bookingMode === "HOLD_PAY_LATER" ? "checked" : ""}>
-                  <div>
-                    <strong style="display:block;font-size:14px">Book &amp; Hold (Pay Later)</strong>
-                    <span style="font-size:12px;color:var(--muted)">Get instant Booking Reference &amp; PNR hold; pay after confirmation</span>
+              <h3>4. Choose Booking &amp; Payment Option</h3>
+              <p style="font-size:13px;color:var(--muted);margin-top:-8px;margin-bottom:14px">
+                Select <strong>bKash</strong> or <strong>Nagad</strong> to pay directly to our official receiver/merchant number <strong>+880 1322-937800</strong>, or choose <strong>Book &amp; Hold</strong>.
+              </p>
+
+              <div class="payment-methods-grid">
+                <label class="payment-option-card ${d.bookingMode === "INSTANT_PAY" && d.paymentMethod === "BKASH" ? "active" : ""}">
+                  <input type="radio" name="checkoutPayChoice" value="BKASH" ${d.bookingMode === "INSTANT_PAY" && d.paymentMethod === "BKASH" ? "checked" : ""}>
+                  <div class="payment-logo-wrap">
+                    <img src="assets/payments/bkash.svg" alt="bKash Official Logo">
+                  </div>
+                  <div class="payment-option-info">
+                    <strong>bKash Payment</strong>
+                    <span class="payment-merchant-num">+880 1322-937800</span>
+                    <small>Merchant / Send Money</small>
                   </div>
                 </label>
-                <label class="pill-radio ${d.bookingMode === "INSTANT_PAY" ? "active" : ""}" style="padding:14px;border-radius:12px">
-                  <input type="radio" name="bookingMode" value="INSTANT_PAY" ${d.bookingMode === "INSTANT_PAY" ? "checked" : ""}>
-                  <div>
-                    <strong style="display:block;font-size:14px">Pay Now (bKash / Nagad / Bank)</strong>
-                    <span style="font-size:12px;color:var(--muted)">Priority ticket issuance with Transaction ID / Slip upload</span>
+
+                <label class="payment-option-card ${d.bookingMode === "INSTANT_PAY" && d.paymentMethod === "NAGAD" ? "active" : ""}">
+                  <input type="radio" name="checkoutPayChoice" value="NAGAD" ${d.bookingMode === "INSTANT_PAY" && d.paymentMethod === "NAGAD" ? "checked" : ""}>
+                  <div class="payment-logo-wrap">
+                    <img src="assets/payments/nagad.svg" alt="Nagad Official Logo">
+                  </div>
+                  <div class="payment-option-info">
+                    <strong>Nagad Payment</strong>
+                    <span class="payment-merchant-num">+880 1322-937800</span>
+                    <small>Merchant / Send Money</small>
+                  </div>
+                </label>
+
+                <label class="payment-option-card ${d.bookingMode === "INSTANT_PAY" && d.paymentMethod === "BANK_TRANSFER" ? "active" : ""}">
+                  <input type="radio" name="checkoutPayChoice" value="BANK_TRANSFER" ${d.bookingMode === "INSTANT_PAY" && d.paymentMethod === "BANK_TRANSFER" ? "checked" : ""}>
+                  <div class="payment-logo-wrap" style="font-weight:800;font-size:12px;color:var(--brand-accent)">
+                    BANK
+                  </div>
+                  <div class="payment-option-info">
+                    <strong>Bank Deposit / Transfer</strong>
+                    <span class="payment-merchant-num" style="color:var(--brand-accent)">City Bank PLC</span>
+                    <small>NPSB / BEFTN / Deposit</small>
+                  </div>
+                </label>
+
+                <label class="payment-option-card ${d.bookingMode === "HOLD_PAY_LATER" ? "active" : ""}">
+                  <input type="radio" name="checkoutPayChoice" value="PAY_LATER" ${d.bookingMode === "HOLD_PAY_LATER" ? "checked" : ""}>
+                  <div class="payment-logo-wrap" style="font-weight:800;font-size:12px;color:var(--brand-green)">
+                    HOLD
+                  </div>
+                  <div class="payment-option-info">
+                    <strong>Book &amp; Hold (Pay Later)</strong>
+                    <span class="payment-merchant-num" style="color:var(--brand-green)">Instant PNR Hold</span>
+                    <small>Pay after confirmation</small>
                   </div>
                 </label>
               </div>
 
               <div id="pay-now-panel" ${d.bookingMode === "HOLD_PAY_LATER" ? "hidden" : ""} style="padding:18px;background:#fff1f1;border:1px solid #fecaca;border-radius:12px">
                 <strong style="display:block;margin-bottom:10px;color:var(--brand-primary)">Official Air Connect Ltd Payment Accounts:</strong>
-                <div style="display:grid;gap:8px;font-size:13px;margin-bottom:14px">
-                  <div><strong>bKash Merchant / Payment:</strong> ${escapeHtml(settings.bkash_number)}</div>
-                  <div><strong>Nagad Merchant / Payment:</strong> ${escapeHtml(settings.nagad_number)}</div>
+                <div style="display:grid;gap:10px;font-size:13px;margin-bottom:16px">
+                  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                    <span class="payment-logo-wrap" style="width:56px;height:30px"><img src="assets/payments/bkash.svg" alt="bKash"></span>
+                    <span><strong>bKash Merchant / Receiver Number:</strong> <strong style="color:var(--brand-primary);font-size:14px">+880 1322-937800</strong></span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                    <span class="payment-logo-wrap" style="width:56px;height:30px"><img src="assets/payments/nagad.svg" alt="Nagad"></span>
+                    <span><strong>Nagad Merchant / Receiver Number:</strong> <strong style="color:var(--brand-primary);font-size:14px">+880 1322-937800</strong></span>
+                  </div>
                   <div><strong>Bank Transfer:</strong> ${escapeHtml(settings.bank_details)}</div>
                 </div>
                 <div class="form-grid-3">
                   <div class="form-field">
                     <label>Payment Channel *</label>
                     <select id="chk-pay-method">
-                      <option value="BKASH">bKash</option>
-                      <option value="NAGAD">Nagad</option>
-                      <option value="BANK_TRANSFER">Bank Deposit / NPSB / BEFTN</option>
+                      <option value="BKASH" ${d.paymentMethod === "BKASH" ? "selected" : ""}>bKash (+880 1322-937800)</option>
+                      <option value="NAGAD" ${d.paymentMethod === "NAGAD" ? "selected" : ""}>Nagad (+880 1322-937800)</option>
+                      <option value="BANK_TRANSFER" ${d.paymentMethod === "BANK_TRANSFER" ? "selected" : ""}>Bank Deposit / NPSB / BEFTN</option>
                     </select>
                   </div>
                   <div class="form-field">
@@ -256,6 +299,15 @@
               <span id="sum-grand-total">${formatMoney(grandTotal)}</span>
             </div>
 
+            <div style="margin-top:14px;padding:10px 12px;background:#f8fafc;border:1px solid var(--line);border-radius:10px">
+              <small style="display:block;font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:700">bKash &amp; Nagad Merchant / Receiver:</small>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <span class="payment-logo-wrap" style="width:48px;height:26px"><img src="assets/payments/bkash.svg" alt="bKash"></span>
+                <span class="payment-logo-wrap" style="width:48px;height:26px"><img src="assets/payments/nagad.svg" alt="Nagad"></span>
+                <strong style="font-size:13.5px;color:var(--brand-primary)">+880 1322-937800</strong>
+              </div>
+            </div>
+
             <button type="submit" id="chk-submit-btn" class="btn btn-primary" style="width:100%;margin-top:16px;padding:14px">
               ${d.bookingMode === "HOLD_PAY_LATER" ? "✓ Confirm & Hold Booking" : "✓ Submit Payment & Confirm"}
             </button>
@@ -273,11 +325,23 @@
       renderCheckoutView();
     });
 
-    sec.querySelectorAll('input[name="bookingMode"]').forEach(r => {
+    sec.querySelectorAll('input[name="checkoutPayChoice"]').forEach(r => {
       r.addEventListener("change", e => {
-        currentDraft.bookingMode = e.target.value;
+        const val = e.target.value;
+        if (val === "PAY_LATER") {
+          currentDraft.bookingMode = "HOLD_PAY_LATER";
+          currentDraft.paymentMethod = "PAY_LATER";
+        } else {
+          currentDraft.bookingMode = "INSTANT_PAY";
+          currentDraft.paymentMethod = val;
+        }
         renderCheckoutView();
       });
+    });
+
+    document.getElementById("chk-pay-method")?.addEventListener("change", e => {
+      currentDraft.paymentMethod = e.target.value;
+      renderCheckoutView();
     });
 
     document.getElementById("ac-checkout-form")?.addEventListener("submit", handleCheckoutSubmit);
@@ -489,7 +553,7 @@
         <div style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:#fff1f1;border-radius:12px;margin-bottom:18px;flex-wrap:wrap;gap:12px">
           <div>
             <small style="color:var(--muted);display:block">Payment Mode: <strong>${escapeHtml(booking.payment_method)}</strong></small>
-            ${booking.transaction_id ? `<small style="color:var(--text)">TrxID: <strong>${escapeHtml(booking.transaction_id)}</strong></small>` : `<small style="color:var(--text)">Pay via bKash/Nagad (${escapeHtml(settings.bkash_number)}) quoting Ref <strong>${escapeHtml(booking.booking_ref)}</strong></small>`}
+            ${booking.transaction_id ? `<small style="color:var(--text)">TrxID: <strong>${escapeHtml(booking.transaction_id)}</strong></small>` : `<small style="color:var(--text)">Pay via bKash / Nagad (<strong>+880 1322-937800</strong>) quoting Ref <strong>${escapeHtml(booking.booking_ref)}</strong></small>`}
           </div>
           <div style="text-align:right">
             <small style="color:var(--muted);display:block">TOTAL AMOUNT</small>

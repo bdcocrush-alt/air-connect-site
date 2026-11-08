@@ -258,17 +258,23 @@
       `
       <h3>Complete Payment for ${escapeHtml(bookingRef)}</h3>
       <p style="font-size:13px;color:var(--muted)">Amount Payable: <strong style="color:var(--brand-primary)">${formatMoney(totalAmount)}</strong></p>
-      <div style="padding:12px;background:#fff1f1;border-radius:10px;font-size:13px;margin-bottom:14px">
-        <div><strong>bKash:</strong> ${escapeHtml(s.bkash_number)}</div>
-        <div><strong>Nagad:</strong> ${escapeHtml(s.nagad_number)}</div>
+      <div style="padding:14px;background:#fff1f1;border:1px solid #fecaca;border-radius:12px;font-size:13px;margin-bottom:14px;display:grid;gap:10px">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <span class="payment-logo-wrap" style="width:54px;height:28px"><img src="assets/payments/bkash.svg" alt="bKash"></span>
+          <span><strong>bKash Merchant / Receiver:</strong> <strong style="color:var(--brand-primary)">+880 1322-937800</strong></span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <span class="payment-logo-wrap" style="width:54px;height:28px"><img src="assets/payments/nagad.svg" alt="Nagad"></span>
+          <span><strong>Nagad Merchant / Receiver:</strong> <strong style="color:var(--brand-primary)">+880 1322-937800</strong></span>
+        </div>
         <div><strong>Bank:</strong> ${escapeHtml(s.bank_details)}</div>
       </div>
       <form id="pay-hold-form">
         <div class="form-field">
           <label>Payment Method *</label>
           <select id="ph-method" required>
-            <option value="BKASH">bKash</option>
-            <option value="NAGAD">Nagad</option>
+            <option value="BKASH">bKash (+880 1322-937800)</option>
+            <option value="NAGAD">Nagad (+880 1322-937800)</option>
             <option value="BANK_TRANSFER">Bank Deposit / Transfer</option>
           </select>
         </div>

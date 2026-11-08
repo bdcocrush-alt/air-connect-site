@@ -1877,6 +1877,115 @@ button, input, select, textarea {
   background: #fff;
 }
 
+/* Official bKash & Nagad Payment Option Cards */
+.payment-methods-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.payment-option-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1.5px solid var(--line);
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.payment-option-card:hover {
+  border-color: rgba(192, 0, 0, 0.45);
+  transform: translateY(-2px);
+}
+
+.payment-option-card.active,
+.payment-option-card:has(input:checked) {
+  border-color: var(--brand-primary);
+  background: var(--brand-primary-light);
+  box-shadow: 0 6px 20px rgba(192, 0, 0, 0.12);
+}
+
+.payment-option-card input[type="radio"] {
+  accent-color: var(--brand-primary);
+  margin: 0;
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+}
+
+.payment-logo-wrap {
+  width: 68px;
+  height: 38px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  padding: 4px 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.payment-logo-wrap img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.payment-option-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.payment-option-info strong {
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.payment-option-info .payment-merchant-num {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--brand-primary);
+  letter-spacing: 0.2px;
+}
+
+.payment-option-info small {
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+.footer-pay-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 11px;
+  border-radius: 10px;
+  background: #ffffff;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 800;
+  box-shadow: var(--shadow-sm);
+}
+
+.footer-pay-badge img {
+  height: 20px;
+  width: auto;
+  max-width: 52px;
+  object-fit: contain;
+  display: block;
+}
+
 .fare-summary-card {
   background: #fff;
   border: 1px solid var(--line);
