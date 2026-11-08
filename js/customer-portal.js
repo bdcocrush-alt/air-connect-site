@@ -1,5 +1,44 @@
 // Air Connect Ltd — Customer Auth, My Bookings Portal, Track PNR, Refund/Reissue & Info Pages
 (function () {
+  const otpCooldowns = {};
+  let otpTimerInterval = null;
+
+  function getRemainingCooldown(email) {
+    const key = (email || "").toLowerCase().trim();
+    if (!key) return 0;
+    const lastSent = otpCooldowns[key] || parseInt(sessionStorage.getItem(`ac_otp_${key}`) || "0", 10);
+    if (!lastSent) return 0;
+    const elapsed = Math.floor((Date.now() - lastSent) / 1000);
+    const remaining = 60 - elapsed;
+    return remaining > 0 ? remaining : 0;
+  }
+
+  function setCooldown(email) {
+    const key = (email || "").toLowerCase().trim();
+    if (!key) return;
+    const now = Date.now();
+    otpCooldowns[key] = now;
+    try {
+      sessionStorage.setItem(`ac_otp_${key}`, now.toString());
+    } catch (e) {}
+  }
+
+  function startOtpCountdown(email, onTick, onComplete) {
+    if (otpTimerInterval) clearInterval(otpTimerInterval);
+    const update = () => {
+      const remaining = getRemainingCooldown(email);
+      if (remaining > 0) {
+        if (onTick) onTick(remaining);
+      } else {
+        clearInterval(otpTimerInterval);
+        otpTimerInterval = null;
+        if (onComplete) onComplete();
+      }
+    };
+    update();
+    otpTimerInterval = setInterval(update, 1000);
+  }
+
   async function signInWithGoogle() {
     try {
       const { error } = await window.AC.supabase.auth.signInWithOAuth({
@@ -145,8 +184,14 @@
             <input type="password" id="otp-new-password" minlength="6" placeholder="Enter new strong password" required>
           </div>
           <button type="submit" class="btn btn-primary" style="width:100%;margin-top:6px" id="otp-submit-btn">Verify OTP &amp; Update Password</button>
+          
+          <div id="otp-timer-box" style="margin-top:12px;padding:9px 12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;font-size:12.5px;display:flex;align-items:center;justify-content:space-between">
+            <span id="otp-timer-text" style="color:var(--muted)">⏱ Resend code in <strong id="otp-timer-count" style="color:var(--brand-primary);font-weight:700">60s</strong></span>
+            <button type="button" id="btn-resend-otp" class="btn btn-outline btn-sm" style="display:none;padding:3px 10px;font-size:12px;height:auto;line-height:1.5" onclick="window.ACPortal.resendOtp('${escapeHtml(targetEmail)}')">Resend Code</button>
+          </div>
+
           <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;font-size:12.5px">
-            <a href="javascript:void(0)" style="color:var(--brand-primary);font-weight:600" onclick="window.ACPortal.openAuthModal('forgot', '${escapeHtml(targetEmail)}')">Resend OTP</a>
+            <a href="javascript:void(0)" style="color:var(--muted);font-weight:600" onclick="window.ACPortal.openAuthModal('forgot', '${escapeHtml(targetEmail)}')">← Change Email</a>
             <a href="javascript:void(0)" style="color:var(--muted);font-weight:600" onclick="window.ACPortal.openAuthModal('login', '${escapeHtml(targetEmail)}')">Cancel &amp; Sign In</a>
           </div>
         </form>`
@@ -154,6 +199,30 @@
     `,
       true
     );
+
+    // If on OTP view, initialize countdown and resend button
+    if (defaultTab === "verify-otp") {
+      const countEl = document.getElementById("otp-timer-count");
+      const textEl = document.getElementById("otp-timer-text");
+      const resendBtn = document.getElementById("btn-resend-otp");
+
+      startOtpCountdown(
+        targetEmail,
+        remaining => {
+          if (countEl) countEl.textContent = `${remaining}s`;
+          if (textEl) textEl.style.display = "inline";
+          if (resendBtn) resendBtn.style.display = "none";
+        },
+        () => {
+          if (textEl) textEl.style.display = "none";
+          if (resendBtn) {
+            resendBtn.style.display = "inline-flex";
+            resendBtn.disabled = false;
+            resendBtn.textContent = "Resend Code";
+          }
+        }
+      );
+    }
 
     // Form Handlers
     document.getElementById("ac-login-form")?.addEventListener("submit", async e => {
@@ -165,6 +234,21 @@
       btn.textContent = "Signing in...";
       const { error } = await window.AC.supabase.auth.signInWithPassword({ email, password });
       if (error) {
+        const msg = (error.message || "").toLowerCase();
+        if (msg.includes("email not confirmed")) {
+          btn.textContent = "Confirming account...";
+          try {
+            await window.AC.supabase.rpc("confirm_user_email_rpc", { target_email: email });
+            const { error: retryErr } = await window.AC.supabase.auth.signInWithPassword({ email, password });
+            if (!retryErr) {
+              window.AC.showToast("Signed in successfully! Welcome back.", "success");
+              window.ACSearch.closeModal();
+              return;
+            }
+          } catch (rpcErr) {
+            console.warn("Auto-confirm retry error:", rpcErr);
+          }
+        }
         window.AC.showToast(error.message, "error");
         btn.disabled = false;
         btn.textContent = "Sign In";
@@ -200,6 +284,13 @@
         return;
       }
 
+      // Auto-confirm email via database RPC function
+      try {
+        await window.AC.supabase.rpc("confirm_user_email_rpc", { target_email: email });
+      } catch (e) {
+        console.warn("Auto-confirm error:", e);
+      }
+
       // Automatically sign in immediately so user can book right away
       if (!data?.session) {
         const { error: loginErr } = await window.AC.supabase.auth.signInWithPassword({ email, password });
@@ -216,6 +307,14 @@
       e.preventDefault();
       const email = document.getElementById("forgot-email").value.trim();
       const btn = document.getElementById("forgot-submit-btn");
+
+      const remaining = getRemainingCooldown(email);
+      if (remaining > 0) {
+        window.AC.showToast(`A code was recently sent. Please wait ${remaining}s before requesting another.`, "info");
+        openAuthModal("verify-otp", email);
+        return;
+      }
+
       btn.disabled = true;
       btn.textContent = "Sending OTP...";
 
@@ -225,13 +324,21 @@
         });
 
         if (error) {
+          const errMsg = (error.message || "").toLowerCase();
+          if (errMsg.includes("rate limit") || errMsg.includes("security") || error.status === 429) {
+            setCooldown(email);
+            window.AC.showToast("A verification code was recently sent. Please wait before requesting another.", "info");
+            openAuthModal("verify-otp", email);
+            return;
+          }
           window.AC.showToast(error.message, "error");
           btn.disabled = false;
           btn.textContent = "Send Confirmation OTP";
           return;
         }
 
-        window.AC.showToast(`OTP confirmation code dispatched to ${email}!`, "success");
+        setCooldown(email);
+        window.AC.showToast(`Confirmation OTP code dispatched to ${email}!`, "success");
         openAuthModal("verify-otp", email);
       } catch (err) {
         window.AC.showToast(err.message || "Could not send OTP.", "error");
@@ -817,6 +924,42 @@
     `);
   }
 
+  async function resendOtp(email) {
+    const remaining = getRemainingCooldown(email);
+    if (remaining > 0) {
+      window.AC.showToast(`Please wait ${remaining}s before requesting another code.`, "info");
+      return;
+    }
+    const btn = document.getElementById("btn-resend-otp");
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = "Sending...";
+    }
+    try {
+      const { error } = await window.AC.supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + window.location.pathname
+      });
+      setCooldown(email);
+      if (error) {
+        const errMsg = (error.message || "").toLowerCase();
+        if (errMsg.includes("rate limit") || errMsg.includes("security") || error.status === 429) {
+          window.AC.showToast("A code was recently sent. Please check your inbox or wait 60s.", "info");
+        } else {
+          window.AC.showToast(error.message, "error");
+        }
+      } else {
+        window.AC.showToast(`New confirmation code dispatched to ${email}!`, "success");
+      }
+      openAuthModal("verify-otp", email);
+    } catch (err) {
+      window.AC.showToast(err.message || "Could not resend OTP.", "error");
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = "Resend Code";
+      }
+    }
+  }
+
   function renderHeaderAuthArea() {
     const el = document.getElementById("header-auth-area");
     if (!el) return;
@@ -849,6 +992,7 @@
 
   window.ACPortal = {
     openAuthModal,
+    resendOtp,
     signInWithGoogle,
     logout,
     openMyBookingsModal,

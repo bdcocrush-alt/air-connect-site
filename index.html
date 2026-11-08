@@ -42,13 +42,17 @@
           <svg viewBox="0 0 24 24"><path d="M3 20V8l9-5 9 5v12M9 20v-6h6v6"/></svg>
           Hotels
         </a>
-        <a href="#hajj-tours" class="header-nav-btn" data-header-tab="packages" onclick="return window.ACSearch.handleHeaderNavClick(event, 'packages', 'hajj-tours')">
-          <svg viewBox="0 0 24 24"><path d="M12 3l7 4v5c0 4-3 7-7 9-4-2-7-5-7-9V7z"/></svg>
-          Hajj &amp; Tour Packages
+        <a href="#tour-packages" class="header-nav-btn" data-header-tab="tour" onclick="return window.ACSearch.handleHeaderNavClick(event, 'tour', 'tour-packages')">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+          Tour Packages
+        </a>
+        <a href="#umrah-packages" class="header-nav-btn" data-header-tab="umrah" onclick="return window.ACSearch.handleHeaderNavClick(event, 'umrah', 'umrah-packages')">
+          <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          Umrah Packages
         </a>
         <a href="#visa" class="header-nav-btn" data-header-tab="visa" onclick="return window.ACSearch.handleHeaderNavClick(event, 'visa', 'visa')">
           <svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg>
-          Visa
+          Visa Services
         </a>
       </nav>
 
@@ -87,9 +91,13 @@
             <svg viewBox="0 0 24 24"><path d="M3 20V8l9-5 9 5v12M9 20v-6h6v6"/></svg>
             Hotels
           </button>
-          <button type="button" class="search-tab-btn" data-search-tab="packages" onclick="window.ACSearch.switchSearchTab('packages')">
-            <svg viewBox="0 0 24 24"><path d="M12 3l7 4v5c0 4-3 7-7 9-4-2-7-5-7-9V7z"/></svg>
-            Hajj &amp; Tour Packages
+          <button type="button" class="search-tab-btn" data-search-tab="tour" onclick="window.ACSearch.switchSearchTab('tour')">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+            Tour Packages
+          </button>
+          <button type="button" class="search-tab-btn" data-search-tab="umrah" onclick="window.ACSearch.switchSearchTab('umrah')">
+            <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            Umrah Packages
           </button>
           <button type="button" class="search-tab-btn" data-search-tab="visa" onclick="window.ACSearch.switchSearchTab('visa')">
             <svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg>
@@ -121,18 +129,21 @@
       </div>
     </section>
 
-    <!-- 3. Grouped Hajj & Umrah + Tour Packages (Separated into Inbound Tours & Outbound Tours) -->
+    <!-- 3. Grouped Tour & Umrah Packages (Separated into Inbound Tours & Outbound Tours) -->
     <section class="ota-section" id="hajj-tours">
-      <div class="container" id="packages-section">
+      <div id="packages-section" class="section-scroll-anchor" aria-hidden="true"></div>
+      <div id="tour-packages" class="section-scroll-anchor" aria-hidden="true"></div>
+      <div id="umrah-packages" class="section-scroll-anchor" aria-hidden="true"></div>
+      <div class="container">
         <div class="section-head">
           <div>
-            <h2>Hajj, Umrah &amp; Tour Packages</h2>
-            <p>Grouped Hajj &amp; Umrah spiritual packages and Tour Packages — separated into Inbound Tours (Bangladesh) and Outbound Tours (International).</p>
+            <h2>Tour &amp; Umrah Packages</h2>
+            <p>Spiritual Umrah journeys and curated Holiday Tours — separated into Inbound Tours (Bangladesh) and Outbound Tours (International).</p>
           </div>
           <div class="filter-pills" id="home-catalog-tabs">
-            <button type="button" class="filter-pill active" data-cat="ALL">All (Hajj &amp; Tour Packages)</button>
-            <button type="button" class="filter-pill" data-cat="UMRAH_HAJJ">Hajj &amp; Umrah</button>
-            <button type="button" class="filter-pill" data-cat="TOUR_ALL">Tour Packages (All)</button>
+            <button type="button" class="filter-pill active" data-cat="ALL">All Packages</button>
+            <button type="button" class="filter-pill" data-cat="TOUR_ALL">Tour Packages</button>
+            <button type="button" class="filter-pill" data-cat="UMRAH_HAJJ">Umrah Packages</button>
             <button type="button" class="filter-pill" data-cat="INBOUND_TOUR">Inbound Tours</button>
             <button type="button" class="filter-pill" data-cat="OUTBOUND_TOUR">Outbound Tours</button>
           </div>
@@ -175,7 +186,7 @@
             <img src="https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=900&q=80" alt="Makkah & Madinah">
             <div class="destination-overlay">
               <h3>Makkah &amp; Madinah</h3>
-              <span>★★★★★ • Umrah &amp; Hajj Packages + Direct Flights</span>
+              <span>★★★★★ • Umrah Packages + Direct Flights</span>
             </div>
           </div>
           <div class="destination-card" onclick="window.ACSearch.quickSelectFlightDeal('DAC','KUL','One Way','Regular')">
@@ -236,7 +247,7 @@
           </div>
           <div class="stat-card">
             <strong>100%</strong>
-            <span>Guided Hajj &amp; Umrah</span>
+            <span>Guided Umrah Packages</span>
           </div>
           <div class="stat-card">
             <strong>24/7</strong>
@@ -407,10 +418,9 @@
           <ul class="footer-links">
             <li><a href="#flights" onclick="return window.ACSearch.handleHeaderNavClick(event, 'flight', 'flights')">Air Tickets (Domestic &amp; Int'l)</a></li>
             <li><a href="#hotels" onclick="return window.ACSearch.handleHeaderNavClick(event, 'hotel', 'hotels')">Hotel Reservations</a></li>
-            <li><a href="#hajj-tours" onclick="return window.ACSearch.handleHeaderNavClick(event, 'umrah', 'hajj-tours')">Hajj &amp; Umrah Packages</a></li>
-            <li><a href="#hajj-tours" onclick="return window.ACSearch.handleHeaderNavClick(event, 'inbound', 'hajj-tours')">Inbound Bangladesh Tours</a></li>
-            <li><a href="#hajj-tours" onclick="return window.ACSearch.handleHeaderNavClick(event, 'outbound', 'hajj-tours')">Outbound World Holidays</a></li>
-            <li><a href="#visa" onclick="return window.ACSearch.handleHeaderNavClick(event, 'visa', 'visa')">Visa Assistance</a></li>
+            <li><a href="#tour-packages" onclick="return window.ACSearch.handleHeaderNavClick(event, 'tour', 'tour-packages')">Tour Packages</a></li>
+            <li><a href="#umrah-packages" onclick="return window.ACSearch.handleHeaderNavClick(event, 'umrah', 'umrah-packages')">Umrah Packages</a></li>
+            <li><a href="#visa" onclick="return window.ACSearch.handleHeaderNavClick(event, 'visa', 'visa')">Visa Services</a></li>
           </ul>
         </div>
 
@@ -477,7 +487,7 @@
   <script src="js/supabase-client.js?v=29"></script>
   <script src="js/search-and-results.js?v=29"></script>
   <script src="js/booking-checkout.js?v=29"></script>
-  <script src="js/customer-portal.js?v=29"></script>
+  <script src="js/customer-portal.js?v=30"></script>
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
       window.AC.initCookieConsent();
