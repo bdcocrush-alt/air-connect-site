@@ -2,13 +2,87 @@
 (function () {
   let currentDraft = null;
 
+  function getBankTransferDetailsHtml() {
+    return `
+      <div class="bank-transfer-details-card">
+        <div class="bank-details-header">
+          <span class="bank-details-logo">
+            <img src="assets/payments/bracbank.png" alt="BRAC Bank PLC">
+          </span>
+          <div>
+            <strong>Bank Name: BRAC Bank PLC</strong>
+            <small>Official Bank Transfer / Deposit / NPSB / BEFTN Account</small>
+          </div>
+        </div>
+        <div class="bank-details-grid">
+          <div class="bank-detail-item">
+            <span>Bank Name</span>
+            <strong>BRAC Bank PLC</strong>
+          </div>
+          <div class="bank-detail-item">
+            <span>Account Name</span>
+            <strong>SHAKILA JASMIN RUNA</strong>
+          </div>
+          <div class="bank-detail-item">
+            <span>Account Number</span>
+            <strong style="color:var(--brand-primary)">1511202219754001</strong>
+          </div>
+          <div class="bank-detail-item">
+            <span>Branch Name</span>
+            <strong>MIRPUR BRANCH</strong>
+          </div>
+          <div class="bank-detail-item">
+            <span>Routing Number</span>
+            <strong>060262983</strong>
+          </div>
+          <div class="bank-detail-item">
+            <span>SWIFT Code</span>
+            <strong>BRAKBDDH</strong>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function getPaymentDetailsPanelHtml(method) {
+    if (method === "BANK_TRANSFER") {
+      return getBankTransferDetailsHtml();
+    }
+    const isNagad = method === "NAGAD";
+    return `
+      <div class="bank-transfer-details-card" style="border-color:${isNagad ? "#fed7aa" : "#fbcfe8"}">
+        <div class="bank-details-header">
+          <span class="bank-details-logo">
+            <img src="assets/payments/${isNagad ? "nagad.svg" : "bkash.svg"}" alt="${isNagad ? "Nagad" : "bKash"}">
+          </span>
+          <div>
+            <strong style="color:${isNagad ? "#ea580c" : "#e2136e"}">${isNagad ? "Nagad" : "bKash"} Official Merchant / Receiver Account</strong>
+            <small>Send Money or Merchant Payment to our official number below</small>
+          </div>
+        </div>
+        <div class="bank-details-grid">
+          <div class="bank-detail-item">
+            <span>Payment Channel</span>
+            <strong>${isNagad ? "Nagad" : "bKash"} (Merchant / Personal)</strong>
+          </div>
+          <div class="bank-detail-item">
+            <span>Merchant / Receiver Number</span>
+            <strong style="color:var(--brand-primary);font-size:15px">+880 1322-937800</strong>
+          </div>
+          <div class="bank-detail-item">
+            <span>Reference</span>
+            <strong>Your Name / Passport No.</strong>
+          </div>
+        </div>
+      </div>`;
+  }
+
   function openCheckout(payload) {
     currentDraft = {
       ...payload,
       extraBaggageBdt: 0,
       mealPreference: "Halal Standard Meal (Included)",
-      bookingMode: "HOLD_PAY_LATER",
-      paymentMethod: "PAY_LATER"
+      bookingMode: "INSTANT_PAY",
+      paymentMethod: "BKASH"
     };
 
     const sec = document.getElementById("checkout-section");
@@ -178,11 +252,11 @@
             <div class="checkout-box">
               <h3>4. Choose Booking &amp; Payment Option</h3>
               <p style="font-size:13px;color:var(--muted);margin-top:-8px;margin-bottom:14px">
-                Select <strong>bKash</strong> or <strong>Nagad</strong> to pay directly to our official receiver/merchant number <strong>+880 1322-937800</strong>, or choose <strong>Book &amp; Hold</strong>.
+                Click <strong>bKash</strong>, <strong>Nagad</strong>, or <strong>Bank Transfer (BRAC Bank PLC)</strong> to view payment account details, or choose <strong>Book &amp; Hold</strong>.
               </p>
 
               <div class="payment-methods-grid">
-                <label class="payment-option-card ${d.bookingMode === "INSTANT_PAY" && d.paymentMethod === "BKASH" ? "active" : ""}">
+                <label class="payment-option-card ${d.bookingMode === "INSTANT_PAY" && d.paymentMethod === "BKASH" ? "active" : ""}" data-pay-card="BKASH" onclick="window.ACBooking.selectCheckoutPaymentOption('BKASH')">
                   <input type="radio" name="checkoutPayChoice" value="BKASH" ${d.bookingMode === "INSTANT_PAY" && d.paymentMethod === "BKASH" ? "checked" : ""}>
                   <div class="payment-logo-wrap">
                     <img src="assets/payments/bkash.svg" alt="bKash Official Logo">
@@ -194,7 +268,7 @@
                   </div>
                 </label>
 
-                <label class="payment-option-card ${d.bookingMode === "INSTANT_PAY" && d.paymentMethod === "NAGAD" ? "active" : ""}">
+                <label class="payment-option-card ${d.bookingMode === "INSTANT_PAY" && d.paymentMethod === "NAGAD" ? "active" : ""}" data-pay-card="NAGAD" onclick="window.ACBooking.selectCheckoutPaymentOption('NAGAD')">
                   <input type="radio" name="checkoutPayChoice" value="NAGAD" ${d.bookingMode === "INSTANT_PAY" && d.paymentMethod === "NAGAD" ? "checked" : ""}>
                   <div class="payment-logo-wrap">
                     <img src="assets/payments/nagad.svg" alt="Nagad Official Logo">
@@ -206,10 +280,10 @@
                   </div>
                 </label>
 
-                <label class="payment-option-card ${d.bookingMode === "INSTANT_PAY" && d.paymentMethod === "BANK_TRANSFER" ? "active" : ""}">
+                <label class="payment-option-card ${d.bookingMode === "INSTANT_PAY" && d.paymentMethod === "BANK_TRANSFER" ? "active" : ""}" data-pay-card="BANK_TRANSFER" onclick="window.ACBooking.selectCheckoutPaymentOption('BANK_TRANSFER')">
                   <input type="radio" name="checkoutPayChoice" value="BANK_TRANSFER" ${d.bookingMode === "INSTANT_PAY" && d.paymentMethod === "BANK_TRANSFER" ? "checked" : ""}>
                   <div class="payment-logo-wrap">
-                    <img src="assets/payments/bracbank.svg" alt="BRAC Bank PLC Official Logo">
+                    <img src="assets/payments/bracbank.png" alt="BRAC Bank PLC Official Logo">
                   </div>
                   <div class="payment-option-info">
                     <strong>Bank Transfer</strong>
@@ -218,7 +292,7 @@
                   </div>
                 </label>
 
-                <label class="payment-option-card ${d.bookingMode === "HOLD_PAY_LATER" ? "active" : ""}">
+                <label class="payment-option-card ${d.bookingMode === "HOLD_PAY_LATER" ? "active" : ""}" data-pay-card="PAY_LATER" onclick="window.ACBooking.selectCheckoutPaymentOption('PAY_LATER')">
                   <input type="radio" name="checkoutPayChoice" value="PAY_LATER" ${d.bookingMode === "HOLD_PAY_LATER" ? "checked" : ""}>
                   <div class="payment-logo-wrap" style="font-weight:800;font-size:12px;color:var(--brand-green)">
                     HOLD
@@ -232,63 +306,10 @@
               </div>
 
               <div id="pay-now-panel" ${d.bookingMode === "HOLD_PAY_LATER" ? "hidden" : ""} style="padding:18px;background:#fff1f1;border:1px solid #fecaca;border-radius:12px">
-                <strong style="display:block;margin-bottom:12px;color:var(--brand-primary)">Official Air Connect Ltd Payment Accounts:</strong>
-                ${
-                  d.paymentMethod === "BANK_TRANSFER"
-                    ? `
-                  <div class="bank-transfer-details-card">
-                    <div class="bank-details-header">
-                      <span class="bank-details-logo">
-                        <img src="assets/payments/bracbank.svg" alt="BRAC Bank PLC">
-                      </span>
-                      <div>
-                        <strong>Bank Name: BRAC Bank PLC</strong>
-                        <small>Official Bank Transfer / Deposit / NPSB / BEFTN Account</small>
-                      </div>
-                    </div>
-                    <div class="bank-details-grid">
-                      <div class="bank-detail-item">
-                        <span>Bank Name</span>
-                        <strong>BRAC Bank PLC</strong>
-                      </div>
-                      <div class="bank-detail-item">
-                        <span>Account Name</span>
-                        <strong>SHAKILA JASMIN RUNA</strong>
-                      </div>
-                      <div class="bank-detail-item">
-                        <span>Account Number</span>
-                        <strong style="color:var(--brand-primary)">1511202219754001</strong>
-                      </div>
-                      <div class="bank-detail-item">
-                        <span>Branch Name</span>
-                        <strong>MIRPUR BRANCH</strong>
-                      </div>
-                      <div class="bank-detail-item">
-                        <span>Routing Number</span>
-                        <strong>060262983</strong>
-                      </div>
-                      <div class="bank-detail-item">
-                        <span>SWIFT Code</span>
-                        <strong>BRAKBDDH</strong>
-                      </div>
-                    </div>
-                  </div>`
-                    : `
-                  <div style="display:grid;gap:10px;font-size:13px;margin-bottom:16px">
-                    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-                      <span class="payment-logo-wrap" style="width:56px;height:30px"><img src="assets/payments/bkash.svg" alt="bKash"></span>
-                      <span><strong>bKash Merchant / Receiver Number:</strong> <strong style="color:var(--brand-primary);font-size:14px">+880 1322-937800</strong></span>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-                      <span class="payment-logo-wrap" style="width:56px;height:30px"><img src="assets/payments/nagad.svg" alt="Nagad"></span>
-                      <span><strong>Nagad Merchant / Receiver Number:</strong> <strong style="color:var(--brand-primary);font-size:14px">+880 1322-937800</strong></span>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-                      <span class="payment-logo-wrap" style="width:56px;height:30px"><img src="assets/payments/bracbank.svg" alt="BRAC Bank PLC"></span>
-                      <span><strong>Bank Transfer (BRAC Bank PLC):</strong> A/C Name: <strong>SHAKILA JASMIN RUNA</strong> • A/C No: <strong style="color:var(--brand-primary)">1511202219754001</strong> • Branch: <strong>MIRPUR BRANCH</strong> • Routing: <strong>060262983</strong> • SWIFT: <strong>BRAKBDDH</strong></span>
-                    </div>
-                  </div>`
-                }
+                <strong style="display:block;margin-bottom:12px;color:var(--brand-primary)">Official Air Connect Ltd Payment Account Details:</strong>
+                <div id="payment-details-dynamic">
+                  ${getPaymentDetailsPanelHtml(d.paymentMethod)}
+                </div>
                 <div class="form-grid-3">
                   <div class="form-field">
                     <label>Payment Channel *</label>
@@ -300,7 +321,7 @@
                   </div>
                   <div class="form-field">
                     <label>Transaction ID (TrxID / Ref) *</label>
-                    <input type="text" id="chk-trx-id" placeholder="e.g. BK9482019X">
+                    <input type="text" id="chk-trx-id" placeholder="e.g. BK9482019X / Bank Ref">
                   </div>
                   <div class="form-field">
                     <label>Upload Payment Slip (Optional)</label>
@@ -345,10 +366,11 @@
             </div>
 
             <div style="margin-top:14px;padding:10px 12px;background:#f8fafc;border:1px solid var(--line);border-radius:10px">
-              <small style="display:block;font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:700">bKash &amp; Nagad Merchant / Receiver:</small>
+              <small style="display:block;font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:700">bKash, Nagad &amp; BRAC Bank PLC:</small>
               <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
                 <span class="payment-logo-wrap" style="width:48px;height:26px"><img src="assets/payments/bkash.svg" alt="bKash"></span>
                 <span class="payment-logo-wrap" style="width:48px;height:26px"><img src="assets/payments/nagad.svg" alt="Nagad"></span>
+                <span class="payment-logo-wrap" style="width:54px;height:26px"><img src="assets/payments/bracbank.png" alt="BRAC Bank PLC"></span>
                 <strong style="font-size:13.5px;color:var(--brand-primary)">+880 1322-937800</strong>
               </div>
             </div>
@@ -364,32 +386,66 @@
       </div>
     `;
 
-    // Listeners
+    // Listeners (update in-place without destroying form values)
     document.getElementById("chk-baggage")?.addEventListener("change", e => {
       currentDraft.extraBaggageBdt = Number(e.target.value || 0);
-      renderCheckoutView();
-    });
-
-    sec.querySelectorAll('input[name="checkoutPayChoice"]').forEach(r => {
-      r.addEventListener("change", e => {
-        const val = e.target.value;
-        if (val === "PAY_LATER") {
-          currentDraft.bookingMode = "HOLD_PAY_LATER";
-          currentDraft.paymentMethod = "PAY_LATER";
-        } else {
-          currentDraft.bookingMode = "INSTANT_PAY";
-          currentDraft.paymentMethod = val;
-        }
-        renderCheckoutView();
-      });
+      const newGrandTotal = Number(currentDraft.baseAmount || 0) + Number(currentDraft.taxAmount || 0) + Number(currentDraft.extraBaggageBdt || 0);
+      const bagEl = document.getElementById("sum-extra-bag");
+      const totEl = document.getElementById("sum-grand-total");
+      if (bagEl) bagEl.textContent = formatMoney(currentDraft.extraBaggageBdt);
+      if (totEl) totEl.textContent = formatMoney(newGrandTotal);
     });
 
     document.getElementById("chk-pay-method")?.addEventListener("change", e => {
-      currentDraft.paymentMethod = e.target.value;
-      renderCheckoutView();
+      selectCheckoutPaymentOption(e.target.value);
     });
 
     document.getElementById("ac-checkout-form")?.addEventListener("submit", handleCheckoutSubmit);
+  }
+
+  function selectCheckoutPaymentOption(choice) {
+    if (!currentDraft) return;
+    if (choice === "PAY_LATER") {
+      currentDraft.bookingMode = "HOLD_PAY_LATER";
+      currentDraft.paymentMethod = "PAY_LATER";
+    } else {
+      currentDraft.bookingMode = "INSTANT_PAY";
+      currentDraft.paymentMethod = choice;
+    }
+
+    const sec = document.getElementById("checkout-section");
+    if (!sec) return;
+
+    sec.querySelectorAll("[data-pay-card]").forEach(card => {
+      const cardVal = card.getAttribute("data-pay-card");
+      const isSelected = cardVal === choice;
+      card.classList.toggle("active", isSelected);
+      const radio = card.querySelector('input[type="radio"]');
+      if (radio) radio.checked = isSelected;
+    });
+
+    const payPanel = document.getElementById("pay-now-panel");
+    if (payPanel) {
+      payPanel.hidden = currentDraft.bookingMode === "HOLD_PAY_LATER";
+    }
+
+    const detailsEl = document.getElementById("payment-details-dynamic");
+    if (detailsEl && choice !== "PAY_LATER") {
+      detailsEl.innerHTML = getPaymentDetailsPanelHtml(choice);
+    }
+
+    const selectEl = document.getElementById("chk-pay-method");
+    if (selectEl && choice !== "PAY_LATER") {
+      selectEl.value = choice;
+    }
+
+    const submitBtn = document.getElementById("chk-submit-btn");
+    if (submitBtn) {
+      submitBtn.textContent =
+        currentDraft.bookingMode === "HOLD_PAY_LATER"
+          ? "✓ Confirm & Hold Booking"
+          : "✓ Submit Payment & Confirm";
+    }
   }
 
   async function handleCheckoutSubmit(e) {
@@ -428,17 +484,8 @@
       let status = "ON_HOLD";
 
       if (d.bookingMode === "INSTANT_PAY") {
-        paymentMethod = document.getElementById("chk-pay-method")?.value || "BKASH";
+        paymentMethod = document.getElementById("chk-pay-method")?.value || d.paymentMethod || "BKASH";
         trxId = document.getElementById("chk-trx-id")?.value.trim() || null;
-        if (!trxId) {
-          window.AC.showToast("Please enter your Transaction ID (TrxID) for Pay Now, or switch to Book & Hold.", "error");
-          if (btn) {
-            btn.disabled = false;
-            btn.textContent = "✓ Submit Payment & Confirm";
-          }
-          return;
-        }
-        status = "PENDING";
 
         // Upload slip if chosen
         const fileInput = document.getElementById("chk-slip-file");
@@ -451,6 +498,27 @@
             const { data: pubData } = window.AC.supabase.storage.from("slips").getPublicUrl(filePath);
             slipUrl = pubData?.publicUrl || null;
           }
+        }
+
+        if (paymentMethod === "BANK_TRANSFER") {
+          // If no TrxID and no slip, allow booking to proceed as Pending Bank Deposit
+          if (!trxId && !slipUrl) {
+            trxId = "BANK-DEPOSIT-PENDING";
+            status = "ON_HOLD";
+          } else {
+            status = "PENDING";
+          }
+        } else {
+          // bKash or Nagad
+          if (!trxId && !slipUrl) {
+            window.AC.showToast("Please enter your Transaction ID (TrxID) or switch to Book & Hold.", "error");
+            if (btn) {
+              btn.disabled = false;
+              btn.textContent = "✓ Submit Payment & Confirm";
+            }
+            return;
+          }
+          status = "PENDING";
         }
       }
 
@@ -597,8 +665,14 @@
 
         <div style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:#fff1f1;border-radius:12px;margin-bottom:18px;flex-wrap:wrap;gap:12px">
           <div>
-            <small style="color:var(--muted);display:block">Payment Mode: <strong>${escapeHtml(booking.payment_method)}</strong></small>
-            ${booking.transaction_id ? `<small style="color:var(--text)">TrxID: <strong>${escapeHtml(booking.transaction_id)}</strong></small>` : `<small style="color:var(--text)">Pay via bKash / Nagad (<strong>+880 1322-937800</strong>) quoting Ref <strong>${escapeHtml(booking.booking_ref)}</strong></small>`}
+            <small style="color:var(--muted);display:block">Payment Mode: <strong>${booking.payment_method === "BANK_TRANSFER" ? "Bank Transfer (BRAC Bank PLC)" : escapeHtml(booking.payment_method)}</strong></small>
+            ${
+              booking.payment_method === "BANK_TRANSFER"
+                ? `<small style="color:var(--text)">Bank Transfer to: <strong>BRAC Bank PLC</strong> • A/C No: <strong style="color:var(--brand-primary)">1511202219754001</strong> • Name: <strong>SHAKILA JASMIN RUNA</strong> (Branch: MIRPUR BRANCH • Routing: 060262983) quoting Ref: <strong>${escapeHtml(booking.booking_ref)}</strong></small>`
+                : booking.transaction_id
+                ? `<small style="color:var(--text)">TrxID: <strong>${escapeHtml(booking.transaction_id)}</strong></small>`
+                : `<small style="color:var(--text)">Pay via bKash / Nagad (<strong>+880 1322-937800</strong>) quoting Ref <strong>${escapeHtml(booking.booking_ref)}</strong></small>`
+            }
           </div>
           <div style="text-align:right">
             <small style="color:var(--muted);display:block">TOTAL AMOUNT</small>
@@ -614,8 +688,48 @@
     `);
   }
 
+  function selectHomePaymentMethod(method, openModal = false) {
+    const cleanMethod = method === "PAY_LATER" ? "BANK_TRANSFER" : method;
+
+    // 1. Update Homepage Payment Methods Section (if present)
+    document.querySelectorAll("[data-home-pay-card]").forEach(el => {
+      el.classList.toggle("active", el.getAttribute("data-home-pay-card") === cleanMethod);
+      const radio = el.querySelector('input[type="radio"]');
+      if (radio) radio.checked = el.getAttribute("data-home-pay-card") === cleanMethod;
+    });
+    const homePanel = document.getElementById("home-payment-details-panel");
+    if (homePanel) {
+      homePanel.innerHTML = getPaymentDetailsPanelHtml(cleanMethod);
+    }
+
+    // 2. Update Footer Payment Badges & Inline Panel (if present)
+    document.querySelectorAll("[data-footer-pay-btn]").forEach(btn => {
+      btn.classList.toggle("active", btn.getAttribute("data-footer-pay-btn") === cleanMethod);
+    });
+    const footerPanel = document.getElementById("footer-payment-details-panel");
+    if (footerPanel) {
+      footerPanel.hidden = false;
+      footerPanel.innerHTML = getPaymentDetailsPanelHtml(cleanMethod);
+    }
+
+    // 3. Also update Checkout if Checkout is currently open
+    const chkSec = document.getElementById("checkout-section");
+    if (chkSec && !chkSec.hidden && currentDraft) {
+      selectCheckoutPaymentOption(method);
+    }
+
+    // 4. Open Modal when triggered from footer badge or explicit request
+    if (openModal && window.ACPortal?.openPaymentDetailsModal) {
+      window.ACPortal.openPaymentDetailsModal(cleanMethod);
+    }
+  }
+
   window.ACBooking = {
     openCheckout,
-    showBookingVoucherModal
+    showBookingVoucherModal,
+    selectCheckoutPaymentOption,
+    selectHomePaymentMethod,
+    getBankTransferDetailsHtml,
+    getPaymentDetailsPanelHtml
   };
 })();

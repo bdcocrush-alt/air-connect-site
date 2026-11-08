@@ -18,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=25">
+  <link rel="stylesheet" href="css/styles.css?v=26">
 </head>
 <body>
 
@@ -436,9 +436,9 @@
             Book with instant PNR hold or pay via bKash &amp; Nagad (<strong style="color:#fff">+880 1322-937800</strong>) or Bank Transfer.
           </p>
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center">
-            <span class="footer-pay-badge"><img src="assets/payments/bkash.svg" alt="bKash"> bKash</span>
-            <span class="footer-pay-badge"><img src="assets/payments/nagad.svg" alt="Nagad"> Nagad</span>
-            <span class="footer-pay-badge"><img src="assets/payments/bracbank.svg" alt="BRAC Bank PLC"> Bank Transfer</span>
+            <button type="button" class="footer-pay-badge" onclick="window.ACPortal.openPaymentDetailsModal('BKASH')" title="Click to view bKash details"><img src="assets/payments/bkash.svg" alt="bKash"> bKash</button>
+            <button type="button" class="footer-pay-badge" onclick="window.ACPortal.openPaymentDetailsModal('NAGAD')" title="Click to view Nagad details"><img src="assets/payments/nagad.svg" alt="Nagad"> Nagad</button>
+            <button type="button" class="footer-pay-badge" onclick="window.ACPortal.openPaymentDetailsModal('BANK_TRANSFER')" title="Click to view BRAC Bank PLC account details"><img src="assets/payments/bracbank.png" alt="BRAC Bank PLC"> Bank Transfer</button>
             <span class="status-badge" style="background:#0caf61;color:#fff;padding:7px 11px">Book &amp; Hold</span>
           </div>
           <button type="button" class="btn btn-primary btn-sm" style="width:100%" onclick="window.ACPortal.openMyBookingsModal()">
@@ -456,11 +456,11 @@
 
   <!-- Supabase SDK & Application Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/config.js?v=25"></script>
-  <script src="js/supabase-client.js?v=25"></script>
-  <script src="js/search-and-results.js?v=25"></script>
-  <script src="js/booking-checkout.js?v=25"></script>
-  <script src="js/customer-portal.js?v=25"></script>
+  <script src="js/config.js?v=26"></script>
+  <script src="js/supabase-client.js?v=26"></script>
+  <script src="js/search-and-results.js?v=26"></script>
+  <script src="js/booking-checkout.js?v=26"></script>
+  <script src="js/customer-portal.js?v=26"></script>
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
       window.ACPortal.renderHeaderAuthArea();
