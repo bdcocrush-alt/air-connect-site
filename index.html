@@ -18,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=22">
+  <link rel="stylesheet" href="css/styles.css?v=23">
 </head>
 <body>
 
@@ -53,6 +53,10 @@
       </nav>
 
       <div class="header-actions">
+        <a id="hdr-phone-link" href="tel:+8801322937800" class="header-hotline-pill" title="24/7 Customer Support Hotline">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1C10.61 21 3 13.39 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.46.57 3.58a1 1 0 0 1-.25 1.01l-2.2 2.2z"/></svg>
+          <span id="hdr-phone-text">+880 1322-937800</span>
+        </a>
         <select class="currency-select" data-currency-select aria-label="Select Currency" onchange="window.AC.setCurrency(this.value)">
           <option value="BDT">BDT (৳)</option>
           <option value="USD">USD ($)</option>
@@ -211,8 +215,8 @@
             <button type="button" class="btn" style="background:#fff;color:var(--brand-primary)" onclick="window.scrollTo({top:0,behavior:'smooth'})">
               Start Your Journey ↑
             </button>
-            <a id="cta-phone-btn" href="tel:+8801322937800" class="btn btn-outline" style="background:transparent;color:#fff;border-color:rgba(255,255,255,0.5)">
-              Call 01322-937800
+            <a id="cta-phone-btn" href="tel:+8801322937800" class="btn btn-outline" style="background:transparent;color:#fff;border-color:rgba(255,255,255,0.6)">
+              Hotline: +880 1322-937800
             </a>
           </div>
         </div>
@@ -358,10 +362,43 @@
           <p style="font-size:13px;line-height:1.65;color:#94a3b8;margin:0 0 14px">
             Your trusted travel partner in Bangladesh for domestic &amp; international air tickets, global hotels, inbound &amp; outbound holiday tours, Hajj &amp; Umrah packages, and visa processing.
           </p>
-          <div style="font-size:13px;color:#e2e8f0">
-            <div>Phone: <strong id="ftr-phone">+880 1322-937800</strong></div>
-            <div>Email: <span id="ftr-email">info@airconnectbd.com</span></div>
-            <div>Address: <span id="ftr-address">House 10, Road 2, Sector 17/D Uttara Dhaka</span></div>
+          <div class="footer-contact-list">
+            <a href="tel:+8801322937800" class="footer-contact-item" id="ftr-phone-link">
+              <span class="footer-contact-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1C10.61 21 3 13.39 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.46.57 3.58a1 1 0 0 1-.25 1.01l-2.2 2.2z"/></svg>
+              </span>
+              <div>
+                <div style="font-size:11px;color:#94a3b8;line-height:1.1">24/7 Customer Support / Hotline</div>
+                <strong id="ftr-phone" style="color:#ffffff;font-size:15px">+880 1322-937800</strong>
+              </div>
+            </a>
+            <a href="https://wa.me/8801322937800?text=Hello%20Air%20Connect%20Ltd%2C%20I%20need%20assistance%20with%20a%20booking." target="_blank" rel="noopener" class="footer-contact-item" id="ftr-wa-link">
+              <span class="footer-contact-icon" style="background:rgba(37,211,102,0.18);color:#25d366">
+                <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16.004 2.667C8.64 2.667 2.667 8.64 2.667 16c0 2.35.612 4.644 1.775 6.67L2.56 29.333l6.835-1.792A13.28 13.28 0 0 0 16.004 29.333c7.363 0 13.33-5.973 13.33-13.333 0-3.562-1.387-6.912-3.904-9.43A13.245 13.245 0 0 0 16.004 2.667zm6.08 16.116c-.333-.167-1.97-.972-2.275-1.083-.305-.111-.527-.167-.75.167-.222.333-.86 1.083-1.055 1.305-.194.222-.388.25-.721.083-.333-.167-1.406-.518-2.678-1.652-.99-.883-1.658-1.974-1.852-2.307-.194-.333-.02-.514.146-.68.15-.15.333-.389.5-.583.166-.195.222-.334.333-.556.111-.222.056-.417-.028-.583-.083-.167-.75-1.805-1.027-2.472-.27-.65-.546-.562-.75-.572l-.638-.011c-.222 0-.583.083-.888.417-.305.333-1.166 1.139-1.166 2.777s1.194 3.222 1.36 3.444c.167.222 2.35 3.587 5.692 5.03.795.343 1.416.548 1.9.702.798.254 1.525.218 2.1.132.64-.096 1.97-.805 2.248-1.583.277-.777.277-1.444.194-1.583-.083-.139-.305-.222-.638-.389z"/></svg>
+              </span>
+              <div>
+                <div style="font-size:11px;color:#94a3b8;line-height:1.1">WhatsApp Support</div>
+                <strong id="ftr-wa-text" style="color:#ffffff;font-size:14px">+880 1322-937800</strong>
+              </div>
+            </a>
+            <a href="mailto:info@airconnectbd.com" class="footer-contact-item" id="ftr-email-link">
+              <span class="footer-contact-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4.24-8 5-8-5V6l8 5 8-5v2.24z"/></svg>
+              </span>
+              <div>
+                <div style="font-size:11px;color:#94a3b8;line-height:1.1">Email Us</div>
+                <span id="ftr-email" style="color:#e2e8f0;font-weight:600">info@airconnectbd.com</span>
+              </div>
+            </a>
+            <div class="footer-contact-item">
+              <span class="footer-contact-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"/></svg>
+              </span>
+              <div>
+                <div style="font-size:11px;color:#94a3b8;line-height:1.1">Office Address</div>
+                <span id="ftr-address" style="color:#e2e8f0">House 10, Road 2, Sector 17/D Uttara Dhaka</span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -391,6 +428,10 @@
 
         <div>
           <h4>Accepted Payments &amp; Support</h4>
+          <div class="footer-hotline-box">
+            <small>24/7 Customer Support Hotline</small>
+            <a id="ftr-support-phone" href="tel:+8801322937800">+880 1322-937800</a>
+          </div>
           <p style="font-size:13px;color:#94a3b8;margin-top:0">
             Book with instant PNR hold or pay via bKash, Nagad, or Bank Transfer.
           </p>
@@ -415,11 +456,11 @@
 
   <!-- Supabase SDK & Application Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/config.js?v=22"></script>
-  <script src="js/supabase-client.js?v=22"></script>
-  <script src="js/search-and-results.js?v=22"></script>
-  <script src="js/booking-checkout.js?v=22"></script>
-  <script src="js/customer-portal.js?v=22"></script>
+  <script src="js/config.js?v=23"></script>
+  <script src="js/supabase-client.js?v=23"></script>
+  <script src="js/search-and-results.js?v=23"></script>
+  <script src="js/booking-checkout.js?v=23"></script>
+  <script src="js/customer-portal.js?v=23"></script>
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
       window.ACPortal.renderHeaderAuthArea();
@@ -457,12 +498,26 @@
       await window.AC.loadInitialCatalog();
       const s = window.AC.state.settings;
       if (s) {
+        const phoneStr = s.phone || "+880 1322-937800";
+        const telHref = "tel:+" + phoneStr.replace(/[^0-9]/g, "");
         document.getElementById("hdr-brand-name").textContent = s.brand_name || "Air Connect Ltd";
-        document.getElementById("ftr-phone").textContent = s.phone || "+880 1322-937800";
+        document.getElementById("hdr-phone-text").textContent = phoneStr;
+        document.getElementById("hdr-phone-link").href = telHref;
+        document.getElementById("cta-phone-btn").textContent = "Hotline: " + phoneStr;
+        document.getElementById("cta-phone-btn").href = telHref;
+        document.getElementById("ftr-phone").textContent = phoneStr;
+        document.getElementById("ftr-phone-link").href = telHref;
+        document.getElementById("ftr-support-phone").textContent = phoneStr;
+        document.getElementById("ftr-support-phone").href = telHref;
         document.getElementById("ftr-email").textContent = s.email || "info@airconnectbd.com";
+        document.getElementById("ftr-email-link").href = "mailto:" + (s.email || "info@airconnectbd.com");
         document.getElementById("ftr-address").textContent = s.address || "Dhaka, Bangladesh";
         if (s.whatsapp) {
-          document.getElementById("floating-wa-link").href = `https://wa.me/${s.whatsapp.replace(/[^0-9]/g, "")}?text=Hello%20Air%20Connect%20Ltd`;
+          const waDigits = s.whatsapp.replace(/[^0-9]/g, "");
+          const waUrl = `https://wa.me/${waDigits}?text=Hello%20Air%20Connect%20Ltd`;
+          document.getElementById("floating-wa-link").href = waUrl;
+          document.getElementById("ftr-wa-link").href = waUrl;
+          document.getElementById("ftr-wa-text").textContent = phoneStr;
         }
       }
       window.ACSearch.renderSearchBox();
