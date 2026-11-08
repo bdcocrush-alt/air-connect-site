@@ -143,20 +143,6 @@
       btn.classList.toggle("active", btn.getAttribute("data-header-tab") === activeKey);
     });
 
-    // Sync homepage catalog filter pills if on homepage
-    if (activeKey === "tour") {
-      const cat = searchState.tour.category === "INBOUND_TOUR" ? "INBOUND_TOUR" : searchState.tour.category === "OUTBOUND_TOUR" ? "OUTBOUND_TOUR" : "TOUR_ALL";
-      document.querySelectorAll("#home-catalog-tabs .filter-pill").forEach(btn => {
-        btn.classList.toggle("active", btn.getAttribute("data-cat") === cat);
-      });
-      renderHomepageCatalog(cat);
-    } else if (activeKey === "umrah") {
-      document.querySelectorAll("#home-catalog-tabs .filter-pill").forEach(btn => {
-        btn.classList.toggle("active", btn.getAttribute("data-cat") === "UMRAH_HAJJ");
-      });
-      renderHomepageCatalog("UMRAH_HAJJ");
-    }
-
     renderSearchBox();
   }
 
@@ -166,30 +152,15 @@
     }
     switchSearchTab(tab);
 
-    // Scroll to visa section
     if (targetId === "hotels" || targetId === "visa") {
       renderHotelsVisasSection();
-    } else if (
-      targetId === "hajj-tours" ||
-      targetId === "packages-section" ||
-      targetId === "tour-packages" ||
-      targetId === "umrah-packages"
-    ) {
-      let catCode = "ALL";
-      if (tab === "umrah" || tab === "hajj") catCode = "UMRAH_HAJJ";
-      else if (tab === "tour" || tab === "packages") catCode = "TOUR_ALL";
-      else if (tab === "inbound") catCode = "INBOUND_TOUR";
-      else if (tab === "outbound") catCode = "OUTBOUND_TOUR";
-      document.querySelectorAll("#home-catalog-tabs .filter-pill").forEach(btn => {
-        btn.classList.toggle("active", btn.getAttribute("data-cat") === catCode);
-      });
-      renderHomepageCatalog(catCode);
     }
 
     const targetEl =
-      targetId === "hotels" || targetId === "visa"
-        ? document.getElementById("hotels-visas-section") || document.getElementById(targetId)
-        : document.getElementById(targetId) || document.getElementById("packages-section") || document.getElementById("hajj-tours");
+      document.getElementById(targetId) ||
+      (targetId === "tour-packages" ? document.getElementById("tour-packages-section") : null) ||
+      (targetId === "umrah-packages" ? document.getElementById("umrah-packages-section") : null) ||
+      (targetId === "visa" ? document.getElementById("hotels-visas-section") : null);
 
     if (targetEl) {
       const headerEl = document.querySelector(".ota-header");
@@ -1637,8 +1608,47 @@
     });
   }
 
+  function slideCarousel(containerId, direction = 1) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    const card = el.querySelector(".catalog-card");
+    const step = card ? card.offsetWidth + 20 : 340;
+    el.scrollBy({ left: step * direction, behavior: "smooth" });
+  }
+
+  function enableDragScroll(slider) {
+    if (!slider || slider._hasDragBound) return;
+    slider._hasDragBound = true;
+    let isDown = false;
+    let startX = 0;
+    let scrollLeft = 0;
+
+    slider.addEventListener("mousedown", e => {
+      if (e.target.closest("button") || e.target.closest("a") || e.target.closest("input")) return;
+      isDown = true;
+      slider.classList.add("is-dragging");
+      startX = e.pageX - slider.offsetLeft;
+      scrollLeft = slider.scrollLeft;
+    });
+    slider.addEventListener("mouseleave", () => {
+      isDown = false;
+      slider.classList.remove("is-dragging");
+    });
+    slider.addEventListener("mouseup", () => {
+      isDown = false;
+      slider.classList.remove("is-dragging");
+    });
+    slider.addEventListener("mousemove", e => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - slider.offsetLeft;
+      const walk = (x - startX) * 1.5;
+      slider.scrollLeft = scrollLeft - walk;
+    });
+  }
+
   // Homepage Sections Renderer
-  function renderHomepageCatalog(activeFilter = "ALL") {
+  function renderHomepageCatalog() {
     const { escapeHtml, state } = window.AC;
 
     // 1. Special Offers Banners (Single-Line Auto-Sliding Carousel with Pause-on-Hover)
@@ -1658,103 +1668,38 @@
       bindCarouselPauseOnHover(offersGrid);
     }
 
-    // 3. Grouped Tour & Umrah Packages
-    const catalogGrid = document.getElementById("home-catalog-grid");
-    if (catalogGrid) {
-      const hajjUmrahList = state.packages.filter(p => p.category === "UMRAH" || p.category === "HAJJ");
+    // 2. Tour Packages — Inbound & Outbound Interactive Sliders
+    const inboundSlider = document.getElementById("home-inbound-slider");
+    if (inboundSlider) {
       const inboundList = state.packages.filter(p => p.category === "INBOUND_TOUR");
-      const outboundList = state.packages.filter(p => p.category === "OUTBOUND_TOUR");
-      const allTourList = [...inboundList, ...outboundList];
-
-      const hajjPanelHtml = `
-        <div class="package-group-panel umrah-panel" id="umrah-panel">
-          <div class="package-group-header">
-            <div>
-              <h3>Umrah Packages</h3>
-              <p>Spiritually guided Umrah packages with direct flights, e-Visa, Haram-view hotels &amp; experienced Muallim guides.</p>
-            </div>
-            <button type="button" class="btn btn-outline btn-sm" onclick="window.ACSearch.switchSearchTab('umrah');window.scrollTo({top:0,behavior:'smooth'})">
-              Search Umrah Packages →
-            </button>
-          </div>
-          <div class="catalog-grid">
-            ${hajjUmrahList.map(p => renderPackageCardHtml(p)).join("")}
-          </div>
-        </div>
-      `;
-
-      const inboundSubPanelHtml = `
-        <div class="package-group-header">
-          <div>
-            <h3>Inbound Tours (Explore Bangladesh)</h3>
-            <p>Domestic Bangladesh tour packages — Cox's Bazar, Sundarbans, Sylhet &amp; Hill Tracts</p>
-          </div>
-          <button type="button" class="btn btn-outline btn-sm" onclick="window.ACSearch.switchSearchTab('inbound');window.scrollTo({top:0,behavior:'smooth'})">
-            Search Inbound Tours →
-          </button>
-        </div>
-        ${buildAutoCarouselHtml(inboundList.map(p => renderPackageCardHtml(p)), "No Inbound Tour packages available.")}
-      `;
-
-      const outboundSubPanelHtml = `
-        <div class="package-group-header">
-          <div>
-            <h3>Outbound Tours (International Holidays)</h3>
-            <p>All-inclusive overseas holiday packages — Malaysia, Maldives, Dubai, Thailand &amp; Singapore</p>
-          </div>
-          <button type="button" class="btn btn-outline btn-sm" onclick="window.ACSearch.switchSearchTab('outbound');window.scrollTo({top:0,behavior:'smooth'})">
-            Search Outbound Tours →
-          </button>
-        </div>
-        ${buildAutoCarouselHtml(outboundList.map(p => renderPackageCardHtml(p)), "No Outbound Tour packages available.")}
-      `;
-
-      const tourPanelHtml = `
-        <div class="package-group-panel tour-panel" id="tour-panel">
-          <div class="package-group-header">
-            <div>
-              <h3>Tour Packages</h3>
-              <p>Curated holiday packages across <strong>Inbound Tours (Bangladesh)</strong> and <strong>Outbound Tours (International)</strong>.</p>
-            </div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap">
-              <button type="button" class="btn btn-outline btn-sm" onclick="document.querySelector('[data-cat=\\'INBOUND_TOUR\\']')?.click()">
-                Inbound Tours (${inboundList.length})
-              </button>
-              <button type="button" class="btn btn-outline btn-sm" onclick="document.querySelector('[data-cat=\\'OUTBOUND_TOUR\\']')?.click()">
-                Outbound Tours (${outboundList.length})
-              </button>
-            </div>
-          </div>
-          ${buildAutoCarouselHtml(allTourList.map(p => renderPackageCardHtml(p)), "No Tour packages available.")}
-        </div>
-      `;
-
-      if (activeFilter === "ALL") {
-        catalogGrid.className = "grouped-packages-wrapper";
-        catalogGrid.innerHTML = `${tourPanelHtml}${hajjPanelHtml}`;
-      } else if (activeFilter === "UMRAH_HAJJ" || activeFilter === "UMRAH") {
-        catalogGrid.className = "grouped-packages-wrapper";
-        catalogGrid.innerHTML = hajjPanelHtml;
-      } else if (activeFilter === "TOUR_ALL") {
-        catalogGrid.className = "grouped-packages-wrapper";
-        catalogGrid.innerHTML = tourPanelHtml;
-      } else if (activeFilter === "INBOUND_TOUR") {
-        catalogGrid.className = "grouped-packages-wrapper";
-        catalogGrid.innerHTML = `
-          <div class="package-group-panel tour-panel">
-            ${inboundSubPanelHtml}
-          </div>
-        `;
-      } else if (activeFilter === "OUTBOUND_TOUR") {
-        catalogGrid.className = "grouped-packages-wrapper";
-        catalogGrid.innerHTML = `
-          <div class="package-group-panel tour-panel">
-            ${outboundSubPanelHtml}
-          </div>
-        `;
+      if (inboundList.length) {
+        inboundSlider.innerHTML = inboundList.map(p => renderPackageCardHtml(p)).join("");
+      } else {
+        inboundSlider.innerHTML = `<p style="color:var(--muted);padding:14px">No Inbound Tour packages available.</p>`;
       }
+      enableDragScroll(inboundSlider);
+    }
 
-      bindCarouselPauseOnHover(catalogGrid);
+    const outboundSlider = document.getElementById("home-outbound-slider");
+    if (outboundSlider) {
+      const outboundList = state.packages.filter(p => p.category === "OUTBOUND_TOUR");
+      if (outboundList.length) {
+        outboundSlider.innerHTML = outboundList.map(p => renderPackageCardHtml(p)).join("");
+      } else {
+        outboundSlider.innerHTML = `<p style="color:var(--muted);padding:14px">No Outbound Tour packages available.</p>`;
+      }
+      enableDragScroll(outboundSlider);
+    }
+
+    // 3. Dedicated Umrah Packages Grid
+    const umrahGrid = document.getElementById("home-umrah-grid");
+    if (umrahGrid) {
+      const umrahList = state.packages.filter(p => p.category === "UMRAH" || p.category === "HAJJ");
+      if (umrahList.length) {
+        umrahGrid.innerHTML = umrahList.map(p => renderPackageCardHtml(p)).join("");
+      } else {
+        umrahGrid.innerHTML = `<p style="color:var(--muted);padding:14px">No Umrah packages available.</p>`;
+      }
     }
 
     // 4. Visa Services Grid (if present on homepage)
@@ -2088,6 +2033,7 @@
     bookHotelNow,
     bookVisaNow,
     quickSelectFlightDeal,
+    slideCarousel,
     showModal,
     closeModal
   };

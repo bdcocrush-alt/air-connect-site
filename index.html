@@ -18,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=29">
+  <link rel="stylesheet" href="css/styles.css?v=33">
 </head>
 <body>
 
@@ -116,8 +116,8 @@
     <!-- Dynamic Book Now Checkout Container (Appears on Book Now) -->
     <section id="checkout-section" hidden></section>
 
-    <!-- 1. Special Offers & Exclusive Campaigns -->
-    <section class="ota-section">
+    <!-- 1. Special Offers & Exclusive Deals -->
+    <section class="ota-section" id="offers-section">
       <div class="container">
         <div class="section-head">
           <div>
@@ -129,23 +129,78 @@
       </div>
     </section>
 
-    <!-- 3. Grouped Tour & Umrah Packages (Separated into Inbound Tours & Outbound Tours) -->
-    <section class="ota-section" id="hajj-tours">
-      <div id="packages-section" class="section-scroll-anchor" aria-hidden="true"></div>
+    <!-- 2. Tour Packages (with Inbound & Outbound Sub-sections) -->
+    <section class="ota-section" id="tour-packages-section">
       <div id="tour-packages" class="section-scroll-anchor" aria-hidden="true"></div>
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>Tour Packages</h2>
+            <p>Curated holiday tours across domestic destinations in Bangladesh and popular international getaways.</p>
+          </div>
+          <button type="button" class="btn btn-outline btn-sm" onclick="window.ACSearch.switchSearchTab('tour');window.scrollTo({top:0,behavior:'smooth'})">
+            Search Tour Packages →
+          </button>
+        </div>
+
+        <div class="tour-subgroups-wrapper">
+          <!-- Inbound Packages Sub-section -->
+          <div class="tour-subgroup-panel inbound-panel">
+            <div class="tour-subgroup-header">
+              <div>
+                <h4>
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="color:#0f766e"><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+                  Inbound Packages (Explore Bangladesh)
+                </h4>
+                <p>Domestic Bangladesh destinations — Cox's Bazar, Sundarbans, Saint Martin, Sylhet &amp; Hill Tracts</p>
+              </div>
+              <div class="slider-nav-arrows">
+                <button type="button" class="slider-arrow-btn" onclick="window.ACSearch.slideCarousel('home-inbound-slider', -1)" aria-label="Previous Inbound Packages">‹</button>
+                <button type="button" class="slider-arrow-btn" onclick="window.ACSearch.slideCarousel('home-inbound-slider', 1)" aria-label="Next Inbound Packages">›</button>
+              </div>
+            </div>
+            <div class="interactive-slider-viewport" id="home-inbound-slider"></div>
+          </div>
+
+          <!-- Outbound Packages Sub-section -->
+          <div class="tour-subgroup-panel outbound-panel">
+            <div class="tour-subgroup-header">
+              <div>
+                <h4>
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--brand-accent)"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                  Outbound Packages (International Holidays)
+                </h4>
+                <p>All-inclusive overseas holiday packages — Malaysia, Dubai, Maldives, Thailand &amp; Singapore</p>
+              </div>
+              <div class="slider-nav-arrows">
+                <button type="button" class="slider-arrow-btn" onclick="window.ACSearch.slideCarousel('home-outbound-slider', -1)" aria-label="Previous Outbound Packages">‹</button>
+                <button type="button" class="slider-arrow-btn" onclick="window.ACSearch.slideCarousel('home-outbound-slider', 1)" aria-label="Next Outbound Packages">›</button>
+              </div>
+            </div>
+            <div class="interactive-slider-viewport" id="home-outbound-slider"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Dedicated Umrah Packages Section -->
+    <section class="ota-section" id="umrah-packages-section">
       <div id="umrah-packages" class="section-scroll-anchor" aria-hidden="true"></div>
       <div class="container">
         <div class="section-head">
           <div>
-            <h2>Tour &amp; Umrah Packages</h2>
-            <p>Spiritual Umrah journeys and curated Holiday Tours — separated into Inbound Tours (Bangladesh) and Outbound Tours (International).</p>
+            <h2>Umrah Packages</h2>
+            <p>Spiritually fulfilling Umrah journeys with direct airline flights, 3★–5★ Haram-view hotels, verified visa processing &amp; experienced Muallim guides.</p>
           </div>
+          <button type="button" class="btn btn-outline btn-sm" onclick="window.ACSearch.switchSearchTab('umrah');window.scrollTo({top:0,behavior:'smooth'})">
+            Search Umrah Packages →
+          </button>
         </div>
-        <div class="grouped-packages-wrapper" id="home-catalog-grid"></div>
+        <div class="catalog-grid" id="home-umrah-grid"></div>
       </div>
     </section>
 
-    <!-- 3B. Global Visa Services -->
+    <!-- 4. Global Visa Services -->
     <section class="ota-section" id="hotels-visas-section">
       <div id="visa" class="section-scroll-anchor" aria-hidden="true"></div>
       <div class="container">
@@ -470,11 +525,11 @@
 
   <!-- Supabase SDK & Application Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/config.js?v=32"></script>
-  <script src="js/supabase-client.js?v=32"></script>
-  <script src="js/search-and-results.js?v=32"></script>
-  <script src="js/booking-checkout.js?v=32"></script>
-  <script src="js/customer-portal.js?v=32"></script>
+  <script src="js/config.js?v=33"></script>
+  <script src="js/supabase-client.js?v=33"></script>
+  <script src="js/search-and-results.js?v=33"></script>
+  <script src="js/booking-checkout.js?v=33"></script>
+  <script src="js/customer-portal.js?v=33"></script>
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
       window.AC.initCookieConsent();
