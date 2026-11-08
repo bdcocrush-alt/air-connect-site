@@ -1582,7 +1582,7 @@
   function bindCarouselPauseOnHover(rootEl) {
     if (!rootEl) return;
     rootEl.querySelectorAll(".hv-carousel-track").forEach(track => {
-      track.querySelectorAll(".catalog-card, .offer-banner-card").forEach(card => {
+      track.querySelectorAll(".catalog-card, .offer-banner-card, .partner-chip").forEach(card => {
         card.addEventListener("mouseenter", () => {
           track.classList.add("is-paused");
         });
@@ -1718,6 +1718,12 @@
     if (hvGrid) {
       const hvFilter = document.querySelector("#home-hv-tabs .filter-pill.active")?.getAttribute("data-hv") || "ALL_HV";
       renderHotelsVisasSection(hvFilter);
+    }
+
+    // 5. Airline Partners Carousel (if present on homepage)
+    const partnersBox = document.querySelector(".partners-box");
+    if (partnersBox) {
+      bindCarouselPauseOnHover(partnersBox);
     }
   }
 
