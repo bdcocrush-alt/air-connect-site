@@ -140,13 +140,6 @@
             <h2>Tour &amp; Umrah Packages</h2>
             <p>Spiritual Umrah journeys and curated Holiday Tours — separated into Inbound Tours (Bangladesh) and Outbound Tours (International).</p>
           </div>
-          <div class="filter-pills" id="home-catalog-tabs">
-            <button type="button" class="filter-pill active" data-cat="ALL">All Packages</button>
-            <button type="button" class="filter-pill" data-cat="TOUR_ALL">Tour Packages</button>
-            <button type="button" class="filter-pill" data-cat="UMRAH_HAJJ">Umrah Packages</button>
-            <button type="button" class="filter-pill" data-cat="INBOUND_TOUR">Inbound Tours</button>
-            <button type="button" class="filter-pill" data-cat="OUTBOUND_TOUR">Outbound Tours</button>
-          </div>
         </div>
         <div class="grouped-packages-wrapper" id="home-catalog-grid"></div>
       </div>
@@ -477,11 +470,11 @@
 
   <!-- Supabase SDK & Application Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/config.js?v=31"></script>
-  <script src="js/supabase-client.js?v=31"></script>
-  <script src="js/search-and-results.js?v=31"></script>
-  <script src="js/booking-checkout.js?v=31"></script>
-  <script src="js/customer-portal.js?v=31"></script>
+  <script src="js/config.js?v=32"></script>
+  <script src="js/supabase-client.js?v=32"></script>
+  <script src="js/search-and-results.js?v=32"></script>
+  <script src="js/booking-checkout.js?v=32"></script>
+  <script src="js/customer-portal.js?v=32"></script>
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
       window.AC.initCookieConsent();
@@ -490,19 +483,9 @@
       window.ACSearch.renderHomepageCatalog("ALL");
       window.ACSearch.renderHotelsVisasSection();
 
-      // Bind Homepage Grouped Hajj & Tour Filter Pills
-      document.querySelectorAll("#home-catalog-tabs .filter-pill").forEach(btn => {
-        btn.addEventListener("click", () => {
-          document.querySelectorAll("#home-catalog-tabs .filter-pill").forEach(b => b.classList.remove("active"));
-          btn.classList.add("active");
-          window.ACSearch.renderHomepageCatalog(btn.getAttribute("data-cat"));
-        });
-      });
-
       // Re-render on currency change
       window.addEventListener("ac:currency-changed", () => {
-        const activeCat = document.querySelector("#home-catalog-tabs .filter-pill.active")?.getAttribute("data-cat") || "ALL";
-        window.ACSearch.renderHomepageCatalog(activeCat);
+        window.ACSearch.renderHomepageCatalog("ALL");
         window.ACSearch.renderHotelsVisasSection();
         if (!document.getElementById("results-section").hidden && window.ACSearch.searchState.activeTab === "flight") {
           window.ACSearch.executeFlightSearch();
