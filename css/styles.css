@@ -27,6 +27,28 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 92px;
+}
+
+#flights,
+#hotels,
+#hajj-tours,
+#visa,
+#packages-section,
+#hotels-visas-section,
+#results-section,
+#checkout-section,
+.ota-section,
+.section-scroll-anchor {
+  scroll-margin-top: 92px;
+}
+
+.section-scroll-anchor {
+  display: block;
+  height: 0;
+  width: 0;
+  overflow: hidden;
+  pointer-events: none;
 }
 
 body {

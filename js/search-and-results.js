@@ -145,6 +145,47 @@
     renderSearchBox();
   }
 
+  function handleHeaderNavClick(event, tab, targetId) {
+    if (event && typeof event.preventDefault === "function") {
+      event.preventDefault();
+    }
+    switchSearchTab(tab);
+
+    // Sync target section filter pills so the scrolled section displays the selected category
+    if (targetId === "hotels" || targetId === "visa") {
+      const hvCode = targetId === "hotels" ? "HOTEL" : "VISA";
+      document.querySelectorAll("#home-hv-tabs .filter-pill").forEach(btn => {
+        btn.classList.toggle("active", btn.getAttribute("data-hv") === hvCode);
+      });
+      renderHotelsVisasSection(hvCode);
+    } else if (targetId === "hajj-tours") {
+      let catCode = "ALL";
+      if (tab === "umrah" || tab === "hajj") catCode = "UMRAH_HAJJ";
+      else if (tab === "inbound") catCode = "INBOUND_TOUR";
+      else if (tab === "outbound") catCode = "OUTBOUND_TOUR";
+      document.querySelectorAll("#home-catalog-tabs .filter-pill").forEach(btn => {
+        btn.classList.toggle("active", btn.getAttribute("data-cat") === catCode);
+      });
+      renderHomepageCatalog(catCode);
+    }
+
+    const targetEl =
+      targetId === "hotels" || targetId === "visa"
+        ? document.getElementById("hotels-visas-section") || document.getElementById(targetId)
+        : document.getElementById(targetId);
+
+    if (targetEl) {
+      const headerEl = document.querySelector(".ota-header");
+      const headerOffset = (headerEl ? headerEl.offsetHeight : 80) + 12;
+      const topPos = Math.max(0, targetEl.getBoundingClientRect().top + window.scrollY - headerOffset);
+      window.scrollTo({ top: topPos, behavior: "smooth" });
+      if (window.history && typeof window.history.replaceState === "function") {
+        window.history.replaceState(null, "", "#" + targetId);
+      }
+    }
+    return false;
+  }
+
   function renderSearchBox() {
     const container = document.getElementById("search-box-body");
     if (!container) return;
@@ -2074,6 +2115,7 @@
   window.ACSearch = {
     searchState,
     switchSearchTab,
+    handleHeaderNavClick,
     renderSearchBox,
     renderHomepageCatalog,
     renderHotelsVisasSection,
