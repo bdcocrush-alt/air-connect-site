@@ -18,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=27">
+  <link rel="stylesheet" href="css/styles.css?v=28">
 </head>
 <body>
 
@@ -432,15 +432,9 @@
             <small>24/7 Customer Support Hotline</small>
             <a id="ftr-support-phone" href="tel:+8801322937800">+880 1322-937800</a>
           </div>
-          <p style="font-size:13px;color:#94a3b8;margin-top:0">
+          <p style="font-size:13px;color:#94a3b8;margin-top:0;margin-bottom:16px">
             Book with instant PNR hold or pay via bKash &amp; Nagad (<strong style="color:#fff">+880 1322-937800</strong>) or Bank Transfer.
           </p>
-          <div class="footer-pay-badges-row">
-            <button type="button" class="footer-pay-badge" onclick="window.ACPortal.openPaymentDetailsModal('MFS')" title="Click to view bKash details"><img src="assets/payments/bkash.svg" alt="bKash"> bKash</button>
-            <button type="button" class="footer-pay-badge" onclick="window.ACPortal.openPaymentDetailsModal('MFS')" title="Click to view Nagad details"><img src="assets/payments/nagad.svg" alt="Nagad"> Nagad</button>
-            <button type="button" class="footer-pay-badge" onclick="window.ACPortal.openPaymentDetailsModal('BANK')" title="Click to view BRAC Bank PLC account details"><img src="assets/payments/bracbank.png" alt="BRAC Bank PLC"> Bank Transfer</button>
-            <span class="status-badge" style="background:#0caf61;color:#fff;padding:6px 10px;font-size:11px">Book &amp; Hold</span>
-          </div>
           <div class="footer-pay-actions">
             <button type="button" class="btn-payment-methods-trigger" onclick="window.ACPortal.openPaymentDetailsModal('ALL')">
               <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
@@ -462,11 +456,11 @@
 
   <!-- Supabase SDK & Application Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/config.js?v=27"></script>
-  <script src="js/supabase-client.js?v=27"></script>
-  <script src="js/search-and-results.js?v=27"></script>
-  <script src="js/booking-checkout.js?v=27"></script>
-  <script src="js/customer-portal.js?v=27"></script>
+  <script src="js/config.js?v=28"></script>
+  <script src="js/supabase-client.js?v=28"></script>
+  <script src="js/search-and-results.js?v=28"></script>
+  <script src="js/booking-checkout.js?v=28"></script>
+  <script src="js/customer-portal.js?v=28"></script>
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
       window.ACPortal.renderHeaderAuthArea();
