@@ -175,8 +175,14 @@
     supabase.auth.getSession().then(({ data: { session } }) => {
       syncAuthUser(session);
     });
-    supabase.auth.onAuthStateChange((_event, session) => {
+    supabase.auth.onAuthStateChange((event, session) => {
       syncAuthUser(session);
+      if (event === "SIGNED_IN" && window.location.hash && window.location.hash.includes("access_token=")) {
+        try {
+          history.replaceState(null, "", window.location.pathname + window.location.search);
+        } catch (_) {}
+        showToast("Signed in successfully with Google!", "success");
+      }
     });
   }
 
