@@ -2632,16 +2632,30 @@ button, input, select, textarea {
     width: 100%;
     max-width: 320px;
   }
+  .cookie-consent-banner {
+    bottom: 74px;
+    left: 12px;
+    right: 12px;
+    max-width: 440px;
+    margin: 0 auto;
+    padding: 13px 16px;
+    border-radius: 14px;
+  }
   .cookie-consent-inner {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .cookie-consent-text {
+    min-width: 0;
   }
   .cookie-consent-actions {
     width: 100%;
   }
   .cookie-consent-actions .btn {
     width: 100%;
+    padding: 9px 16px;
+    font-size: 13px;
   }
   .footer-grid {
     grid-template-columns: 1fr;
@@ -2707,6 +2721,24 @@ button, input, select, textarea {
     padding: 10px 14px;
     font-size: 12.5px;
   }
+  .cookie-consent-banner {
+    bottom: 68px;
+    left: 10px;
+    right: 10px;
+    padding: 11px 13px;
+    border-radius: 13px;
+  }
+  .cookie-consent-title {
+    font-size: 13px;
+  }
+  .cookie-consent-text p {
+    font-size: 11.5px;
+    line-height: 1.4;
+  }
+  .cookie-consent-actions .btn {
+    padding: 8px 14px;
+    font-size: 12px;
+  }
 }
 
 /* Social Auth & Password Reset Helpers */
@@ -2768,16 +2800,17 @@ button, input, select, textarea {
 /* Cookie Consent Banner */
 .cookie-consent-banner {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  bottom: 24px;
+  left: 24px;
+  max-width: 500px;
   background: rgba(17, 24, 39, 0.96);
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
   color: #e2e8f0;
   padding: 16px 20px;
   z-index: 998;
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 16px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
   animation: slideUpCookie 0.3s ease-out;
 }
 
