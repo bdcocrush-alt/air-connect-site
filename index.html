@@ -125,8 +125,12 @@
             <h2>Special Offers &amp; Exclusive Deals</h2>
             <p>Limited-time airline discounts, Umrah group departures, and luxury beach escapes.</p>
           </div>
+          <div class="slider-nav-arrows">
+            <button type="button" class="slider-arrow-btn" onclick="window.ACSearch.slideCarousel('home-offers-grid', -1)" aria-label="Previous Special Offers">‹</button>
+            <button type="button" class="slider-arrow-btn" onclick="window.ACSearch.slideCarousel('home-offers-grid', 1)" aria-label="Next Special Offers">›</button>
+          </div>
         </div>
-        <div class="offers-grid" id="home-offers-grid"></div>
+        <div class="interactive-slider-viewport offers-slider-viewport" id="home-offers-grid"></div>
       </div>
     </section>
 

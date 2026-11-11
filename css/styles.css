@@ -1318,6 +1318,12 @@ button, input, select, textarea {
   scroll-snap-align: start;
 }
 
+.interactive-slider-viewport .offer-banner-card {
+  flex: 0 0 380px;
+  width: 380px;
+  scroll-snap-align: start;
+}
+
 .interactive-slider-viewport.is-dragging {
   cursor: grabbing;
   user-select: none;
@@ -1361,6 +1367,10 @@ button, input, select, textarea {
   .interactive-slider-viewport .catalog-card {
     flex: 0 0 280px;
     width: 280px;
+  }
+  .interactive-slider-viewport .offer-banner-card {
+    flex: 0 0 300px;
+    width: 300px;
   }
 }
 
@@ -2686,6 +2696,10 @@ button, input, select, textarea {
   .interactive-slider-viewport .catalog-card {
     flex: 0 0 260px;
     width: 260px;
+  }
+  .interactive-slider-viewport .offer-banner-card {
+    flex: 0 0 270px;
+    width: 270px;
   }
   .wa-float {
     bottom: 14px;

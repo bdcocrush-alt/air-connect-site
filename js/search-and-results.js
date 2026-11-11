@@ -1609,12 +1609,64 @@
     });
   }
 
+  let offersAutoTimer = null;
+
   function slideCarousel(containerId, direction = 1) {
     const el = document.getElementById(containerId);
     if (!el) return;
-    const card = el.querySelector(".catalog-card");
+    const card = el.querySelector(".catalog-card, .offer-banner-card");
     const step = card ? card.offsetWidth + 20 : 340;
-    el.scrollBy({ left: step * direction, behavior: "smooth" });
+
+    // Check boundaries for smooth infinite loop navigation
+    if (direction > 0 && el.scrollLeft + el.clientWidth >= el.scrollWidth - 25) {
+      el.scrollTo({ left: 0, behavior: "smooth" });
+    } else if (direction < 0 && el.scrollLeft <= 10) {
+      el.scrollTo({ left: el.scrollWidth, behavior: "smooth" });
+    } else {
+      el.scrollBy({ left: step * direction, behavior: "smooth" });
+    }
+
+    if (typeof el._resetTimer === "function") {
+      el._resetTimer();
+    }
+  }
+
+  function startOffersAutoSlide(slider) {
+    if (!slider || slider._hasAutoSlide) return;
+    slider._hasAutoSlide = true;
+
+    function nextSlide() {
+      if (!slider || slider.classList.contains("is-dragging")) return;
+      const card = slider.querySelector(".offer-banner-card, .catalog-card");
+      const step = card ? card.offsetWidth + 20 : 340;
+      if (slider.scrollLeft + slider.clientWidth >= slider.scrollWidth - 25) {
+        slider.scrollTo({ left: 0, behavior: "smooth" });
+      } else {
+        slider.scrollBy({ left: step, behavior: "smooth" });
+      }
+    }
+
+    function resetTimer() {
+      if (offersAutoTimer) clearInterval(offersAutoTimer);
+      offersAutoTimer = setInterval(nextSlide, 4500);
+    }
+
+    resetTimer();
+
+    slider.addEventListener("mouseenter", () => {
+      if (offersAutoTimer) clearInterval(offersAutoTimer);
+    });
+    slider.addEventListener("mouseleave", () => {
+      resetTimer();
+    });
+    slider.addEventListener("touchstart", () => {
+      if (offersAutoTimer) clearInterval(offersAutoTimer);
+    }, { passive: true });
+    slider.addEventListener("touchend", () => {
+      resetTimer();
+    }, { passive: true });
+
+    slider._resetTimer = resetTimer;
   }
 
   function enableDragScroll(slider) {
@@ -1623,10 +1675,12 @@
     let isDown = false;
     let startX = 0;
     let scrollLeft = 0;
+    let hasDragged = false;
 
     slider.addEventListener("mousedown", e => {
       if (e.target.closest("button") || e.target.closest("a") || e.target.closest("input")) return;
       isDown = true;
+      hasDragged = false;
       slider.classList.add("is-dragging");
       startX = e.pageX - slider.offsetLeft;
       scrollLeft = slider.scrollLeft;
@@ -1637,36 +1691,50 @@
     });
     slider.addEventListener("mouseup", () => {
       isDown = false;
-      slider.classList.remove("is-dragging");
+      setTimeout(() => slider.classList.remove("is-dragging"), 60);
     });
     slider.addEventListener("mousemove", e => {
       if (!isDown) return;
       e.preventDefault();
       const x = e.pageX - slider.offsetLeft;
       const walk = (x - startX) * 1.5;
+      if (Math.abs(walk) > 6) hasDragged = true;
       slider.scrollLeft = scrollLeft - walk;
     });
+    slider.addEventListener("click", e => {
+      if (hasDragged) {
+        e.preventDefault();
+        e.stopPropagation();
+        hasDragged = false;
+      }
+    }, true);
   }
 
   // Homepage Sections Renderer
   function renderHomepageCatalog() {
     const { escapeHtml, state } = window.AC;
 
-    // 1. Special Offers Banners (Single-Line Auto-Sliding Carousel with Pause-on-Hover)
+    // 1. Special Offers Banners (Interactive Carousel Slider with visible Left/Right buttons and auto-timer)
     const offersGrid = document.getElementById("home-offers-grid");
     if (offersGrid) {
-      const offerCards = state.promoBanners.map(
-        b => `
-        <div class="offer-banner-card" style="background-image:url('${escapeHtml(b.image_url)}')" onclick="window.ACSearch.switchSearchTab('${escapeHtml(b.service_tab || "flight")}')">
-          <div class="offer-banner-content">
-            <span class="offer-badge">${escapeHtml(b.badge_text)}</span>
-            <h3>${escapeHtml(b.title)}</h3>
-            <p>${escapeHtml(b.subtitle)}</p>
-          </div>
-        </div>`
-      );
-      offersGrid.innerHTML = buildAutoCarouselHtml(offerCards, "No special offers available right now.");
-      bindCarouselPauseOnHover(offersGrid);
+      if (state.promoBanners?.length) {
+        offersGrid.innerHTML = state.promoBanners
+          .map(
+            b => `
+          <div class="offer-banner-card" style="background-image:url('${escapeHtml(b.image_url)}')" onclick="window.ACSearch.switchSearchTab('${escapeHtml(b.service_tab || "flight")}')">
+            <div class="offer-banner-content">
+              <span class="offer-badge">${escapeHtml(b.badge_text)}</span>
+              <h3>${escapeHtml(b.title)}</h3>
+              <p>${escapeHtml(b.subtitle)}</p>
+            </div>
+          </div>`
+          )
+          .join("");
+        enableDragScroll(offersGrid);
+        startOffersAutoSlide(offersGrid);
+      } else {
+        offersGrid.innerHTML = `<p style="color:var(--muted);padding:14px">No special offers available right now.</p>`;
+      }
     }
 
     // 2. Tour Packages — Inbound & Outbound Interactive Sliders
