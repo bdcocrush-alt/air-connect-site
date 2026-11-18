@@ -85,7 +85,7 @@
         <div class="hero-video-overlay" aria-hidden="true"></div>
 
         <div class="hero-content">
-          <h1 id="hero-title">From Plans to Paradise — Instantly</h1>
+          <h1 id="hero-title">From Plans to <span class="hero-word-rotator" id="hero-word-rotator" aria-label="Paradise"><span class="hero-rotating-word is-active">Paradise</span></span> — Instantly</h1>
           <p id="hero-subtitle">Search real-time fares, domestic &amp; international tickets, and book with instant hold or easy payment.</p>
         </div>
 
@@ -550,12 +550,14 @@
       window.ACSearch.renderHomepageCatalog("ALL");
       window.ACSearch.renderHotelsVisasSection();
       window.ACSearch.updateSearchTabSlider?.();
+      window.ACSearch.initHeroWordRotator?.();
 
       // Re-render on currency change
       window.addEventListener("ac:currency-changed", () => {
         window.ACSearch.renderHomepageCatalog("ALL");
         window.ACSearch.renderHotelsVisasSection();
       window.ACSearch.updateSearchTabSlider?.();
+      window.ACSearch.initHeroWordRotator?.();
         if (!document.getElementById("results-section").hidden && window.ACSearch.searchState.activeTab === "flight") {
           window.ACSearch.executeFlightSearch();
         }
@@ -591,6 +593,7 @@
       window.ACSearch.renderHomepageCatalog("ALL");
       window.ACSearch.renderHotelsVisasSection();
       window.ACSearch.updateSearchTabSlider?.();
+      window.ACSearch.initHeroWordRotator?.();
     });
   </script>
 </body>

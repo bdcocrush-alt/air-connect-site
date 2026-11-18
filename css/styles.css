@@ -379,6 +379,49 @@ button, input, select, textarea {
   animation-delay: 0.1s;
 }
 
+/* Dynamic Word Rotator (Hero Headline) */
+.hero-word-rotator {
+  display: inline-block;
+  vertical-align: bottom;
+  position: relative;
+  overflow: hidden;
+  height: 1.25em;
+  line-height: 1.25em;
+  text-align: center;
+  box-sizing: border-box;
+  padding: 0 4px;
+  margin: 0 2px;
+  will-change: width;
+}
+
+.hero-rotating-word {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  white-space: nowrap;
+  text-align: center;
+  color: #67e8f9;
+  text-shadow: 0 0 22px rgba(56, 189, 248, 0.55), 0 3px 16px rgba(15, 23, 42, 0.65);
+  opacity: 0;
+  transform: translateY(100%);
+  transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+
+.hero-rotating-word.is-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hero-rotating-word.is-exiting {
+  opacity: 0;
+  transform: translateY(-100%);
+}
+
 .hero-content p {
   margin: 0;
   font-size: clamp(14px, 1.8vw, 17px);

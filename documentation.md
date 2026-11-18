@@ -88,6 +88,12 @@ Airconnect web deb/
 * **Search Button Polish:**
   * `.search-submit-btn` has a vibrant crimson gradient, subtle `-3px` elevation hover lift, and an atmospheric red glow (`box-shadow: 0 10px 28px rgba(192, 0, 0, 0.38)`).
   * An ambient, gentle light-shimmer sweep (`@keyframes btnShimmerSweep`) sweeps across the button every 5.5s.
+* **Dynamic Rotating Headline Word Cycle:**
+  * In the main hero headline (`From Plans to Paradise — Instantly`), the word `"Paradise"` dynamically transitions through a curated 5-destination sequence: `"Paradise"` → `"Makkah"` → `"Maldives"` → `"Dubai"` → `"The World"` (looping continuously every 2.8s).
+  * The surrounding words (`From Plans to` and `— Instantly`) stay strictly static and pinned.
+  * **Zero Cumulative Layout Shift (CLS = 0):** `measureRotatorWidth()` measures the widest rendered word (`"The World"`) via a transient off-screen DOM canvas element in matching typography and locks `.hero-word-rotator` width (`Math.ceil(maxWidth + 8) + 'px'`).
+  * **Subtle Vertical Slide + Fade Transition:** Driven by 60fps GPU transforms (`translateY(100%)` → `translateY(0)` → `translateY(-100%)`) with `opacity: 0` → `1` → `0` using `transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1)`.
+  * **Tab Switch Safety:** When switching to other service tabs (Hotels, Tours, Umrah, Visa), the rotation timer safely stops and the tab's dedicated title renders cleanly; when switching back to Flights, `initHeroWordRotator()` re-initializes seamlessly.
 
 ---
 

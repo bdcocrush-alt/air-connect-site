@@ -139,7 +139,15 @@
         videoEl.style.opacity = "0.32";
       }
     }
-    if (titleEl && heroInfo) titleEl.textContent = heroInfo.title;
+    if (titleEl && heroInfo) {
+      if (bannerKey === "flight") {
+        titleEl.innerHTML = `From Plans to <span class="hero-word-rotator" id="hero-word-rotator" aria-label="Paradise"><span class="hero-rotating-word is-active">Paradise</span></span> — Instantly`;
+        initHeroWordRotator();
+      } else {
+        stopHeroWordRotator();
+        titleEl.textContent = heroInfo.title;
+      }
+    }
     if (subEl && heroInfo) subEl.textContent = heroInfo.subtitle;
 
     // Update Active Buttons
@@ -153,6 +161,87 @@
 
     updateSearchTabSlider();
     renderSearchBox();
+  }
+
+  const ROTATING_WORDS = ["Paradise", "Makkah", "Maldives", "Dubai", "The World"];
+  let wordRotatorTimer = null;
+  let wordRotatorIndex = 0;
+
+  function measureRotatorWidth() {
+    const rotator = document.getElementById("hero-word-rotator");
+    if (!rotator) return;
+    let maxWidth = 0;
+    const measurer = document.createElement("span");
+    const style = window.getComputedStyle(rotator);
+    measurer.style.cssText = `
+      position: absolute !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+      white-space: nowrap !important;
+      font-size: ${style.fontSize};
+      font-weight: ${style.fontWeight};
+      letter-spacing: ${style.letterSpacing};
+      font-family: ${style.fontFamily};
+    `;
+    document.body.appendChild(measurer);
+
+    ROTATING_WORDS.forEach(word => {
+      measurer.textContent = word;
+      const w = measurer.getBoundingClientRect().width;
+      if (w > maxWidth) maxWidth = w;
+    });
+    measurer.remove();
+
+    if (maxWidth > 0) {
+      rotator.style.width = Math.ceil(maxWidth + 8) + "px";
+    }
+  }
+
+  function initHeroWordRotator() {
+    measureRotatorWidth();
+    startHeroWordRotator();
+  }
+
+  function startHeroWordRotator() {
+    stopHeroWordRotator();
+    const rotator = document.getElementById("hero-word-rotator");
+    if (!rotator) return;
+
+    wordRotatorTimer = setInterval(() => {
+      rotateNextWord();
+    }, 2800);
+  }
+
+  function stopHeroWordRotator() {
+    if (wordRotatorTimer) {
+      clearInterval(wordRotatorTimer);
+      wordRotatorTimer = null;
+    }
+  }
+
+  function rotateNextWord() {
+    const rotator = document.getElementById("hero-word-rotator");
+    if (!rotator) return;
+
+    const currentWordEl = rotator.querySelector(".hero-rotating-word.is-active");
+    wordRotatorIndex = (wordRotatorIndex + 1) % ROTATING_WORDS.length;
+    const nextWord = ROTATING_WORDS[wordRotatorIndex];
+
+    const nextWordEl = document.createElement("span");
+    nextWordEl.className = "hero-rotating-word";
+    nextWordEl.textContent = nextWord;
+    rotator.appendChild(nextWordEl);
+
+    // Force reflow for silky smooth 60fps transition
+    void nextWordEl.offsetWidth;
+
+    if (currentWordEl) {
+      currentWordEl.classList.remove("is-active");
+      currentWordEl.classList.add("is-exiting");
+      setTimeout(() => currentWordEl.remove(), 600);
+    }
+
+    nextWordEl.classList.add("is-active");
   }
 
   function updateSearchTabSlider() {
@@ -2118,17 +2207,28 @@
     document.getElementById("ac-active-modal")?.remove();
   }
 
-  // Window listeners for sliding tab indicator
-  window.addEventListener("resize", updateSearchTabSlider, { passive: true });
+  // Window listeners for sliding tab indicator & word rotator width
+  window.addEventListener("resize", () => {
+    updateSearchTabSlider();
+    measureRotatorWidth();
+  }, { passive: true });
+
   document.addEventListener("DOMContentLoaded", () => {
-    setTimeout(updateSearchTabSlider, 80);
-    setTimeout(updateSearchTabSlider, 300);
+    setTimeout(() => {
+      updateSearchTabSlider();
+      initHeroWordRotator();
+    }, 80);
+    setTimeout(() => {
+      updateSearchTabSlider();
+      measureRotatorWidth();
+    }, 300);
   });
 
   window.ACSearch = {
     searchState,
     switchSearchTab,
     updateSearchTabSlider,
+    initHeroWordRotator,
     handleHeaderNavClick,
     renderSearchBox,
     renderHomepageCatalog,
