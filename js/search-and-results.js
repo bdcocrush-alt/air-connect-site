@@ -2214,6 +2214,16 @@
   }, { passive: true });
 
   document.addEventListener("DOMContentLoaded", () => {
+    const bgVid = document.getElementById("hero-bg-video");
+    if (bgVid) {
+      bgVid.muted = true;
+      const playP = bgVid.play();
+      if (playP && typeof playP.catch === "function") {
+        playP.catch(() => {
+          // Autoplay was prevented by browser policy/low-power mode; static background poster remains visible
+        });
+      }
+    }
     setTimeout(() => {
       updateSearchTabSlider();
       initHeroWordRotator();

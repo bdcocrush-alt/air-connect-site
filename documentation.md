@@ -68,8 +68,9 @@ Airconnect web deb/
 
 ### 4.1. Hero Section & Micro-Interactions (60fps)
 * **Ambient Looping Destination Video:**
-  * Implemented via `<video class="hero-bg-video" autoplay muted loop playsinline>` streaming a high-definition, lightweight (~4MB) tropical aerial lagoon video with gentle crystal-clear turquoise ocean waves.
-  * **Static Fallback:** High-resolution poster (`assets/` and Unsplash HD) with container background image to eliminate layout shift on slow connections or low-power modes.
+  * Implemented via `<video class="hero-bg-video" autoplay muted loop playsinline poster="...">` loading `/hero-bg.mp4` (`hero-bg.mp4`) as the primary ambient looping background video.
+  * **Static Fallback:** High-resolution poster (`poster="..."`) and container background image (`#hero-banner` Unsplash HD) to eliminate layout shift on slow connections or low-power modes.
+  * **Autoplay Resilience:** Configured with `muted`, `loop`, `playsinline`, and initialized with dynamic `.play()` promise catch handling to ensure frictionless autoplay across desktop and mobile browsers (iOS Safari, Android Chrome).
   * **Layering & Readability:** Positioned at `z-index: 0`, topped with `.hero-video-overlay` gradient (`rgba(15, 23, 42, 0.46)` to `rgba(15, 23, 42, 0.52)`) at `z-index: 1`, ensuring headline and search form elements maintain high contrast.
 * **Modern Glassmorphism Search Card:**
   * `.search-card` features `background: rgba(255, 255, 255, 0.94)`, `backdrop-filter: blur(20px) saturate(180%)`, and `box-shadow: 0 24px 64px rgba(15, 23, 42, 0.22)`.
