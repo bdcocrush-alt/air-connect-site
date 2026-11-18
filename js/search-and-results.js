@@ -125,12 +125,20 @@
       bannerKey = tab;
     }
 
-    // Update Hero Banner
+    // Update Hero Banner & Ambient Video
     const heroInfo = cfg.HERO_BANNERS[bannerKey] || cfg.HERO_BANNERS.flight;
     const heroEl = document.getElementById("hero-banner");
     const titleEl = document.getElementById("hero-title");
     const subEl = document.getElementById("hero-subtitle");
+    const videoEl = document.getElementById("hero-bg-video");
     if (heroEl && heroInfo) heroEl.style.backgroundImage = `url('${heroInfo.bg}')`;
+    if (videoEl) {
+      if (bannerKey === "flight" || bannerKey === "tour") {
+        videoEl.style.opacity = "1";
+      } else {
+        videoEl.style.opacity = "0.32";
+      }
+    }
     if (titleEl && heroInfo) titleEl.textContent = heroInfo.title;
     if (subEl && heroInfo) subEl.textContent = heroInfo.subtitle;
 
@@ -143,7 +151,21 @@
       btn.classList.toggle("active", btn.getAttribute("data-header-tab") === activeKey);
     });
 
+    updateSearchTabSlider();
     renderSearchBox();
+  }
+
+  function updateSearchTabSlider() {
+    const bar = document.querySelector(".search-tabs-bar");
+    const slider = document.getElementById("search-tab-pill-slider");
+    if (!bar || !slider) return;
+    const activeBtn = bar.querySelector(".search-tab-btn.active") || bar.querySelector(`[data-search-tab="${searchState.activeTab}"]`);
+    if (!activeBtn) return;
+    const barRect = bar.getBoundingClientRect();
+    const btnRect = activeBtn.getBoundingClientRect();
+    const leftOffset = btnRect.left - barRect.left + bar.scrollLeft;
+    slider.style.transform = `translateX(${leftOffset}px)`;
+    slider.style.width = `${btnRect.width}px`;
   }
 
   function handleHeaderNavClick(event, tab, targetId) {
@@ -618,11 +640,23 @@
         searchState.flight.to = e.target.value;
         document.getElementById("fl-to-sub").textContent = getAirportDisplay(e.target.value);
       });
+      let swapAngle = 0;
       document.getElementById("fl-swap-btn")?.addEventListener("click", () => {
+        swapAngle += 180;
+        const btn = document.getElementById("fl-swap-btn");
+        if (btn) btn.style.transform = `rotate(${swapAngle}deg)`;
         const tmp = searchState.flight.from;
         searchState.flight.from = searchState.flight.to;
         searchState.flight.to = tmp;
-        renderSearchBox();
+
+        const selFrom = document.getElementById("fl-from");
+        const selTo = document.getElementById("fl-to");
+        const subFrom = document.getElementById("fl-from-sub");
+        const subTo = document.getElementById("fl-to-sub");
+        if (selFrom) selFrom.value = searchState.flight.from;
+        if (selTo) selTo.value = searchState.flight.to;
+        if (subFrom) subFrom.textContent = getAirportDisplay(searchState.flight.from);
+        if (subTo) subTo.textContent = getAirportDisplay(searchState.flight.to);
       });
       document.getElementById("ota-flight-form")?.addEventListener("submit", e => {
         e.preventDefault();
@@ -2084,9 +2118,17 @@
     document.getElementById("ac-active-modal")?.remove();
   }
 
+  // Window listeners for sliding tab indicator
+  window.addEventListener("resize", updateSearchTabSlider, { passive: true });
+  document.addEventListener("DOMContentLoaded", () => {
+    setTimeout(updateSearchTabSlider, 80);
+    setTimeout(updateSearchTabSlider, 300);
+  });
+
   window.ACSearch = {
     searchState,
     switchSearchTab,
+    updateSearchTabSlider,
     handleHeaderNavClick,
     renderSearchBox,
     renderHomepageCatalog,

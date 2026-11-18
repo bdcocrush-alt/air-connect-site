@@ -77,13 +77,21 @@
     <div class="hero-outer" id="flights">
       <div id="hotels" class="section-scroll-anchor" aria-hidden="true"></div>
       <div class="hero-banner" id="hero-banner" style="background-image:url('https://images.unsplash.com/photo-1559128010-7c1ad6e1b6a5?auto=format&fit=crop&w=2000&q=85')">
+        <!-- Ambient Destination Background Video (Seamless Tropical Island Looping Stream) -->
+        <video class="hero-bg-video" id="hero-bg-video" autoplay muted loop playsinline poster="https://images.unsplash.com/photo-1559128010-7c1ad6e1b6a5?auto=format&fit=crop&w=2000&q=85" preload="auto">
+          <source src="https://assets.mixkit.co/videos/41517/41517-720.mp4" type="video/mp4">
+          <source src="https://videos.pexels.com/video-files/855564/855564-hd_1920_1080_24fps.mp4" type="video/mp4">
+        </video>
+        <div class="hero-video-overlay" aria-hidden="true"></div>
+
         <div class="hero-content">
           <h1 id="hero-title">From Plans to Paradise — Instantly</h1>
           <p id="hero-subtitle">Search real-time fares, domestic &amp; international tickets, and book with instant hold or easy payment.</p>
         </div>
 
-        <!-- Service Tabs Pill Bar -->
+        <!-- Service Tabs Pill Bar (with GPU Smooth Gliding Slider) -->
         <div class="search-tabs-bar" role="tablist">
+          <div class="search-tab-pill-slider" id="search-tab-pill-slider" aria-hidden="true"></div>
           <button type="button" class="search-tab-btn active" data-search-tab="flight" onclick="window.ACSearch.switchSearchTab('flight')">
             <svg viewBox="0 0 24 24"><path d="M2 16l20-8-6 14-4-6-6-2z"/></svg>
             Flights
@@ -541,11 +549,13 @@
       window.ACSearch.renderSearchBox();
       window.ACSearch.renderHomepageCatalog("ALL");
       window.ACSearch.renderHotelsVisasSection();
+      window.ACSearch.updateSearchTabSlider?.();
 
       // Re-render on currency change
       window.addEventListener("ac:currency-changed", () => {
         window.ACSearch.renderHomepageCatalog("ALL");
         window.ACSearch.renderHotelsVisasSection();
+      window.ACSearch.updateSearchTabSlider?.();
         if (!document.getElementById("results-section").hidden && window.ACSearch.searchState.activeTab === "flight") {
           window.ACSearch.executeFlightSearch();
         }
@@ -580,6 +590,7 @@
       window.ACSearch.renderSearchBox();
       window.ACSearch.renderHomepageCatalog("ALL");
       window.ACSearch.renderHotelsVisasSection();
+      window.ACSearch.updateSearchTabSlider?.();
     });
   </script>
 </body>
