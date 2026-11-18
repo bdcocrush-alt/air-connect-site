@@ -31,7 +31,7 @@ window.AIRCONNECT_CONFIG = {
     flight: {
       title: "From Plans to Paradise — Instantly",
       subtitle: "Search real-time fares, domestic & international tickets, and book with instant hold or easy payment.",
-      bg: "https://images.unsplash.com/photo-1559128010-7c1ad6e1b6a5?auto=format&fit=crop&w=2000&q=85"
+      bg: "assets/hero-video-poster.jpg"
     },
     hotel: {
       title: "Find Your Perfect Stay Worldwide",

@@ -2217,6 +2217,10 @@
     const bgVid = document.getElementById("hero-bg-video");
     if (bgVid) {
       bgVid.muted = true;
+      if (!bgVid.src || !bgVid.src.includes("hero-bg.mp4")) {
+        bgVid.src = "hero-bg.mp4?v=2";
+        bgVid.load();
+      }
       const playP = bgVid.play();
       if (playP && typeof playP.catch === "function") {
         playP.catch(() => {
